@@ -1,6 +1,0 @@
-﻿feat(realtime): initialize realtime server with socket.io and agora service
-
-- Scaffold Node.js TypeScript project
-- Set up Express server with Socket.io listening on port 5000
-- Configure CORS to allow all origins
-- Implement AgoraTokenService module for RTC token generation
