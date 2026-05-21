@@ -138,3 +138,54 @@ CREATE INDEX IX_rooms_host            ON rooms        (host_id);
 CREATE INDEX IX_transactions_user     ON transactions (user_id, type);
 CREATE INDEX IX_transactions_receiver ON transactions (receiver_id);
 GO
+
+-- =========================================
+-- AI SUPPORT QUESTIONS
+-- Mục đích : Câu gợi ý thảo luận hiển thị lên màn hình
+--            Moderator/Pro đúng theo mốc thời gian trong phòng.
+-- Dùng bởi : Dev 3 — API GET /api/rooms/{id}/moderator-hints
+--            Dev 2 — Stored Procedure sp_GetAISupportByMinute
+-- Tuần     : 3-5 (tạo bảng) → 6-7 (thêm Stored Procedure)
+-- =========================================
+CREATE TABLE ai_support_questions (
+    id             INT PRIMARY KEY IDENTITY(1,1),
+    sub_level_id   INT           NOT NULL,           -- Thuộc Sub-level nào
+    question_text  NVARCHAR(MAX) NOT NULL,           -- Câu gợi ý hiển thị cho Moderator
+    trigger_minute INT           NOT NULL,           -- Phút thứ mấy trong Sub-level thì hiện
+    language_id    INT,                              -- Ngôn ngữ của gợi ý (khớp với level)
+    order_index    INT           NOT NULL DEFAULT 1, -- Thứ tự nếu cùng trigger_minute
+
+    CONSTRAINT FK_aisupport_sublevels FOREIGN KEY (sub_level_id) REFERENCES sub_levels(id),
+    CONSTRAINT FK_aisupport_languages FOREIGN KEY (language_id)  REFERENCES languages(id)
+);
+GO
+
+-- Index: truy vấn nhanh theo phút — dùng bởi Stored Procedure bên dưới
+CREATE INDEX IX_aisupport_sub_minute ON ai_support_questions (sub_level_id, trigger_minute);
+GO
+
+-- =========================================
+-- STORED PROCEDURE: sp_GetAISupportByMinute
+-- Mục đích : Lấy tối đa 3 câu gợi ý gần nhất với phút hiện tại.
+--            Gọi mỗi khi Timer Module của Node.js tick sang phút mới.
+-- Input    : @sub_level_id   — Sub-level đang chạy trong phòng
+--            @current_minute — Phút hiện tại (từ Timer Module Node.js)
+-- Output   : Tối đa 3 câu gợi ý đã đến giờ hiển thị
+-- =========================================
+CREATE PROCEDURE sp_GetAISupportByMinute
+    @sub_level_id   INT,
+    @current_minute INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT TOP 3
+        id,
+        question_text,
+        trigger_minute
+    FROM ai_support_questions
+    WHERE sub_level_id   = @sub_level_id
+      AND trigger_minute <= @current_minute  -- Chỉ lấy gợi ý đã đến giờ
+    ORDER BY trigger_minute DESC,            -- Ưu tiên gợi ý gần phút hiện tại nhất
+             order_index   ASC;
+END;
+GO
