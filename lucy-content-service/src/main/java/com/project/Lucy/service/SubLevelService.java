@@ -1,8 +1,8 @@
 package com.project.Lucy.service;
 
-import com.project.Lucy.dto.response.ContentItemResponse;
-import com.project.Lucy.entity.ContentItem;
-import com.project.Lucy.repository.ContentItemRepository;
+import com.project.Lucy.dto.response.SubLevelResponse;
+import com.project.Lucy.entity.SubLevel;
+import com.project.Lucy.repository.SubLevelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,23 +11,24 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ContentItemService {
+public class SubLevelService {
 
-    private final ContentItemRepository contentItemRepository;
+    private final SubLevelRepository subLevelRepository;
 
-    public List<ContentItemResponse> getBySubLevel(Long subLevelId) {
-        return contentItemRepository.findBySubLevelIdOrderByOrderIndex(subLevelId)
+    public List<SubLevelResponse> getByLevel(Long levelId) {
+        return subLevelRepository.findByLevelIdOrderByOrderIndex(levelId)
                 .stream().map(this::toResponse).collect(Collectors.toList());
     }
 
-    private ContentItemResponse toResponse(ContentItem ci) {
-        ContentItemResponse dto = new ContentItemResponse();
-        dto.setId(ci.getId());
-        dto.setSubLevelId(ci.getSubLevel().getId());
-        dto.setItemType(ci.getItemType());
-        dto.setOrderIndex(ci.getOrderIndex());
-        dto.setContentText(ci.getContentText());
-        dto.setPhonetic(ci.getPhonetic());
+    private SubLevelResponse toResponse(SubLevel sl) {
+        SubLevelResponse dto = new SubLevelResponse();
+        dto.setId(sl.getId());
+        dto.setLevelId(sl.getLevel().getId());
+        dto.setOrderIndex(sl.getOrderIndex());
+        dto.setTitle(sl.getTitle());
+        dto.setPhonetic(sl.getPhonetic());
+        dto.setDurationMinutes(sl.getDurationMinutes());
+        dto.setContentType(sl.getContentType());
         return dto;
     }
 }
