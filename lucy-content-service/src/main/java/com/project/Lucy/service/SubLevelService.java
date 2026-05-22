@@ -16,7 +16,7 @@ public class SubLevelService {
     private final SubLevelRepository subLevelRepository;
 
     public List<SubLevelResponse> getByLevel(Long levelId) {
-        return subLevelRepository.findByLevel_IdOrderByOrderIndex(levelId)
+        return subLevelRepository.findByLevelIdOrderByOrderIndex(levelId)
                 .stream().map(this::toResponse).collect(Collectors.toList());
     }
 
