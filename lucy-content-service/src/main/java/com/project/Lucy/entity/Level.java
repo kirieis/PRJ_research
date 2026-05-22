@@ -25,4 +25,7 @@ public class Level {
     
     @Column(columnDefinition = "NVARCHAR(MAX)")
     private String targetOutcome;
+    
+    @Column(name = "is_published")
+    private Boolean isPublished = false;
 }
