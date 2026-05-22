@@ -5,9 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface LevelRepository extends JpaRepository<Level, Long> {
-    List<Level> findByLanguage_Id(Long languageId);
-
-    List<Level> findByLanguage_IdAndStageNumber(Long languageId, int stageNumber);
-
-    List<Level> findByIsPublishedTrue();
+    Level findByLanguageIdAndStageNumberAndLevelNumber(Long languageId, Integer stageNumber, Integer levelNumber);
+    List<Level> findByLanguageId(Long languageId);
 }
