@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface SubLevelRepository extends JpaRepository<SubLevel, Long> {
-    List<SubLevel> findByLevel_IdOrderByOrderIndex(Long levelId);
+    SubLevel findByLevelIdAndOrderIndex(Long levelId, Integer orderIndex);
+    List<SubLevel> findByLevelId(Long levelId);
 }
