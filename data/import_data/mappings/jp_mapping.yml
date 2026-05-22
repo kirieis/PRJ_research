@@ -1,0 +1,14 @@
+language_code: JP
+files:
+  - filename: "Janpanes - ステージ1(レベル1-30).docx"
+    stage_number: 1
+    grouped_ranges:
+      - range: "11-15"
+        topic_prefix: "機能的コミュニケーション"
+        content_lines_as_topics: true
+      - range: "16-20"
+        topic_prefix: "個人の世界"
+        content_lines_as_topics: true
+      - range: "21-25"
+        topic_prefix: "経験の拡大"
+        content_lines_as_topics: true
