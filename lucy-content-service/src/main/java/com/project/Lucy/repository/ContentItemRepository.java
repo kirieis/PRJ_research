@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ContentItemRepository extends JpaRepository<ContentItem, Long> {
-    List<ContentItem> findBySubLevel_IdOrderByOrderIndex(Long subLevelId);
+    ContentItem findBySubLevelIdAndOrderIndex(Long subLevelId, Integer orderIndex);
+    List<ContentItem> findBySubLevelId(Long subLevelId);
 }
