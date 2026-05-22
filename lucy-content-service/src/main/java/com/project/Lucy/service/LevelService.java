@@ -16,12 +16,12 @@ public class LevelService {
     private final LevelRepository levelRepository;
 
     public List<LevelResponse> getByLanguage(Long languageId) {
-        return levelRepository.findByLanguage_Id(languageId)
+        return levelRepository.findByLanguageId(languageId)
                 .stream().map(this::toResponse).collect(Collectors.toList());
     }
 
     public List<LevelResponse> getByLanguageAndStage(Long languageId, int stageNumber) {
-        return levelRepository.findByLanguage_IdAndStageNumber(languageId, stageNumber)
+        return levelRepository.findByLanguageIdAndStageNumber(languageId, stageNumber)
                 .stream().map(this::toResponse).collect(Collectors.toList());
     }
 
