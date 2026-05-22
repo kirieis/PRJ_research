@@ -7,4 +7,5 @@ import java.util.List;
 public interface SubLevelRepository extends JpaRepository<SubLevel, Long> {
     SubLevel findByLevelIdAndOrderIndex(Long levelId, Integer orderIndex);
     List<SubLevel> findByLevelId(Long levelId);
+    List<SubLevel> findByLevelIdOrderByOrderIndex(Long levelId);
 }
