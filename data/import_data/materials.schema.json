@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NormalizedMaterial",
+  "type": "object",
+  "properties": {
+    "language_code": {
+      "type": "string",
+      "enum": ["EN", "JP", "ZH"]
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "stage_number": { "type": "integer" },
+          "levels": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "level_number": { "type": "integer" },
+                "topic_name": { "type": "string" },
+                "target_outcome": { "type": ["string", "null"] },
+                "incomplete": { "type": "boolean" },
+                "sub_levels": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "order_index": { "type": "integer", "minimum": 1, "maximum": 99 },
+                      "title": { "type": "string" },
+                      "content_type": { "type": "string" },
+                      "duration_minutes": { "type": ["integer", "null"] },
+                      "content_items": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "order_index": { "type": "integer" },
+                            "item_type": {
+                              "type": "string",
+                              "enum": ["VOCAB", "QUESTION", "TEXT", "AI_PROMPT"]
+                            },
+                            "content_text": { "type": "string" },
+                            "phonetic": { "type": ["string", "null"] }
+                          },
+                          "required": ["order_index", "item_type", "content_text"]
+                        }
+                      }
+                    },
+                    "required": ["order_index", "title", "content_type", "content_items"]
+                  }
+                }
+              },
+              "required": ["level_number", "topic_name", "sub_levels"]
+            }
+          }
+        },
+        "required": ["stage_number", "levels"]
+      }
+    }
+  },
+  "required": ["language_code", "stages"]
+}
