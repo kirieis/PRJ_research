@@ -1,4 +1,10 @@
 .github/
-
 .vscode/
+.idea/
+*.iml
+target/
+*.class
+*.log
 
+# Ignore generated output files during import
+data/import_data/out/
