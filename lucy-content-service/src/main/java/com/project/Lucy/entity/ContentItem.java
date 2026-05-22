@@ -9,7 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ContentItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,7 +18,7 @@ public class ContentItem {
     private SubLevel subLevel;
 
     @Column(nullable = false)
-    private String itemType; // Loại item
+    private String itemType;
 
     private Integer orderIndex;
 
