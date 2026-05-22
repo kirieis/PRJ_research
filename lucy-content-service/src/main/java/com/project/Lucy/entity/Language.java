@@ -2,7 +2,6 @@ package com.project.Lucy.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.List;
 
 @Entity
 @Table(name = "languages")
@@ -10,16 +9,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Language {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name; // "English", "Chinese", "Japanese"
+    @Column(nullable = false, unique = true)
+    private String code; // EN, JP, ZH
 
-    private String code; // "EN", "ZH", "JP"
-
-    @OneToMany(mappedBy = "language", cascade = CascadeType.ALL)
-    private List<Level> levels; // FK thẳng tới Level, không qua Stage
+    private String name;
 }
