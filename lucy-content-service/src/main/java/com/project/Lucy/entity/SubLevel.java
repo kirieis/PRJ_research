@@ -24,4 +24,5 @@ public class SubLevel {
     
     private String phonetic;
     private Integer durationMinutes;
+    private String contentType;
 }
