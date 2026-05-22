@@ -7,4 +7,6 @@ import java.util.List;
 public interface LevelRepository extends JpaRepository<Level, Long> {
     Level findByLanguageIdAndStageNumberAndLevelNumber(Long languageId, Integer stageNumber, Integer levelNumber);
     List<Level> findByLanguageId(Long languageId);
+    List<Level> findByLanguageIdAndStageNumber(Long languageId, Integer stageNumber);
+    List<Level> findByIsPublishedTrue();
 }
