@@ -16,7 +16,7 @@ public class ContentItemService {
     private final ContentItemRepository contentItemRepository;
 
     public List<ContentItemResponse> getBySubLevel(Long subLevelId) {
-        return contentItemRepository.findBySubLevel_IdOrderByOrderIndex(subLevelId)
+        return contentItemRepository.findBySubLevelIdOrderByOrderIndex(subLevelId)
                 .stream().map(this::toResponse).collect(Collectors.toList());
     }
 
