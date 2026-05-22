@@ -1,0 +1,1327 @@
+{
+  "language_code" : "EN",
+  "stages" : [ {
+    "stage_number" : 2,
+    "levels" : [ {
+      "level_number" : 31,
+      "topic_name" : "MY TYPICAL WEEK",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Weekdays routine\nTalk about a normal weekday from morning to night.\n(What time you wake up, work/study, rest)",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Weekend routine\nCompare what you do on weekends vs weekdays.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Busy vs free days\nDescribe a busy day and a free day.\nSay which one you prefer and why (simple reasons).",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Study/work balance\nExplain how you balance work/study and rest.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Changes in my week\nTalk about changes in your routine recently.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Weekly summary story\nTell the story of one full week in your life.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 32,
+      "topic_name" : "TIME MANAGEMENT",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Morning time\nDescribe your morning routine and how you use time.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Busy hours\nTalk about the busiest time of your day.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Being late / early\nShare experiences of being late or early.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Planning the day\nExplain how you plan your day (or don’t).",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Time problems\nTalk about problems with time (too busy, tired).",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Better time habits\nExplain one habit you want to improve.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 33,
+      "topic_name" : "FOOD, HABITS & LIFESTYLE",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Daily meals\nDescribe what you eat in a normal day.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Eating habits\nTalk about eating times, snacks, drinks.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Cooking vs eating out\nCompare eating at home and eating outside.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Healthy vs unhealthy\nGive examples of healthy and unhealthy habits.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Food changes\nTalk about changes in your eating habits.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Lifestyle reflection\nExplain how food affects your daily life.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 34,
+      "topic_name" : "PLACES I OFTEN GO",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Work/study places\nDescribe places where you work or study.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Food & coffee places\nTalk about cafes or restaurants you like.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Shopping places\nDescribe where you usually shop.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Relaxing places\nTalk about places where you relax.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Why I like them\nExplain why you like these places.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "My daily map\nDescribe your daily movement between places.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 35,
+      "topic_name" : "PEOPLE IN MY DAILY LIFE",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "People at work/school\nTalk about people you meet every day.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Friends & classmates\nDescribe your friends or classmates.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Family contact\nExplain how often you talk to family.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Neighbors\nTalk about your neighbors or people nearby.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Communication style\nDescribe how you communicate with people.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "People summary\nSummarize who is important in your daily life.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 7,
+        "title" : "LEVELS 36–40: EXPERIENCES & STORIES (A2+ → B1-)\n\n\uD83D\uDD35 LEVEL 36 – PAST EXPERIENCES",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 8,
+        "title" : "Good experience\nTell a positive experience from the past.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 9,
+        "title" : "Bad experience\nDescribe a difficult or unpleasant experience.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 10,
+        "title" : "First-time experience\nTalk about doing something for the first time.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 11,
+        "title" : "What I learned\nExplain what you learned from that experience.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 12,
+        "title" : "Feelings then & now\nCompare how you felt then and now.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 13,
+        "title" : "Experience story\nTell the full story clearly.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 37,
+      "topic_name" : "TRAVEL & TRANSPORTATION",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Daily commuting\nDescribe how you travel daily.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Transport problems\nTalk about problems with transport.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Travel preferences\nExplain how you prefer to travel and why.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Past trip\nDescribe a trip you took before.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Travel plans\nTalk about a trip you want to take.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Travel story\nTell a complete travel story.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 38,
+      "topic_name" : "STUDYING & LEARNING",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Subjects I study\nDescribe what you study or learned before.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Learning methods\nExplain how you usually study.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Learning difficulties\nTalk about difficulties in learning.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Studying with others\nCompare studying alone vs with others.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Improving learning\nExplain how you want to improve.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Learning reflection\nReflect on your learning journey.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 39,
+      "topic_name" : "WORK TASKS & RESPONSIBILITIES",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "My main tasks\nDescribe your main daily tasks.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Daily responsibilities\nTalk about responsibilities at work/study.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Easy tasks\nExplain tasks you find easy.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Difficult tasks\nDescribe tasks you find difficult.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Working with others\nTalk about teamwork experiences.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Workday summary\nDescribe one full work/study day.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 40,
+      "topic_name" : "COMMUNICATION PROBLEMS",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Language problems\nTalk about problems speaking or understanding.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Misunderstandings\nDescribe a misunderstanding.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Asking for repetition\nPractice asking people to repeat or explain.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Clarifying meaning\nExplain how you clarify information.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Solving communication issues\nTalk about solutions.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Communication story\nTell a communication problem story.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 7,
+        "title" : "LEVELS 41–45: OPINIONS & CHOICES (B1- Entry)\n\n\uD83D\uDD35 LEVEL 41 – LIKES, DISLIKES & REASONS",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 8,
+        "title" : "Things I like in daily life\nTalk about activities, food, places, or habits you like.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 9,
+        "title" : "Things I dislike\nDescribe things you don’t enjoy in daily life.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 10,
+        "title" : "Giving reasons\nExplain why you like or dislike something (because, so).",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 11,
+        "title" : "Changing preferences\nTalk about something you liked before but not now (or vice versa).",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 12,
+        "title" : "Comparing preferences\nCompare two things you like or dislike (A vs B).",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 13,
+        "title" : "Personal taste summary\nSummarize what your likes say about you.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 42,
+      "topic_name" : "MAKING CHOICES",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Daily small choices\nTalk about choices you make every day (food, clothes, time).",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Study/work choices\nDescribe choices related to study or work.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Choosing between two options\nExplain how you choose A or B.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Simple pros & cons\nTalk about good and bad points of a choice.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Satisfied or regretful choices\nDescribe a choice you feel good or bad about.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Decision story\nTell the story of one decision from start to result.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 43,
+      "topic_name" : "TECHNOLOGY IN DAILY LIFE",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Daily phone use\nDescribe how you use your phone every day.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Apps and tools\nTalk about apps or tools you often use.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Benefits of technology\nExplain how technology helps your life.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Problems with technology\nDescribe problems or stress caused by technology.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Technology habits\nTalk about good or bad tech habits.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Technology reflection\nSummarize how technology affects your life.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 44,
+      "topic_name" : "ENTERTAINMENT & MEDIA",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Movies and series\nDescribe movies or series you watch.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Music and audio\nTalk about music you like and when you listen.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Online entertainment\nDescribe YouTube, TikTok, games, or online content.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Entertainment habits\nExplain how often and when you relax with media.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Watching alone or with others\nCompare entertainment alone vs with friends.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Entertainment story\nTell a story about a memorable entertainment experience.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 45,
+      "topic_name" : "SHOPPING & SERVICES",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Shopping habits\nDescribe what and how often you shop.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Online vs offline shopping\nCompare shopping online and in stores.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Price, quality & choice\nTalk about how you choose products.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Service experiences\nDescribe good or bad service experiences.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Customer problems\nTalk about problems and how you solved them.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Shopping story\nTell a full shopping experience story.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 7,
+        "title" : "LEVELS 46–50: SOCIAL & REAL-LIFE INTERACTION (B1-)\n\uD83D\uDD35 LEVEL 46 – SOCIAL SITUATIONS",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 8,
+        "title" : "Meeting new people\nDescribe how you meet new people.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 9,
+        "title" : "Starting conversations\nTalk about common small talk topics.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 10,
+        "title" : "Keeping conversations going\nExplain how you continue a conversation.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 11,
+        "title" : "Feeling shy or confident\nDescribe your feelings in social situations.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 12,
+        "title" : "Social difficulties\nTalk about problems in social communication.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 13,
+        "title" : "Social experience story\nTell a story about a social situation.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 47,
+      "topic_name" : "WORKING WITH OTHERS",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Group tasks\nDescribe tasks you do in a group.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Roles in teamwork\nExplain your role when working with others.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Teamwork problems\nTalk about problems in teamwork.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Giving opinions politely\nPractice sharing opinions politely.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Solving team issues\nExplain how problems were solved.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Teamwork reflection\nSummarize what you learned about teamwork.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 48,
+      "topic_name" : "DAILY PROBLEMS & SOLUTIONS",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Common daily problems\nDescribe problems at work, study, or home.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Causes of problems\nExplain why these problems happen.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Asking for help\nTalk about how you ask for help.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Giving simple solutions\nSuggest simple ways to solve problems.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Results of solutions\nExplain what happened after solving the problem.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Problem-solving story\nTell a full problem → solution story.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 49,
+      "topic_name" : "HEALTH, STRESS & BALANCE",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Feeling tired or stressed\nDescribe when and why you feel tired.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Sources of stress\nTalk about things that cause stress.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Relaxing activities\nExplain what helps you relax.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Healthy habits\nDescribe habits for better health.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Work–life balance\nTalk about balancing work/study and rest.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Health reflection\nSummarize your health and balance situation.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 50,
+      "topic_name" : "PLANS & DECISIONS",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Short-term plans\nDescribe plans for this week or month.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Changing plans\nTalk about plans that changed.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Planning with others\nExplain how you plan with friends or colleagues.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Difficult plans\nDescribe plans that are hard to make.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Results of planning\nTalk about success or failure of plans.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Planning summary\nSummarize your planning style.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 7,
+        "title" : "LEVELS 51–55: CONNECTED SPEECH & MEANING (B1-)",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 51,
+      "topic_name" : "LIFE CHANGES",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Life before\nDescribe your life in the past.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Life now\nTalk about your current life.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Big changes\nDescribe one important life change.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Small daily changes\nTalk about small changes in habits.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Positive & negative changes\nCompare good and bad changes.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Life change story\nTell the story of a life change.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 52,
+      "topic_name" : "GOALS & MOTIVATION",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Personal goals\nDescribe goals in your personal life.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Study or work goals\nTalk about career or study goals.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Motivation sources\nExplain what motivates you.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Difficulties and obstacles\nTalk about problems in reaching goals.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Staying motivated\nDescribe how you keep going.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Goal reflection\nSummarize your goals and motivation.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 53,
+      "topic_name" : "DAILY LIFE COMPARISONS",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Daily routines comparison\nCompare your life with others’.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "City vs quiet life\nCompare different living styles.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Work/study styles\nCompare ways of working or studying.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Past vs present\nCompare your past and present life.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Preferences\nExplain which you prefer and why.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Comparison summary\nSummarize your comparisons.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 54,
+      "topic_name" : "GIVING SIMPLE ADVICE",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Common problems\nDescribe common problems people have.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Giving advice\nGive advice using should / can.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Advice to friends\nTalk about advice you gave or received.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Good vs bad advice\nCompare helpful and unhelpful advice.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Following advice\nTalk about results of following advice.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Advice role-play\nSimulate giving advice in a situation.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 55,
+      "topic_name" : "PROBLEM-SOLVING TALK",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Explaining a problem clearly\nDescribe a problem step by step.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Causes of the problem\nExplain why it happened.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Possible solutions\nSuggest different solutions.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Choosing a solution\nExplain why you chose one solution.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Results\nDescribe the outcome.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Problem case story\nTell the full problem-solving story.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 7,
+        "title" : "LEVELS 56–60: B1- THRESHOLD SPEAKING",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 56,
+      "topic_name" : "WORK & STUDY EXPERIENCES",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Best experiences\nTalk about a positive work/study experience.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Difficult moments\nDescribe a challenging situation.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Mistakes and learning\nTalk about mistakes you made.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "People involved\nDescribe people in that experience.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Changes after experience\nExplain how you changed.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Experience summary\nSummarize the experience.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 57,
+      "topic_name" : "OPINIONS ABOUT DAILY LIFE",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Work vs study life\nShare opinions on work and study.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Busy vs relaxed life\nCompare two lifestyles.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Online vs offline life\nTalk about modern life.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Good and bad points\nExplain advantages and disadvantages.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Personal opinion\nShare your preference.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Opinion reflection\nSummarize your views.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 58,
+      "topic_name" : "EXPLAINING IDEAS CLEARLY",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Explaining routines\nExplain how you do something daily.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Explaining a process\nDescribe steps of a simple process.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Giving examples\nSupport ideas with examples.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Clarifying meaning\nPractice making ideas clear.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Checking understanding\nAsk if others understand.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Clear explanation story\nExplain something from start to end.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 59,
+      "topic_name" : "PREPARING FOR THE FUTURE",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Future study or work ideas\nTalk about future directions.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "Skills to learn\nDescribe skills you want to improve.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "Possible challenges\nTalk about future difficulties.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "Preparation plans\nExplain how you prepare.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "Hope and worries\nShare hopes and worries.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Future vision talk\nDescribe your future life.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    }, {
+      "level_number" : 60,
+      "topic_name" : "MY LIFE, MY VOICE (STAGE EXIT)",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "My past\nTalk about where you started.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 2,
+        "title" : "My present\nDescribe your current life.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 3,
+        "title" : "My strengths\nTalk about what you do well.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 4,
+        "title" : "My challenges\nDescribe difficulties you face.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 5,
+        "title" : "My future direction\nTalk about where you are going.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 6,
+        "title" : "Full life narrative\nTell your life story confidently.",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 7,
+        "title" : "\uD83C\uDFAF Why this STAGE 2 design works for LISA",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 8,
+        "title" : "Strong continuity from Stage 1",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 9,
+        "title" : "Real-life relevance (work + student life)",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 10,
+        "title" : "Emotionally safe but cognitively richer",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 11,
+        "title" : "Perfect for role-play + AI prompts",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 12,
+        "title" : "Natural bridge into B1 speaking without pressure",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 13,
+        "title" : "\uD83C\uDFAF STAGE 2 EXIT OUTCOME",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      }, {
+        "order_index" : 14,
+        "title" : "✅ Stable A2+ → B1- speaking\n✅ Can speak 90 minutes continuously\n✅ Can explain, compare, give reasons",
+        "content_type" : "SPEAKING_TOPIC",
+        "duration_minutes" : null,
+        "content_items" : [ ]
+      } ]
+    } ]
+  } ]
+}

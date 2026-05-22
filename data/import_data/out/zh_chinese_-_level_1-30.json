@@ -1,0 +1,2143 @@
+{
+  "language_code" : "ZH",
+  "stages" : [ {
+    "stage_number" : 1,
+    "levels" : [ {
+      "level_number" : 1,
+      "topic_name" : "介绍",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Intro",
+        "content_type" : "TEXT",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "你叫什么名字？\nnǐ jiào shénme míngzi?\n\uD83D\uDC49 我叫……\nwǒ jiào ……",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "你是哪国人？\nnǐ shì nǎ guó rén?\n\uD83D\uDC49 我是越南人。\nwǒ shì yuènán rén\n\uD83D\uDC49 我是中国人。\nwǒ shì zhōngguó rén",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "你做什么工作？\nnǐ zuò shénme gōngzuò?\n\uD83D\uDC49 我是学生。\nwǒ shì xuéshēng\n\uD83D\uDC49 我是老师。\nwǒ shì lǎoshī",
+          "phonetic" : null
+        }, {
+          "order_index" : 4,
+          "item_type" : "TEXT",
+          "content_text" : "你在哪儿工作/学习？\nnǐ zài nǎr gōngzuò / xuéxí?\n\uD83D\uDC49 我在学校学习。\nwǒ zài xuéxiào xuéxí\n\uD83D\uDC49 我在学校工作。\nwǒ zài xuéxiào gōngzuò",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 2,
+      "topic_name" : "我的家",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "Intro",
+        "content_type" : "TEXT",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "你家有几口人？\nnǐ jiā yǒu jǐ kǒu rén?\n\uD83D\uDC49 我家有四口人。\nwǒ jiā yǒu sì kǒu rén",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "你爸爸做什么？\nnǐ bàba zuò shénme?\n\uD83D\uDC49 我爸爸是医生。他在医院工作。\nwǒ bàba shì yīshēng. tā zài yīyuàn gōngzuò",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "你爸爸/妈妈今年多大？\nnǐ bàba / māma jīnnián duō dà?\n\uD83D\uDC49 他/她今年……岁。\ntā jīnnián …… suì",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 3,
+      "topic_name" : "我的朋友",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你有好朋友吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我有一个好朋友。\nwǒ yǒu yí gè hǎo péngyou",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我有很多朋友。\nwǒ yǒu hěn duō péngyou",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "他/她是哪国人？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 他/她是越南人。\ntā shì yuènán rén",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 他/她是中国人。\ntā shì zhōngguó rén",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "他/她叫什么名字？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 她叫……\ntā jiào ……",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 4,
+        "title" : "他/她今年多大？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 她今年……岁。\ntā jīnnián …… suì",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 5,
+        "title" : "他/她是学生吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 是，他/她是学生。\nshì, tā shì xuéshēng",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不是，她不是学生。他/她是……\nbú shì, tā bú shì xuéshēng. tā shì ……",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 6,
+        "title" : "他/她在哪儿学习/工作？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 他/她在学校学习。\ntā zài xuéxiào xuéxí",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 他/她在公司工作。\ntā zài gōngsī gōngzuò",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 7,
+        "title" : "你们做什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我们一起学习汉语。\nwǒmen yìqǐ xuéxí hànyǔ",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我们一起吃饭。\nwǒmen yìqǐ chīfàn",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我们一起去看电影。\nwǒmen yìqǐ qù kàn diànyǐn",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 4,
+      "topic_name" : "李老师的女儿",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "李老师的女儿叫什么名字？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 她叫……\ntā jiào ……",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "她今年多大？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 她今年……岁。\ntā jīnnián …… suì",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "她做什么工作？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49她是学生。\ntā shì xuéshēng",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49她是……\ntā shì ……",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 4,
+        "title" : "她在哪儿学习/工作？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 她在学校学习。\ntā zài xuéxiào xuéxí",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 她在公司工作。\ntā zài gōngsī gōngzuò",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 5,
+        "title" : "你知道李老师的女儿喜欢什么吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不知道。\nbù zhīdào",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我知道，她喜欢……\nwǒ zhīdào, tā xǐhuan ……",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 5,
+      "topic_name" : "我的学校",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你的学校大吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 很大。\nhěn dà",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不太大。\nbú tài dà",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "你几点去学校？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 上午八点。\nshàngwǔ bā diǎn",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 上午九点。\nshàngwǔ jiǔ diǎn",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你喜欢什么学什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢学汉语。\nwǒ xǐhuān xué hànyǔ",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢英学语。\nwǒ xǐhuān xué yīngyǔ.",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 4,
+        "title" : "你的学校有多少学生？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有很多学生。\nyǒu hěn duō xuéshēng",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有一千多个学生。\nyǒu yì qiān duō gè xuéshēng",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 5,
+        "title" : "你的学校有哪国老师？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有中国老师。\nyǒu zhōngguó lǎoshī",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 也有越南老师。\nyě yǒu yuènán lǎoshī",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 6,
+        "title" : "你的学校有哪国学生？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有越南学生。\nyǒu yuènán xuéshēng",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 也有中国学生。\nyě yǒu zhōngguó xuéshēng",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 7,
+        "title" : "你的学校里有商店吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有。\nyǒu",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 没有。\nméi yǒu",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 8,
+        "title" : "学校的前面有什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有咖啡店。\nyǒu kāfēidiàn",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有书店。\nyǒu shūdiàn",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有商店。\nyǒu shāngdiàn",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 9,
+        "title" : "你爱你的学校吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 爱。\nài",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 很爱。\nhěn ài",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 还可以。\nhái kěyǐ",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 6,
+      "topic_name" : "东西在哪儿？",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你的电脑/汉语书/杯子在哪儿？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我的电脑在桌子上。\nwǒ de diànnǎo zài zhuōzi shàng",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我的汉语书在桌子上。\nwǒ de hànyǔ shū zài zhuōzi shàng",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我的杯子在椅子下面。\nwǒ de bēizi zài yǐzi xiàmiàn",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "桌子上有什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 桌子上有一本书和一台电脑。\nzhuōzi shàng yǒu yì běn shū hé yì tái diànnǎo",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "桌子上有汉语书吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有。\nyǒu",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 没有。\nméi yǒu",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 7,
+      "topic_name" : "喝茶",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你喜欢喝哪国茶？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢中国茶。\nwǒ xǐhuān zhōngguó chá",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢越南茶。\nwǒ xǐhuān yuènán chá",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "哪种茶好喝？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 中国茶很好喝。\nzhōngguó chá hěn hǎohē",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 越南茶很好喝。\nyuènán chá hěn hǎohē",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你什么时候喝茶？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我上午喝茶。\nwǒ shàngwǔ hē chá",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我中午喝茶。\nwǒ zhōngwǔ hē chá",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我吃饭后喝茶。\nwǒ chīfàn hòu hē chá",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 4,
+        "title" : "你和谁喝茶？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我和朋友一起喝茶。\nwǒ hé péngyou yìqǐ hē chá",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我和爸爸一起喝茶。\nwǒ hé bàba yìqǐ hē chá",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 8,
+      "topic_name" : "你喜欢做什么？",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你喜欢做什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢看电影。\nwǒ xǐhuān kàn diànyǐng",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢看电视。\nwǒ xǐhuān kàn diànshì",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢去旅游。\nwǒ xǐhuān qù lǚyóu",
+          "phonetic" : null
+        }, {
+          "order_index" : 4,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢看书。\nwǒ xǐhuān kàn shū",
+          "phonetic" : null
+        }, {
+          "order_index" : 5,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢做越南菜。\nwǒ xǐhuān zuò yuènán cài",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "为什么喜欢？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 因为很有意思。\nyīnwèi hěn yǒuyìsi",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 因为看电视、看书对学习汉语有帮助。\nyīnwèi kàn diànshì, kàn shū duì xuéxí hànyǔ yǒu bāngzhù",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你什么时候看电影/看电视/看书？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 星期六/星期天。\nxīngqīliù / xīngqītiān",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 上午/中午/下午/晚上。\nshàngwǔ / zhōngwǔ / xiàwǔ / wǎnshang",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有时间的时候。\nyǒu shíjiān de shíhou",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 9,
+      "topic_name" : "你每天做什么",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你几点起床？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我七点起床。\nwǒ qī diǎn qǐchuáng",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我六点起床。\nwǒ liù diǎn qǐchuáng",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "你早上做什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我吃早饭。\nwǒ chī zǎofàn",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我去学校。\nwǒ qù xuéxiào",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你早上/中午/晚上几点吃饭？在哪儿吃？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我中午十一点吃饭。\nwǒ zhōngwǔ shíyī diǎn chīfàn",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我在家/学校吃饭。\nwǒ zài jiā / xuéxiào chīfàn",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 4,
+        "title" : "晚上做什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我看书。\nwǒ kàn shū",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我看电视。\nwǒ kàn diànshì",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我学习汉语。\nwǒ xuéxí hànyǔ",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 5,
+        "title" : "你几点睡觉？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我十点睡觉。\nwǒ shí diǎn shuìjiào",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我十一点睡觉。\nwǒ shíyī diǎn shuìjiào",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "10． 吃饭",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 6,
+        "title" : "你喜欢吃什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢吃米饭。\nwǒ xǐhuān chī mǐfàn",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢吃面条。\nwǒ xǐhuān chī miàntiáo",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢吃羊肉。\nwǒ xǐhuān chī yángròu",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 7,
+        "title" : "你会做什么菜？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我会做越南菜/中国菜/美国菜。\nwǒ huì zuò yuènán cài / zhōngguó cài / měiguó cài",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我不会做饭。\nwǒ bú huì zuòfàn",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 8,
+        "title" : "你家谁做饭？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我做饭。\nwǒ zuòfàn",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我妈妈做饭。\nwǒ māma zuòfàn",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 9,
+        "title" : "你在哪儿吃？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我在家吃。\nwǒ zài jiā chī",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我在外面吃。\nwǒ zài wàimiàn chī",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 10,
+        "title" : "你饭后吃水果吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 吃饭后，我吃水果。\nchīfàn hòu, wǒ chī shuǐguǒ",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 吃饭后，我不吃水果。\nchīfàn hòu, wǒ bù chī shuǐguǒ",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 11,
+      "topic_name" : "买东西",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你经常去哪儿买东西？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我去商店买东西。\nwǒ qù shāngdiàn mǎi dōngxi",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我在网上买东西。\nwǒ zài wǎngshàng mǎi dōngxi",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "网上：wǎngshàng：trên mạng ( online)",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "你喜欢买什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢买衣服/手表。\nwǒ xǐhuān mǎi yīfu / shǒubiǎo",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢买好吃的东西。\nwǒ xǐhuān mǎi hǎochī de dōngxi",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你什么时候去买东西？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 星期六/星期天。\nxīngqīliù / xīngqītiān",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 上午/中午/下午/晚上。\nshàngwǔ / zhōngwǔ / xiàwǔ / wǎnshang",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 4,
+        "title" : "你喜欢和谁去买东西？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 和爸爸、妈妈、朋友、同学。\nhé bàba, māma, péngyou, tóngxué",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : " 12. 时间",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 5,
+        "title" : "今天几月几号？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 今天四月六号。\njīntiān sì yuè liù hào",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 6,
+        "title" : "现在几点？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 现在下午三点。\nxiànzài xiàwǔ sān diǎn",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 现在中午十二点半。\nxiànzài zhōngwǔ shí'èr diǎn bàn",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 7,
+        "title" : "你几点起床/睡觉/吃早饭/午饭？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我十一点。\nwǒ shíyī diǎn",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我十点。\nwǒ shí diǎn",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 8,
+        "title" : "你爸爸/妈妈的生日是几月几号？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 是……月……号。\nshì …… yuè …… hào",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : " 13. 天气",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 9,
+        "title" : "今天天气怎么样？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 很热。\nhěn rè",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 很冷。\nhěn lěng",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不太热。\nbú tài rè",
+          "phonetic" : null
+        }, {
+          "order_index" : 4,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不太冷。\nbú tài lěng",
+          "phonetic" : null
+        }, {
+          "order_index" : 5,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不冷也不热。\nbù lěng yě bù rè",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 10,
+        "title" : "你喜欢什么天气？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢冷/热的天气。\nwǒ xǐhuān lěng / rè de tiānqì",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢晴天。\nwǒ xǐhuān qíngtiān",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 11,
+        "title" : "下雨天你做什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我在家看电影。\nwǒ zài jiā kàn diànyǐng",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我睡觉。\nwǒ shuìjiào",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 14,
+      "topic_name" : "怎么去？",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你会开车吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我会开车。\nwǒ huì kāichē",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我不会开车。\nwǒ bú huì kāichē",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "你怎么去学校/北京/…？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我坐出租车去。\nwǒ zuò chūzūchē qù",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我坐公共汽车去。\nwǒ zuò gōnggòngqìchē qù",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "要多长时间？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 要二十分钟。\nyào èrshí fēnzhōng",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 要一个小时。\nyào yí gè xiǎoshí",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 4,
+        "title" : "你为什么不开车来学校？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我不会开车。\nwǒ bú huì kāichē",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 开车太慢了，路上的车太多了。\nkāichē tài màn le, lù shang de chē tài duō le",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 15,
+      "topic_name" : "看电影",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你喜欢看电影吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 很喜欢。\nhěn xǐhuān",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不喜欢。\nbù xǐhuān",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "你喜欢哪国电影？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢中国电影。\nwǒ xǐhuān zhōngguó diànyǐng",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢越南电影。\nwǒ xǐhuān yuènán diànyǐng",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你和谁一起看电影？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 和朋友/同学。\nhé péngyou / tóngxué",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 一个人去看电影。\nyí gè rén qù kàn diànyǐng",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 16,
+      "topic_name" : "运动",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你喜欢运动吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 喜欢。\nxǐhuān",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不太喜欢。\nbú tài xǐhuān",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "你喜欢什么运动？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢跑步。\nwǒ xǐhuān pǎobù",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢打篮球。\nwǒ xǐhuān dǎ lánqiú",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我喜欢踢足球。\nwǒ xǐhuān tī zúqiú",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你什么时候去运动？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 每天。\nměitiān",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 星期六/星期天。\nxīngqīliù / xīngqītiān",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 4,
+        "title" : "你为什么喜欢运动？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 因为运动对身体很好。\nyīnwèi yùndòng duì shēntǐ hěn hǎo",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 17,
+      "topic_name" : "工作",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你做什么工作？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我是老师。\nwǒ shì lǎoshī",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我是学生。\nwǒ shì xuéshēng",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "你的工作忙吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 很忙。\nhěn máng",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不太忙。\nbú tài máng",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你每天几点开始工作？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我每天上午八点开始工作。\nwǒ měitiān shàngwǔ bā diǎn kāishǐ gōngzuò",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 4,
+        "title" : "你每天几点回家？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我每天晚上六点回家。\nwǒ měitiān wǎnshang liù diǎn huí jiā",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 5,
+        "title" : "你喜欢你的工作吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 喜欢。\nxǐhuān",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不太喜欢。\nbú tài xǐhuān",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 18,
+      "topic_name" : "学习汉语",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你什么时候开始学习汉语？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我从二十岁的时候开始学习汉语。\nwǒ cóng èrshí suì de shíhou kāishǐ xuéxí hànyǔ",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我从2026年开始学习汉语。\nwǒ cóng èr líng èr liù nián kāishǐ xuéxí hànyǔ",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "你觉得汉语难吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有一点难。\nyǒu yìdiǎn nán",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不太难。\nbú tài nán",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你为什么学汉语？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 因为我在中国公司工作。\nyīnwèi wǒ zài zhōngguó gōngsī gōngzuò",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 因为我想找到好工作。\nyīnwèi wǒ xiǎng zhǎodào hǎo gōngzuò",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 因为我觉得汉语很有意思。\nyīnwèi wǒ juéde hànyǔ hěn yǒuyìsi",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 19,
+      "topic_name" : "打电话",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "请问李老师在吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 在。\nzài",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不在。\nbú zài",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "请问你找李老师有什么事情吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我有一个问题想问李老师。\nwǒ yǒu yí gè wèntí xiǎng wèn lǐ lǎoshī",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我要问他……\nwǒ yào wèn tā ……",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你有老师/李月的电话吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有。\nyǒu",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 没有。\nméi yǒu",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 4,
+        "title" : "他/她的电话是多少？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 是……\nshì ……",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 20,
+      "topic_name" : "旅游",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你喜欢旅游吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 喜欢。\nxǐhuān",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不太喜欢。\nbú tài xǐhuān",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "你去过中国吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 去过中国。\nqùguo zhōngguó",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 没去过中国。\nméi qùguo zhōngguó",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你去过哪儿旅游？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我去过中国/美国。\nwǒ qùguo zhōngguó / měiguó",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 4,
+        "title" : "你觉得北京几月最漂亮？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我觉得北京九月最漂亮。\nwǒ juéde běijīng jiǔ yuè zuì piàoliang",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 5,
+        "title" : "你和谁去旅游？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 和家人。\nhé jiārén",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 和朋友。\nhé péngyou",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 21,
+      "topic_name" : "星期天",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "星期天你做什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我在家休息。\nwǒ zài jiā xiūxi",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我去书店看书。\nwǒ qù shūdiàn kàn shū",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我去商店买东西。\nwǒ qù shāngdiàn mǎi dōngxi",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "你和谁一起？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 和朋友。\nhé péngyou",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 和家人。\nhé jiārén",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "星期天你觉得怎么样？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 很开心。\nhěn kāixīn",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 还可以。\nhái kěyǐ",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 22,
+      "topic_name" : "生日",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你的生日是几月几号？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我的生日是五月一号。\nwǒ de shēngrì shì wǔ yuè yī hào",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 是十月二十号。\nshì shí yuè èrshí hào",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 是三月三号。\nshì sān yuè sān hào",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "你生日的时候经常做什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我和朋友一起去玩儿。\nwǒ hé péngyou yìqǐ qù wánr",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我在家过生日。\nwǒ zài jiā guò shēngrì",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我出去吃饭。\nwǒ chūqù chīfàn",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你喜欢过生日吗？为什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我很喜欢，因为很开心。\nwǒ hěn xǐhuān, yīnwèi hěn kāixīn",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 喜欢，可以和朋友一起过生日。\nxǐhuān, kěyǐ hé péngyou yìqǐ guò shēngrì",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 4,
+        "title" : "朋友的生日，你送给他什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 一本书。\nyì běn shū",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 一块手表。\nyí kuài shǒubiǎo",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 一件衣服。\nyí jiàn yīfu",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 23,
+      "topic_name" : "上课",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你每天几点上课？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我八点上课。\nwǒ bā diǎn shàng kè",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我九点开始上课。\nwǒ jiǔ diǎn kāishǐ shàng kè",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "你今天有什么课？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我有汉语课。\nwǒ yǒu hànyǔ kè",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我有英语课。\nwǒ yǒu yīngyǔ kè",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你喜欢上课吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我很喜欢。\nwǒ hěn xǐhuan",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我觉得有点累。\nwǒ juéde yǒu diǎn lèi",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 24,
+      "topic_name" : "你的汉语老师",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你的汉语老师是哪国人？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 他/她是越南人。\ntā shì yuènán rén",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 他/她是中国人。\ntā shì zhōngguó rén",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "他今年多大？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 他今年……岁。\ntā jīnnián …… suì",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你们是从什么时候认识的？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我们是从今年认识的。\nwǒmen shì cóng jīnnián rènshi de",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我们是从2026年认识的。\nwǒmen shì cóng èr líng èr liù nián rènshi de",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 4,
+        "title" : "他/她的工作忙吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 很忙。\nhěn máng",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不太忙。\nbú tài máng",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 5,
+        "title" : "他/她喜欢做什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 喜欢运动/看电影/看电视/看书。\nxǐhuān yùndòng / kàn diànyǐng / kàn diànshì / kàn shū",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 6,
+        "title" : "他/她经常帮助学生学汉语吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 很经常。\nhěn jīngcháng",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不太经常。\nbú tài jīngcháng",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 25,
+      "topic_name" : "生病",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你怎么了？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我身体不太好。\nwǒ shēntǐ bú tài hǎo",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "你去看医生了吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 去了，医生让我吃药。\nqù le, yīshēng ràng wǒ chī yào",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 还没有，我下午去。\nhái méi yǒu, wǒ xiàwǔ qù",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "生病的时候我们要怎么做？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我们要在家休息，多喝水。\nwǒmen yào zài jiā xiūxi, duō hē shuǐ",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我们要吃药，早点睡觉。\nwǒmen yào chī yào, zǎodiǎn shuìjiào",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我们要去医院看医生。\nwǒmen yào qù yīyuàn kàn yīshēng",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 26,
+      "topic_name" : "请帮助我",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你可以帮我吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 可以，我帮你。\nkěyǐ, wǒ bāng nǐ",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 好的，你说吧。\nhǎo de, nǐ shuō ba",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不好意思，我现在有点忙。\nbù hǎoyìsi, wǒ xiànzài yǒu diǎn máng",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "请问，你可以帮我买一杯咖啡/一本书吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 可以。\nkěyǐ",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不好意思，我现在没时间。\nbù hǎoyìsi, wǒ xiànzài méi shíjiān",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "别人帮你的时候，你怎么说？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 谢谢你！\nxièxie nǐ",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 太感谢了！\ntài gǎnxiè le",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 谢谢你的帮助！\nxièxie nǐ de bāngzhù",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 27,
+      "topic_name" : "颜色",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "你最喜欢/不喜欢什么颜色？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 红色/粉色/黑色/白色。\nhóngsè / fěnsè / hēisè / báisè",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "你有红色/粉色/黑色/白色的手表/手机/电脑吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有。\nyǒu",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 没有。\nméi yǒu",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "红色的手表比黑色的手表贵吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 红色的手表比黑色的手表贵一些。\nhóngsè de shǒubiǎo bǐ hēisè de shǒubiǎo guì yìdiǎn",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 红色的手表没有黑色的手表贵。\nhóngsè de shǒubiǎo méi yǒu hēisè de shǒubiǎo guì",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 28,
+      "topic_name" : "问距离（Hỏi khoảng cách）",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "这儿离学校/公司/商店远吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不远，走路十分钟就到。\nbù yuǎn, zǒulù shí fēnzhōng jiù dào",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有一点远，要坐车。\nyǒu yìdiǎn yuǎn, yào zuò chē",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 很远，我每天坐公交车去。\nhěn yuǎn, wǒ měitiān zuò gōngjiāochē qù",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "从你家到学校/公司/商店要多长时间？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 二十分钟。\nèrshí fēnzhōng",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 很近，十分钟就到了。\nhěn jìn, shí fēnzhōng jiù dào le",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你怎么去学校？为什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我坐公交车去，因为有点远。\nwǒ zuò gōngjiāochē qù, yīnwèi yǒu diǎn yuǎn",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我走路去，因为学校离我家很近。\nwǒ zǒulù qù, yīnwèi xuéxiào lí wǒ jiā hěn jìn",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 29,
+      "topic_name" : "你会写汉字吗？",
+      "target_outcome" : null,
+      "incomplete" : false,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "请问，你会写汉字吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 会，我会写一点。\nhuì, wǒ huì xiě yìdiǎn",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "你写汉字写得好吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不太好，还在学习。\nbú tài hǎo, hái zài xuéxí",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我写汉字写得很好。\nwǒ xiě hànzì xiě de hěn hǎo",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "你觉得写汉字难不难？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 很难。\nhěn nán",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有一点难。\nyǒu yìdiǎn nán",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 4,
+        "title" : "为什么？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 因为有很多汉字。\nyīnwèi yǒu hěn duō hànzì",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 5,
+        "title" : "今天的汉字你写完了吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我写完了。\nwǒ xiě wán le",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我还没写完。\nwǒ hái méi xiě wán",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 6,
+        "title" : "这个汉字你会写吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 我会写。\nwǒ huì xiě",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 对不起，这个汉字我会读，不会写。\nduìbuqǐ, zhè ge hànzì wǒ huì dú, bú huì xiě",
+          "phonetic" : null
+        } ]
+      } ]
+    }, {
+      "level_number" : 30,
+      "topic_name" : "问路（Hỏi đường）",
+      "target_outcome" : null,
+      "incomplete" : true,
+      "sub_levels" : [ {
+        "order_index" : 1,
+        "title" : "请问，学校/医院/宾馆在哪儿？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 在前面。\nzài qiánmiàn",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 在那边的路口。\nzài nàbian de lùkǒu",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 在学校/商店旁边。\nzài xuéxiào / shāngdiàn pángbiān",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 2,
+        "title" : "从这儿怎么去学校/商店？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 一直走。\nyìzhí zǒu",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 一直走，到前面的路口再往右走。\nyìzhí zǒu, dào qiánmiàn de lùkǒu zài wǎng yòu zǒu",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 往左走。\nwǎng zuǒ zǒu",
+          "phonetic" : null
+        } ]
+      }, {
+        "order_index" : 3,
+        "title" : "离这儿远吗？",
+        "content_type" : "QUESTION",
+        "duration_minutes" : null,
+        "content_items" : [ {
+          "order_index" : 1,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不远，很近。\nbù yuǎn, hěn jìn",
+          "phonetic" : null
+        }, {
+          "order_index" : 2,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 有一点远。\nyǒu yìdiǎn yuǎn",
+          "phonetic" : null
+        }, {
+          "order_index" : 3,
+          "item_type" : "TEXT",
+          "content_text" : "\uD83D\uDC49 不太远，走路十分钟就到了。\nbú tài yuǎn, zǒulù shí fēnzhōng jiù dào le",
+          "phonetic" : null
+        } ]
+      } ]
+    } ]
+  } ]
+}
