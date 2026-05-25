@@ -28,6 +28,7 @@ public sealed class AuthService(
             return null;
         }
 
+        var isAnonymous = UserRole.ResolveIsAnonymous(user.Role, user.IsAnonymous);
         var token = tokens.CreateAccessToken(user);
         return new LoginResponse(
             token.AccessToken,
@@ -40,7 +41,7 @@ public sealed class AuthService(
                 user.LanguageId,
                 user.DisplayName,
                 user.AvatarUrl,
-                user.IsAnonymous,
+                isAnonymous,
                 user.Balance,
                 user.CreatedAt));
     }

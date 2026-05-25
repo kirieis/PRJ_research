@@ -17,4 +17,10 @@ public sealed class JwtOptions
 
     [Range(1, 1440)]
     public int AccessTokenMinutes { get; init; } = 120;
+
+    [Required]
+    public string RealtimeAudience { get; init; } = "Lucy.Realtime";
+
+    [Range(1, 1440)]
+    public int RealtimeTokenMinutes { get; init; } = 30;
 }
