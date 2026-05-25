@@ -99,7 +99,7 @@ public sealed class AuthService(
             user.LanguageId,
             user.DisplayName,
             user.AvatarUrl,
-            user.IsAnonymous,
+            UserRole.ResolveIsAnonymous(user.Role, user.IsAnonymous),
             user.Balance,
             user.CreatedAt);
     }

@@ -19,4 +19,7 @@ public static class UserRole
 
     public static bool TryNormalize(string role, out string normalizedRole)
         => AllowedRoles.TryGetValue(role.Trim(), out normalizedRole!);
+
+    public static bool ResolveIsAnonymous(string role, bool isAnonymous) =>
+        string.Equals(role, Lucy, StringComparison.OrdinalIgnoreCase) || isAnonymous;
 }
