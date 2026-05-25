@@ -2,12 +2,21 @@ namespace Lucy.AuthService.Models;
 
 public static class UserRole
 {
-    private static readonly HashSet<string> AllowedRoles = new(StringComparer.OrdinalIgnoreCase)
+    public const string Lucy = "LUCY";
+    public const string Pro = "Pro";
+    public const string Super = "Super";
+
+    private static readonly Dictionary<string, string> AllowedRoles = new(StringComparer.OrdinalIgnoreCase)
     {
-        "LUCY",
-        "PRO",
-        "SUPER"
+        ["LUCY"] = Lucy,
+        ["PRO"] = Pro,
+        ["Pro"] = Pro,
+        ["SUPER"] = Super,
+        ["Super"] = Super
     };
 
-    public static bool CanLogin(string role) => AllowedRoles.Contains(role);
+    public static bool CanLogin(string role) => AllowedRoles.ContainsKey(role);
+
+    public static bool TryNormalize(string role, out string normalizedRole)
+        => AllowedRoles.TryGetValue(role.Trim(), out normalizedRole!);
 }

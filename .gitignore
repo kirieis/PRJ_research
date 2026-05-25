@@ -5,6 +5,10 @@
 target/
 *.class
 *.log
+bin/
+obj/
+**/bin/
+**/obj/
 
 # Ignore generated output files during import
 data/import_data/out/
