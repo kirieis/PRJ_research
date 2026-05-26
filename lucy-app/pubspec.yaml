@@ -1,0 +1,44 @@
+# lucy-app/pubspec.yaml
+# ============================================================
+# Project LUCY — Flutter Mobile App
+# ============================================================
+
+name: lucy_app
+description: "LUCY — Language Learning Audio Social Network"
+version: 1.0.0+1
+publish_to: "none"
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # --- State Management ---
+  flutter_bloc: ^8.1.6          # BLoC pattern for predictable state management
+  equatable: ^2.0.5             # Value equality for BLoC states/events
+
+  # --- Networking ---
+  dio: ^5.4.3                   # HTTP client for REST API calls
+  socket_io_client: ^3.0.2      # WebSocket client for realtime features
+
+  # --- Navigation ---
+  go_router: ^14.2.0            # Declarative routing with deep linking support
+
+  # --- Local Storage ---
+  shared_preferences: ^2.2.3    # Key-value persistent storage (tokens, settings)
+
+  # --- UI ---
+  cupertino_icons: ^1.0.8       # iOS-style icons
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0         # Recommended lint rules
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/mock/
