@@ -73,9 +73,12 @@ builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<IUserRepository, SqlUserRepository>();
+builder.Services.AddScoped<IAnonymousRoomRepository, SqlAnonymousRoomRepository>();
 builder.Services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
+builder.Services.AddSingleton<IPersonaGenerator, RandomPersonaGenerator>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAnonymousRoomAccessService, AnonymousRoomAccessService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -220,6 +223,45 @@ auth.MapGet("/me", async (
     .WithSummary("Return the current authenticated user profile.")
     .Produces<AuthUserResponse>()
     .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+auth.MapPost("/anonymous-room-access", async (
+        HttpContext httpContext,
+        AnonymousRoomAccessRequest request,
+        IAnonymousRoomAccessService anonymousRoomAccessService,
+        CancellationToken cancellationToken) =>
+    {
+        if (string.IsNullOrWhiteSpace(request.ChannelName))
+        {
+            return Results.ValidationProblem(new Dictionary<string, string[]>
+            {
+                ["channelName"] = ["channelName is required."]
+            });
+        }
+
+        var userIdClaim = httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+            ?? httpContext.User.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub)?.Value;
+
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Results.Unauthorized();
+        }
+
+        var result = await anonymousRoomAccessService.EnterAnonymousRoomAsync(userId, request, cancellationToken);
+        return result.Status switch
+        {
+            AnonymousRoomAccessStatus.Success => Results.Ok(result.Payload),
+            AnonymousRoomAccessStatus.NotAnonymousEligible => Results.Forbid(),
+            AnonymousRoomAccessStatus.UserNotFound => Results.NotFound(),
+            _ => Results.BadRequest()
+        };
+    })
+    .RequireAuthorization()
+    .WithName("AnonymousRoomAccess")
+    .Produces<AnonymousRoomAccessResponse>()
+    .ProducesValidationProblem()
+    .Produces(StatusCodes.Status401Unauthorized)
+    .Produces(StatusCodes.Status403Forbidden)
+    .Produces(StatusCodes.Status404NotFound);
 
 app.MapHealthChecks("/health")
     .AllowAnonymous();

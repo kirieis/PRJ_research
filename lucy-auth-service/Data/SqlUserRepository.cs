@@ -38,7 +38,7 @@ public sealed class SqlUserRepository(IConfiguration configuration) : IUserRepos
             return null;
         }
 
-        return MapUser(reader);
+        return SqlUserRecordMapper.MapUser(reader);
     }
 
     public async Task<UserAccount?> FindActiveByIdAsync(int id, CancellationToken cancellationToken)
@@ -71,7 +71,7 @@ public sealed class SqlUserRepository(IConfiguration configuration) : IUserRepos
             return null;
         }
 
-        return MapUser(reader);
+        return SqlUserRecordMapper.MapUser(reader);
     }
 
     public async Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken)
@@ -146,7 +146,7 @@ public sealed class SqlUserRepository(IConfiguration configuration) : IUserRepos
                 return null;
             }
 
-            return MapUser(reader);
+            return SqlUserRecordMapper.MapUser(reader);
         }
         catch (SqlException exception) when (exception.Number is 2601 or 2627)
         {
@@ -161,53 +161,5 @@ public sealed class SqlUserRepository(IConfiguration configuration) : IUserRepos
         return connection;
     }
 
-    private static UserAccount MapUser(SqlDataReader reader)
-    {
-        return new UserAccount(
-            reader.GetInt32(reader.GetOrdinal("id")),
-            reader.GetString(reader.GetOrdinal("email")),
-            reader.GetString(reader.GetOrdinal("password_hash")),
-            reader.GetString(reader.GetOrdinal("role")),
-            ReadNullableInt(reader, "language_id"),
-            ReadNullableString(reader, "display_name"),
-            ReadNullableString(reader, "avatar_url"),
-            ReadNullableBool(reader, "is_anonymous") ?? true,
-            ReadNullableDecimal(reader, "balance") ?? 0,
-            ReadNullableBool(reader, "is_active") ?? true,
-            ReadNullableDateTimeOffset(reader, "created_at"));
-    }
-
     private static object ToDbValue<T>(T? value) => value is null ? DBNull.Value : value;
-
-    private static int? ReadNullableInt(SqlDataReader reader, string name)
-    {
-        var ordinal = reader.GetOrdinal(name);
-        return reader.IsDBNull(ordinal) ? null : reader.GetInt32(ordinal);
-    }
-
-    private static string? ReadNullableString(SqlDataReader reader, string name)
-    {
-        var ordinal = reader.GetOrdinal(name);
-        return reader.IsDBNull(ordinal) ? null : reader.GetString(ordinal);
-    }
-
-    private static bool? ReadNullableBool(SqlDataReader reader, string name)
-    {
-        var ordinal = reader.GetOrdinal(name);
-        return reader.IsDBNull(ordinal) ? null : reader.GetBoolean(ordinal);
-    }
-
-    private static decimal? ReadNullableDecimal(SqlDataReader reader, string name)
-    {
-        var ordinal = reader.GetOrdinal(name);
-        return reader.IsDBNull(ordinal) ? null : reader.GetDecimal(ordinal);
-    }
-
-    private static DateTimeOffset? ReadNullableDateTimeOffset(SqlDataReader reader, string name)
-    {
-        var ordinal = reader.GetOrdinal(name);
-        return reader.IsDBNull(ordinal)
-            ? null
-            : new DateTimeOffset(reader.GetDateTime(ordinal), TimeSpan.Zero);
-    }
 }
