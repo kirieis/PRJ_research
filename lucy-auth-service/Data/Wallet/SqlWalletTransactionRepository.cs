@@ -43,6 +43,42 @@ public sealed class SqlWalletTransactionRepository(IConfiguration configuration)
         return SqlWalletRecordMapper.MapTransaction(reader);
     }
 
+    public async Task<WalletTransaction?> FindByIdempotencyKeyForUpdateAsync(
+        string key,
+        SqlConnection connection,
+        SqlTransaction transaction,
+        CancellationToken cancellationToken)
+    {
+        const string sql = """
+            SELECT TOP (1)
+                id,
+                idempotency_key,
+                transaction_type,
+                status,
+                amount,
+                sender_wallet_id,
+                receiver_wallet_id,
+                room_id,
+                gift_type,
+                description,
+                created_at,
+                completed_at
+            FROM dbo.wallet_transactions WITH (UPDLOCK, HOLDLOCK)
+            WHERE idempotency_key = @key;
+            """;
+
+        await using var command = new SqlCommand(sql, connection, transaction);
+        command.Parameters.AddWithValue("@key", key);
+
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        if (!await reader.ReadAsync(cancellationToken))
+        {
+            return null;
+        }
+
+        return SqlWalletRecordMapper.MapTransaction(reader);
+    }
+
     public async Task<WalletTransaction> CreateAsync(
         string idempotencyKey,
         string transactionType,

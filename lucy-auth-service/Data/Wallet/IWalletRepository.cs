@@ -16,6 +16,11 @@ public interface IWalletRepository
     Task<Models.Wallet.Wallet> CreateWalletAsync(int userId, CancellationToken cancellationToken);
 
     /// <summary>
+    /// Return the user's wallet, creating it if missing. Safe for concurrent first use.
+    /// </summary>
+    Task<Models.Wallet.Wallet> EnsureByUserIdAsync(int userId, CancellationToken cancellationToken);
+
+    /// <summary>
     /// Get wallet by ID with UPDLOCK + ROWLOCK for transactional update.
     /// Must be called within an active SqlTransaction.
     /// </summary>

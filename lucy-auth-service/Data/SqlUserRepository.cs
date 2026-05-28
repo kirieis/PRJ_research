@@ -42,4 +42,39 @@ public sealed class SqlUserRepository(IConfiguration configuration) : IUserRepos
 
         return SqlUserRecordMapper.MapUser(reader);
     }
+
+    public async Task<UserAccount?> FindActiveByIdAsync(int userId, CancellationToken cancellationToken)
+    {
+        const string sql = """
+            SELECT TOP (1)
+                id,
+                email,
+                password_hash,
+                role,
+                language_id,
+                display_name,
+                avatar_url,
+                is_anonymous,
+                balance,
+                is_active,
+                created_at
+            FROM dbo.users
+            WHERE id = @userId
+              AND is_active = 1;
+            """;
+
+        await using var connection = new SqlConnection(_connectionString);
+        await connection.OpenAsync(cancellationToken);
+
+        await using var command = new SqlCommand(sql, connection);
+        command.Parameters.AddWithValue("@userId", userId);
+
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        if (!await reader.ReadAsync(cancellationToken))
+        {
+            return null;
+        }
+
+        return SqlUserRecordMapper.MapUser(reader);
+    }
 }

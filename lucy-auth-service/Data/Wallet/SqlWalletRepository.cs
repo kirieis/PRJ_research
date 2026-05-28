@@ -71,6 +71,43 @@ public sealed class SqlWalletRepository(IConfiguration configuration) : IWalletR
         return SqlWalletRecordMapper.MapWallet(reader);
     }
 
+    public async Task<Models.Wallet.Wallet> EnsureByUserIdAsync(int userId, CancellationToken cancellationToken)
+    {
+        const string sql = """
+            MERGE dbo.wallets WITH (HOLDLOCK) AS target
+            USING (SELECT @userId AS user_id) AS source
+                ON target.user_id = source.user_id
+            WHEN NOT MATCHED THEN
+                INSERT (user_id, balance, currency, is_locked)
+                VALUES (source.user_id, 0, 'LUCY_COIN', 0);
+
+            SELECT TOP (1)
+                id,
+                user_id,
+                balance,
+                currency,
+                is_locked,
+                created_at,
+                updated_at
+            FROM dbo.wallets
+            WHERE user_id = @userId;
+            """;
+
+        await using var connection = new SqlConnection(_connectionString);
+        await connection.OpenAsync(cancellationToken);
+
+        await using var command = new SqlCommand(sql, connection);
+        command.Parameters.AddWithValue("@userId", userId);
+
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        if (!await reader.ReadAsync(cancellationToken))
+        {
+            throw new InvalidOperationException($"Failed to ensure wallet for user {userId}.");
+        }
+
+        return SqlWalletRecordMapper.MapWallet(reader);
+    }
+
     public async Task<Models.Wallet.Wallet> GetByIdForUpdateAsync(
         int walletId,
         SqlConnection connection,
@@ -88,7 +125,7 @@ public sealed class SqlWalletRepository(IConfiguration configuration) : IWalletR
                 is_locked,
                 created_at,
                 updated_at
-            FROM dbo.wallets WITH (UPDLOCK, ROWLOCK)
+            FROM dbo.wallets WITH (UPDLOCK, HOLDLOCK, ROWLOCK)
             WHERE id = @walletId;
             """;
 

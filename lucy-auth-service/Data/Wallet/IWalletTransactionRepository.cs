@@ -11,6 +11,15 @@ public interface IWalletTransactionRepository
     Task<WalletTransaction?> FindByIdempotencyKeyAsync(string key, CancellationToken cancellationToken);
 
     /// <summary>
+    /// Check an idempotency key inside a serializable transaction, locking the key range.
+    /// </summary>
+    Task<WalletTransaction?> FindByIdempotencyKeyForUpdateAsync(
+        string key,
+        SqlConnection connection,
+        SqlTransaction transaction,
+        CancellationToken cancellationToken);
+
+    /// <summary>
     /// Insert a new wallet transaction within an active DB transaction.
     /// Returns the inserted record with generated ID.
     /// </summary>

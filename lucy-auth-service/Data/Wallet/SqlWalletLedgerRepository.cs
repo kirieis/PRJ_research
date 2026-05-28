@@ -68,4 +68,44 @@ public sealed class SqlWalletLedgerRepository : IWalletLedgerRepository
 
         return SqlWalletRecordMapper.MapLedgerEntry(reader);
     }
+
+    public async Task<WalletLedgerEntry?> FindByTransactionAndWalletAsync(
+        long transactionId,
+        int walletId,
+        string entryType,
+        SqlConnection connection,
+        SqlTransaction transaction,
+        CancellationToken cancellationToken)
+    {
+        const string sql = """
+            SELECT TOP (1)
+                id,
+                wallet_id,
+                transaction_id,
+                entry_type,
+                amount,
+                balance_before,
+                balance_after,
+                description,
+                created_at
+            FROM dbo.wallet_ledger
+            WHERE transaction_id = @transactionId
+              AND wallet_id = @walletId
+              AND entry_type = @entryType
+            ORDER BY id DESC;
+            """;
+
+        await using var command = new SqlCommand(sql, connection, transaction);
+        command.Parameters.AddWithValue("@transactionId", transactionId);
+        command.Parameters.AddWithValue("@walletId", walletId);
+        command.Parameters.AddWithValue("@entryType", entryType);
+
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        if (!await reader.ReadAsync(cancellationToken))
+        {
+            return null;
+        }
+
+        return SqlWalletRecordMapper.MapLedgerEntry(reader);
+    }
 }

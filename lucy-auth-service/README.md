@@ -38,6 +38,38 @@ Response:
 
 JWT co claim `Role` va `ClaimTypes.Role`, gia tri hop le cho login la `LUCY`, `PRO`, `SUPER`.
 
+## Wallet endpoints
+
+All wallet endpoints require `Authorization: Bearer <accessToken>`.
+
+- `GET /api/wallet/balance`
+- `POST /api/wallet/deposit`
+- `POST /api/wallet/gift`
+
+Gift request:
+
+```json
+{
+  "receiverUserId": 2,
+  "amount": 10,
+  "giftType": "heart",
+  "roomId": 1,
+  "idempotencyKey": "gift-unique-client-key"
+}
+```
+
+Deposit request:
+
+```json
+{
+  "amount": 100,
+  "idempotencyKey": "deposit-unique-client-key",
+  "description": "local test top-up"
+}
+```
+
+Both flows run inside a SQL `SERIALIZABLE` transaction, lock wallet rows with `UPDLOCK/HOLDLOCK`, write immutable ledger entries, and return the committed `transactionId`.
+
 ## Chay service
 
 1. Cai .NET SDK 8.
@@ -53,6 +85,17 @@ dotnet run --project Lucy.AuthService.csproj
 
 Schema goc da co bang `users` voi `is_anonymous BIT DEFAULT 1`, `password_hash`, `role`.
 File `database/001_users_auth_contract.sql` la script bo tro rieng cho auth service, khong thay doi file SQL goc.
+
+Run wallet/audit migrations in order:
+
+```text
+database/003_wallets.sql
+database/004_wallet_transactions.sql
+database/005_wallet_ledger.sql
+database/006_audit_logs.sql
+../data/SQL_database/002_week10_completion_schema.sql
+../data/SQL_database/003_seed_sample_levels.sql
+```
 
 Tao hash BCrypt mau:
 

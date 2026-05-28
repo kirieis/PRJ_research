@@ -19,4 +19,12 @@ public interface IWalletLedgerRepository
         SqlConnection connection,
         SqlTransaction transaction,
         CancellationToken cancellationToken);
+
+    Task<WalletLedgerEntry?> FindByTransactionAndWalletAsync(
+        long transactionId,
+        int walletId,
+        string entryType,
+        SqlConnection connection,
+        SqlTransaction transaction,
+        CancellationToken cancellationToken);
 }
