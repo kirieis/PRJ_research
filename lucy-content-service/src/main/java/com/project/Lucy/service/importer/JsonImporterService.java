@@ -121,6 +121,7 @@ public class JsonImporterService {
                                 dbSubLevel.setOrderIndex(sl.getOrder_index());
                             }
                             dbSubLevel.setTitle(sl.getTitle());
+                            dbSubLevel.setContentType(defaultIfBlank(sl.getContent_type(), "SPEAKING_TOPIC"));
                             dbSubLevel.setDurationMinutes(sl.getDuration_minutes() != null ? sl.getDuration_minutes() : 10);
                             dbSubLevel = subLevelRepo.save(dbSubLevel);
 
@@ -151,5 +152,9 @@ public class JsonImporterService {
         mapper.writerWithDefaultPrettyPrinter().writeValue(reportFile, report);
 
         return report;
+    }
+
+    private String defaultIfBlank(String value, String defaultValue) {
+        return value == null || value.isBlank() ? defaultValue : value;
     }
 }
