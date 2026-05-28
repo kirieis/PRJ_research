@@ -120,10 +120,9 @@ public class JsonImporterService {
                                 dbSubLevel.setLevel(dbLevel);
                                 dbSubLevel.setOrderIndex(sl.getOrder_index());
                             }
-                             dbSubLevel.setTitle(sl.getTitle());
-                             dbSubLevel.setDurationMinutes(sl.getDuration_minutes() != null ? sl.getDuration_minutes() : 10);
-                             dbSubLevel.setContentType(sl.getContent_type() != null ? sl.getContent_type() : "TEXT");
-                             dbSubLevel = subLevelRepo.save(dbSubLevel);
+                            dbSubLevel.setTitle(sl.getTitle());
+                            dbSubLevel.setDurationMinutes(sl.getDuration_minutes() != null ? sl.getDuration_minutes() : 10);
+                            dbSubLevel = subLevelRepo.save(dbSubLevel);
 
                             for (NormalizedMaterial.ContentItem ci : sl.getContent_items()) {
                                 ContentItem dbContent = contentItemRepo.findBySubLevelIdAndOrderIndex(dbSubLevel.getId(), ci.getOrder_index());
