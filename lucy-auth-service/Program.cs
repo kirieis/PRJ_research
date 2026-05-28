@@ -1,3 +1,5 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
 using System.Text;
 using Lucy.AuthService.Contracts;
 using Lucy.AuthService.Data;
@@ -31,19 +33,7 @@ builder.Services
     .AddJwtBearer(options =>
     {
         options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = jwtOptions.Issuer,
-            ValidateAudience = true,
-            ValidAudience = jwtOptions.Audience,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret)),
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.FromMinutes(1),
-            NameClaimType = System.Security.Claims.ClaimTypes.NameIdentifier,
-            RoleClaimType = System.Security.Claims.ClaimTypes.Role
-        };
+        options.TokenValidationParameters = BuildJwtValidationParameters(jwtOptions, includeRealtimeAudience: false);
         options.Events = new JwtBearerEvents
         {
             OnChallenge = async context =>
@@ -148,6 +138,33 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 var auth = app.MapGroup("/api/auth");
+
+app.MapGet("/.well-known/jwks.json", () =>
+    {
+        if (string.IsNullOrWhiteSpace(jwtOptions.RsaPrivateKeyPem))
+        {
+            return Results.NotFound();
+        }
+
+        using var rsa = RSA.Create();
+        rsa.ImportFromPem(jwtOptions.RsaPrivateKeyPem.ToCharArray());
+        var parameters = rsa.ExportParameters(includePrivateParameters: false);
+
+        var jwk = new Dictionary<string, object?>
+        {
+            ["kty"] = "RSA",
+            ["use"] = "sig",
+            ["alg"] = SecurityAlgorithms.RsaSha256,
+            ["kid"] = string.IsNullOrWhiteSpace(jwtOptions.RsaKeyId) ? "1" : jwtOptions.RsaKeyId,
+            ["n"] = Base64UrlEncoder.Encode(parameters.Modulus),
+            ["e"] = Base64UrlEncoder.Encode(parameters.Exponent)
+        };
+
+        return Results.Json(new { keys = new[] { jwk } });
+    })
+    .AllowAnonymous()
+    .WithName("JWKS")
+    .WithSummary("JSON Web Key Set for public key verification.");
 
 auth.MapPost("/register", async (
         RegisterRequest request,
@@ -265,6 +282,38 @@ auth.MapPost("/anonymous-room-access", async (
     .Produces(StatusCodes.Status403Forbidden)
     .Produces(StatusCodes.Status404NotFound);
 
+auth.MapPost("/introspect", (IntrospectRequest request) =>
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var validationParameters = BuildJwtValidationParameters(jwtOptions, includeRealtimeAudience: true);
+
+        try
+        {
+            var principal = handler.ValidateToken(request.Token, validationParameters, out _);
+            var claims = principal.Claims
+                .GroupBy(claim => claim.Type)
+                .ToDictionary(
+                    group => group.Key,
+                    group => group.Last().Value);
+
+            return Results.Ok(new IntrospectResponse(true, claims));
+        }
+        catch (SecurityTokenException)
+        {
+            return Results.Ok(new IntrospectResponse(false, null));
+        }
+        catch (ArgumentException)
+        {
+            return Results.Ok(new IntrospectResponse(false, null));
+        }
+    })
+    .AllowAnonymous()
+    .AddEndpointFilter<ValidationFilter<IntrospectRequest>>()
+    .WithName("Introspect")
+    .WithSummary("Validate an access or realtime JWT and return claims.")
+    .Produces<IntrospectResponse>()
+    .ProducesValidationProblem();
+
 var wallet = app.MapGroup("/api/wallet")
     .RequireAuthorization();
 
@@ -358,4 +407,25 @@ static IResult AuthProblem(int statusCode, string title, string detail, string c
         detail: detail,
         statusCode: statusCode,
         extensions: new Dictionary<string, object?> { ["code"] = code });
+}
+
+static TokenValidationParameters BuildJwtValidationParameters(JwtOptions jwtOptions, bool includeRealtimeAudience)
+{
+    var audiences = includeRealtimeAudience
+        ? new[] { jwtOptions.Audience, jwtOptions.RealtimeAudience }
+        : new[] { jwtOptions.Audience };
+
+    return new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = jwtOptions.Issuer,
+        ValidateAudience = true,
+        ValidAudiences = audiences,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret)),
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.FromMinutes(1),
+        NameClaimType = System.Security.Claims.ClaimTypes.NameIdentifier,
+        RoleClaimType = System.Security.Claims.ClaimTypes.Role
+    };
 }
