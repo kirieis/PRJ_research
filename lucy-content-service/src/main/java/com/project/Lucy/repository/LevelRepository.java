@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
+import java.util.Optional;
 
 public interface LevelRepository extends JpaRepository<Level, Long> {
     Level findByLanguageIdAndStageNumberAndLevelNumber(Long languageId, Integer stageNumber, Integer levelNumber);
@@ -66,4 +67,17 @@ public interface LevelRepository extends JpaRepository<Level, Long> {
             ORDER BY lang.code, l.stage_number, l.level_number
             """, nativeQuery = true)
     List<LevelListView> findPublishedLevelListNative();
+
+    @Query("SELECT l FROM Level l JOIN FETCH l.language WHERE l.language.id = :languageId")
+    List<Level> findByLanguageIdFetch(@Param("languageId") Long languageId);
+
+    @Query("SELECT l FROM Level l JOIN FETCH l.language WHERE l.language.id = :languageId AND l.stageNumber = :stageNumber ORDER BY l.levelNumber ASC")
+    List<Level> findByLanguageIdAndStageNumberFetch(@Param("languageId") Long languageId,
+                                                    @Param("stageNumber") Integer stageNumber);
+
+    @Query("SELECT l FROM Level l JOIN FETCH l.language WHERE l.isPublished = true ORDER BY l.stageNumber ASC, l.levelNumber ASC")
+    List<Level> findAllPublishedFetch();
+
+    @Query("SELECT l FROM Level l JOIN FETCH l.language WHERE l.id = :id")
+    Optional<Level> findByIdFetch(@Param("id") Long id);
 }

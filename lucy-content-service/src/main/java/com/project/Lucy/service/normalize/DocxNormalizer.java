@@ -67,7 +67,7 @@ public class DocxNormalizer {
             String name = file.getName().toLowerCase();
             String langCode = "EN";
             if (name.contains("chinese")) langCode = "ZH";
-            else if (name.contains("janpanes") || name.contains("japan") || name.contains("jp")) langCode = "JP";
+            else if (name.contains("japanese") || name.contains("janpanes") || name.contains("japan") || name.contains("jp")) langCode = "JP";
 
             try {
                 normalizeAndSave(file.getAbsolutePath(), langCode, outputDir);

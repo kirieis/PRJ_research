@@ -128,6 +128,24 @@ CREATE TABLE transactions (
 GO
 
 -- =========================================
+-- ROOM RESOURCES
+-- Mục đích : Lưu trữ URL slide, hình ảnh mà Host ghim lên phòng học.
+-- Dùng bởi : Dev 1 (Tuần 6-7)
+-- =========================================
+CREATE TABLE room_resources (
+    id            INT PRIMARY KEY IDENTITY(1,1),
+    room_id       INT            NOT NULL,
+    resource_url  VARCHAR(1000)  NOT NULL,
+    resource_type VARCHAR(50)    NOT NULL,  -- IMAGE | SLIDE | DOCUMENT
+    title         NVARCHAR(255),
+    order_index   INT            NOT NULL DEFAULT 1,
+    created_at    DATETIME2      DEFAULT GETDATE(),
+
+    CONSTRAINT FK_roomresources_rooms FOREIGN KEY (room_id) REFERENCES rooms(id)
+);
+GO
+
+-- =========================================
 -- INDEXES
 -- =========================================
 CREATE INDEX IX_levels_lang_stage     ON levels       (language_id, stage_number, level_number);
@@ -137,6 +155,7 @@ CREATE INDEX IX_rooms_status          ON rooms        (status);
 CREATE INDEX IX_rooms_host            ON rooms        (host_id);
 CREATE INDEX IX_transactions_user     ON transactions (user_id, type);
 CREATE INDEX IX_transactions_receiver ON transactions (receiver_id);
+CREATE INDEX IX_roomresources_room    ON room_resources(room_id, order_index);
 GO
 
 -- =========================================
@@ -178,10 +197,14 @@ CREATE PROCEDURE sp_GetAISupportByMinute
 AS
 BEGIN
     SET NOCOUNT ON;
+    -- XUẤT ĐỦ CÁC CỘT ĐỂ MAPPING VỚI ENTITY (Bắt buộc cho JPA)
     SELECT TOP 3
         id,
+        sub_level_id,
         question_text,
-        trigger_minute
+        trigger_minute,
+        language_id,
+        order_index
     FROM ai_support_questions
     WHERE sub_level_id   = @sub_level_id
       AND trigger_minute <= @current_minute  -- Chỉ lấy gợi ý đã đến giờ
