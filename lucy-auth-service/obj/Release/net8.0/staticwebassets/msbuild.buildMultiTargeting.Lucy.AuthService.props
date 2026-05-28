@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\Lucy.AuthService.props" />
-</Project>
