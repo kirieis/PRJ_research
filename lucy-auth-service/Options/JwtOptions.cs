@@ -15,16 +15,6 @@ public sealed class JwtOptions
     [Required]
     public string Secret { get; init; } = string.Empty;
 
-    public string? RsaPrivateKeyPem { get; init; }
-
-    public string? RsaKeyId { get; init; }
-
     [Range(1, 1440)]
     public int AccessTokenMinutes { get; init; } = 120;
-
-    [Required]
-    public string RealtimeAudience { get; init; } = "Lucy.Realtime";
-
-    [Range(1, 1440)]
-    public int RealtimeTokenMinutes { get; init; } = 30;
 }
