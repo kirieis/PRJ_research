@@ -74,11 +74,13 @@ builder.Services.AddHealthChecks();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<IUserRepository, SqlUserRepository>();
 builder.Services.AddScoped<IAnonymousRoomRepository, SqlAnonymousRoomRepository>();
+builder.Services.AddScoped<IWalletRepository, SqlWalletRepository>();
 builder.Services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
 builder.Services.AddSingleton<IPersonaGenerator, RandomPersonaGenerator>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAnonymousRoomAccessService, AnonymousRoomAccessService>();
+builder.Services.AddScoped<IWalletService, WalletService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -262,6 +264,79 @@ auth.MapPost("/anonymous-room-access", async (
     .Produces(StatusCodes.Status401Unauthorized)
     .Produces(StatusCodes.Status403Forbidden)
     .Produces(StatusCodes.Status404NotFound);
+
+var wallet = app.MapGroup("/api/wallet")
+    .RequireAuthorization();
+
+wallet.MapPost("/gift", async (
+        HttpContext httpContext,
+        GiftRequest request,
+        IWalletService walletService,
+        CancellationToken cancellationToken) =>
+    {
+        var senderIdClaim = httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+            ?? httpContext.User.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub)?.Value
+            ?? httpContext.User.FindFirst("userId")?.Value;
+
+        if (!int.TryParse(senderIdClaim, out var senderId))
+        {
+            return AuthProblem(
+                StatusCodes.Status401Unauthorized,
+                "Unauthorized.",
+                "The access token does not contain a valid user id.",
+                "AUTH_USER_ID_MISSING");
+        }
+
+        var result = await walletService.GiftAsync(senderId, request, cancellationToken);
+        return result.Status switch
+        {
+            GiftStatus.Success => Results.Ok(result.Response),
+            GiftStatus.InvalidRequest => AuthProblem(
+                StatusCodes.Status400BadRequest,
+                "Invalid gift request.",
+                result.ErrorDetail ?? "Gift request is invalid.",
+                "WALLET_GIFT_INVALID"),
+            GiftStatus.CannotGiftSelf => AuthProblem(
+                StatusCodes.Status400BadRequest,
+                "Invalid gift receiver.",
+                result.ErrorDetail ?? "Sender and receiver must be different users.",
+                "WALLET_GIFT_SELF"),
+            GiftStatus.SenderNotFound => AuthProblem(
+                StatusCodes.Status401Unauthorized,
+                "Unauthorized.",
+                result.ErrorDetail ?? "Sender account is not active.",
+                "WALLET_SENDER_NOT_FOUND"),
+            GiftStatus.ReceiverNotFound => AuthProblem(
+                StatusCodes.Status404NotFound,
+                "Receiver not found.",
+                result.ErrorDetail ?? "Receiver account is not active.",
+                "WALLET_RECEIVER_NOT_FOUND"),
+            GiftStatus.RoomNotFound => AuthProblem(
+                StatusCodes.Status404NotFound,
+                "Room not found.",
+                result.ErrorDetail ?? "Room does not exist.",
+                "WALLET_ROOM_NOT_FOUND"),
+            GiftStatus.InsufficientBalance => AuthProblem(
+                StatusCodes.Status409Conflict,
+                "Insufficient wallet balance.",
+                result.ErrorDetail ?? "Sender wallet balance is not enough for this gift.",
+                "WALLET_INSUFFICIENT_BALANCE"),
+            _ => AuthProblem(
+                StatusCodes.Status500InternalServerError,
+                "Gift transfer failed.",
+                "The server failed to process this gift transfer.",
+                "WALLET_GIFT_FAILED")
+        };
+    })
+    .AddEndpointFilter<ValidationFilter<GiftRequest>>()
+    .WithName("Gift")
+    .WithSummary("Send a wallet gift from the authenticated user to another user.")
+    .Produces<GiftResponse>()
+    .ProducesValidationProblem()
+    .ProducesProblem(StatusCodes.Status400BadRequest)
+    .ProducesProblem(StatusCodes.Status401Unauthorized)
+    .ProducesProblem(StatusCodes.Status404NotFound)
+    .ProducesProblem(StatusCodes.Status409Conflict);
 
 app.MapHealthChecks("/health")
     .AllowAnonymous();

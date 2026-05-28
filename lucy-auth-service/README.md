@@ -7,6 +7,8 @@
 - `POST /api/auth/register`: tao user moi, hash password bang BCrypt, tra JWT.
 - `POST /api/auth/login`: dang nhap user active, verify BCrypt, tra JWT.
 - `GET /api/auth/me`: tra thong tin user hien tai tu Bearer token.
+- `POST /api/auth/anonymous-room-access`: Dev 2, cap realtime token va persona an danh.
+- `POST /api/wallet/gift`: Dev 2, gui gift co idempotency va wallet ledger.
 - `GET /health`: healthcheck chuan cua ASP.NET Core.
 - `GET /health/details`: healthcheck JSON cho demo nhanh.
 - `GET /swagger`: Swagger UI co nut Authorize Bearer token.
@@ -125,6 +127,8 @@ http://localhost:5086/swagger
 
 Schema goc da co bang `users` voi `is_anonymous BIT DEFAULT 1`, `password_hash`, `role`.
 File `database/001_users_auth_contract.sql` la script bo tro rieng cho auth service, khong thay doi file SQL goc.
+Dev 2 bo sung `database/002_persona_realtime_contract.sql` va `database/003_wallet_gift_contract.sql`.
+Dev 6 van phu trach register wallet, `GET /api/wallet/balance`, va deposit.
 
 Tao hash BCrypt mau:
 
