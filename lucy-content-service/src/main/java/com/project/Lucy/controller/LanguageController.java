@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/languages")
+@RequestMapping("/api/v1/languages")
 @RequiredArgsConstructor
 @Tag(name = "Languages", description = "Quản lý ngôn ngữ học")
 public class LanguageController {
