@@ -1,0 +1,1228 @@
+# docs/api-docs.yaml
+# ============================================================
+# Project LUCY — OpenAPI 3.0 Contract
+# Version: 1.0.0 | Week 1-2 Foundation
+# Philosophy: "Zero Conflict" — This schema is the single
+#             source of truth for all mock data and client models.
+# ============================================================
+
+openapi: "3.0.3"
+
+info:
+  title: "LUCY — Language Learning Audio Social Network API"
+  description: |
+    Microservices API contract for Project LUCY.
+    All services (Auth, Content, Realtime) MUST conform to this specification.
+    Mock data files in the Flutter client MUST match these schemas exactly.
+  version: "1.0.0"
+  contact:
+    name: "LUCY Dev Team"
+
+servers:
+  - url: "http://localhost:8080"
+    description: "Local development (API Gateway)"
+  - url: "https://api.lucy-app.dev"
+    description: "Staging environment"
+
+# ============================================================
+# PATHS
+# ============================================================
+paths:
+
+  # ----------------------------------------------------------
+  # AUTH SERVICE
+  # ----------------------------------------------------------
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: "Authenticate user and obtain JWT tokens"
+      description: |
+        Accepts user credentials and returns a JWT access token,
+        refresh token, and the authenticated user's role.
+      operationId: "loginUser"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+            example:
+              username: "learner01"
+              password: "P@ssw0rd!2026"
+      responses:
+        "200":
+          description: "Authentication successful"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+              example:
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                refreshToken: "dGhpcyBpcyBhIHJlZnJlc2ggdG9rZW4..."
+                tokenType: "Bearer"
+                expiresIn: 3600
+                user:
+                  userId: "usr-001"
+                  username: "learner01"
+                  role: "LEARNER"
+        "400":
+          description: "Invalid request body"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                statusCode: 400
+                error: "Bad Request"
+                message: "Username and password are required."
+                timestamp: "2026-05-26T08:00:00.000Z"
+        "401":
+          description: "Invalid credentials"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                statusCode: 401
+                error: "Unauthorized"
+                message: "Invalid username or password."
+                timestamp: "2026-05-26T08:00:00.000Z"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ----------------------------------------------------------
+  # CONTENT SERVICE — File Import
+  # ----------------------------------------------------------
+  /api/v1/import/docx:
+    post:
+      tags:
+        - Content
+      summary: "Import learning content from a DOCX file"
+      description: |
+        Accepts a multipart/form-data upload containing a .docx file.
+        The server parses the document and creates structured learning content.
+      operationId: "importDocx"
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: "The .docx file to import"
+                title:
+                  type: string
+                  description: "Optional title override for the imported content"
+                  example: "Daily Greetings - Module 1"
+      responses:
+        "201":
+          description: "File imported and content created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportResponse"
+              example:
+                importId: "imp-001"
+                fileName: "greetings_module_1.docx"
+                status: "COMPLETED"
+                createdLevelId: "lvl-001"
+                message: "Successfully imported 6 sub-levels."
+                timestamp: "2026-05-26T08:00:00.000Z"
+        "400":
+          description: "Invalid file or unsupported format"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                statusCode: 400
+                error: "Bad Request"
+                message: "Only .docx files are accepted."
+                timestamp: "2026-05-26T08:00:00.000Z"
+        "401":
+          description: "Missing or invalid authentication token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ----------------------------------------------------------
+  # CONTENT SERVICE — Levels
+  # ----------------------------------------------------------
+  /api/v1/levels:
+    get:
+      tags:
+        - Content
+      summary: "Get levels by language, optionally filtered by stage"
+      operationId: "getLevels"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: languageId
+          in: query
+          required: false
+          schema:
+            type: integer
+          example: 1
+        - name: stageNumber
+          in: query
+          required: false
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: "Levels retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Level"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/levels/published:
+    get:
+      tags:
+        - Content
+      summary: "Get all published levels"
+      operationId: "getPublishedLevels"
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: "Published levels retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Level"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/levels/{id}:
+    get:
+      tags:
+        - Content
+      summary: "Get a Level by ID"
+      description: "Returns a single Level object. Sub-levels are fetched separately via /api/v1/levels/{levelId}/sub-levels."
+      operationId: "getLevelById"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Unique identifier of the Level"
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: "Level retrieved successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Level"
+              example:
+                id: 1
+                stageNumber: 1
+                topicName: "Daily Greetings"
+                languageId: 1
+                isPublished: true
+        "401":
+          description: "Missing or invalid authentication token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Level not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                statusCode: 404
+                error: "Not Found"
+                message: "Level not found: 999"
+                timestamp: "2026-05-26T08:00:00.000Z"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/levels/{levelId}/sub-levels:
+    get:
+      tags:
+        - Content
+      summary: "Get sub-levels of a Level"
+      operationId: "getSubLevelsByLevel"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: levelId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: "Sub-levels retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SubLevel"
+              example:
+                - id: 1
+                  topicName: "Greeting Strangers"
+                  durationMinutes: 10
+                  content: "Learn common phrases used when meeting someone for the first time."
+        "404":
+          description: "Level not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/sub-levels/{subLevelId}/content-items:
+    get:
+      tags:
+        - Content
+      summary: "Get content items of a SubLevel"
+      operationId: "getContentItemsBySubLevel"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: subLevelId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: "Content items retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ContentItem"
+        "404":
+          description: "SubLevel not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ----------------------------------------------------------
+  # CONTENT SERVICE — Rooms
+  # ----------------------------------------------------------
+  /api/v1/rooms:
+    get:
+      tags:
+        - Rooms
+      summary: "Get rooms, optionally filtered by level"
+      operationId: "getRooms"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: levelId
+          in: query
+          required: false
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: "Rooms retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Room"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      tags:
+        - Rooms
+      summary: "Create a new room (PRO user only)"
+      operationId: "createRoom"
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomRequest"
+      responses:
+        "201":
+          description: "Room created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Room"
+        "400":
+          description: "Invalid request body"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/rooms/live:
+    get:
+      tags:
+        - Rooms
+      summary: "Get all live rooms"
+      operationId: "getLiveRooms"
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: "Live rooms retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Room"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/rooms/{id}:
+    get:
+      tags:
+        - Rooms
+      summary: "Get room by ID"
+      operationId: "getRoomById"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: "Room retrieved successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Room"
+        "404":
+          description: "Room not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/rooms/{id}/status:
+    patch:
+      tags:
+        - Rooms
+      summary: "Update room status"
+      operationId: "updateRoomStatus"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Status updated successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Room"
+        "404":
+          description: "Room not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/rooms/{id}/current-sub-level:
+    patch:
+      tags:
+        - Rooms
+      summary: "Update current sub-level of a room (called by Dev 4)"
+      operationId: "updateCurrentSubLevel"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Current sub-level updated successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Room"
+        "404":
+          description: "Room not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ----------------------------------------------------------
+  # CONTENT SERVICE — Room Materials (LMS Pro)
+  # ----------------------------------------------------------
+  /api/v1/rooms/{roomId}/materials:
+    get:
+      tags:
+        - Room Materials
+      summary: "Get all materials pinned to a room"
+      operationId: "getRoomMaterials"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: "Materials retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RoomMaterialResponse"
+        "404":
+          description: "Room not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      tags:
+        - Room Materials
+      summary: "Pin a material to a room (PRO user only, max 20MB)"
+      operationId: "pinMaterial"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+                - pinnedBy
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: "PDF, DOCX, or Image file (max 20MB)"
+                pinnedBy:
+                  type: integer
+                  description: "User ID of the person pinning the material"
+                  example: 1
+      responses:
+        "201":
+          description: "Material pinned successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomMaterialResponse"
+        "400":
+          description: "Invalid file type or size"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                statusCode: 400
+                error: "Bad Request"
+                message: "Unsupported file type. Allowed: PDF, DOCX, IMAGE"
+                timestamp: "2026-05-26T08:00:00.000Z"
+        "404":
+          description: "Room not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/rooms/{roomId}/materials/{matId}:
+    delete:
+      tags:
+        - Room Materials
+      summary: "Delete a material from a room (PRO owner or SUPER only)"
+      operationId: "deleteMaterial"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: matId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "204":
+          description: "Material deleted successfully"
+        "404":
+          description: "Material or Room not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ----------------------------------------------------------
+  # CONTENT SERVICE — Podcasts
+  # ----------------------------------------------------------
+  /api/v1/podcasts:
+    get:
+      tags:
+        - Podcasts
+      summary: "Get all public podcasts"
+      operationId: "getAllPublicPodcasts"
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: "Podcasts retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PodcastResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      tags:
+        - Podcasts
+      summary: "Create a new podcast (SUPER user only)"
+      operationId: "createPodcast"
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PodcastRequest"
+      responses:
+        "201":
+          description: "Podcast created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PodcastResponse"
+        "400":
+          description: "Invalid request body"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Creator or Level not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/podcasts/{id}:
+    get:
+      tags:
+        - Podcasts
+      summary: "Get podcast by ID"
+      operationId: "getPodcastById"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: "Podcast retrieved successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PodcastResponse"
+        "404":
+          description: "Podcast not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                statusCode: 404
+                error: "Not Found"
+                message: "Podcast not found: 999"
+                timestamp: "2026-05-26T08:00:00.000Z"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/podcasts/creator/{creatorId}:
+    get:
+      tags:
+        - Podcasts
+      summary: "Get podcasts by creator"
+      operationId: "getPodcastsByCreator"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: creatorId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: "Podcasts retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PodcastResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/podcasts/level/{levelId}:
+    get:
+      tags:
+        - Podcasts
+      summary: "Get public podcasts by level"
+      operationId: "getPodcastsByLevel"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: levelId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: "Podcasts retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PodcastResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+# ============================================================
+# COMPONENTS
+# ============================================================
+components:
+
+  # ----------------------------------------------------------
+  # SECURITY SCHEMES
+  # ----------------------------------------------------------
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "JWT access token obtained from /api/auth/login"
+
+  # ----------------------------------------------------------
+  # SCHEMAS
+  # ----------------------------------------------------------
+  schemas:
+
+    # === AUTH ===
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+          description: "User's unique username"
+          example: "learner01"
+        password:
+          type: string
+          minLength: 8
+          maxLength: 128
+          format: password
+          description: "User's password"
+          example: "P@ssw0rd!2026"
+
+    LoginResponse:
+      type: object
+      required:
+        - accessToken
+        - refreshToken
+        - tokenType
+        - expiresIn
+        - user
+      properties:
+        accessToken:
+          type: string
+          description: "JWT access token"
+        refreshToken:
+          type: string
+          description: "JWT refresh token for obtaining new access tokens"
+        tokenType:
+          type: string
+          enum:
+            - Bearer
+          description: "Token type, always 'Bearer'"
+        expiresIn:
+          type: integer
+          description: "Token expiry duration in seconds"
+          example: 3600
+        user:
+          $ref: "#/components/schemas/AuthUser"
+
+    AuthUser:
+      type: object
+      required:
+        - userId
+        - username
+        - role
+      properties:
+        userId:
+          type: string
+          description: "Unique user identifier"
+          example: "usr-001"
+        username:
+          type: string
+          description: "User's username"
+          example: "learner01"
+        role:
+          type: string
+          enum:
+            - LEARNER
+            - TUTOR
+            - ADMIN
+          description: "User's role in the system"
+          example: "LEARNER"
+
+    # === CONTENT — Import ===
+    ImportResponse:
+      type: object
+      required:
+        - importId
+        - fileName
+        - status
+        - message
+        - timestamp
+      properties:
+        importId:
+          type: string
+          description: "Unique identifier for the import job"
+          example: "imp-001"
+        fileName:
+          type: string
+          description: "Original uploaded file name"
+          example: "greetings_module_1.docx"
+        status:
+          type: string
+          enum:
+            - COMPLETED
+            - FAILED
+            - PROCESSING
+          description: "Import processing status"
+        createdLevelId:
+          type: string
+          nullable: true
+          description: "ID of the Level created from this import (null if failed)"
+          example: "lvl-001"
+        message:
+          type: string
+          description: "Human-readable status message"
+          example: "Successfully imported 6 sub-levels."
+        timestamp:
+          type: string
+          format: date-time
+          description: "ISO 8601 timestamp of the import operation"
+          example: "2026-05-26T08:00:00.000Z"
+
+    # === CONTENT — Level ===
+    Level:
+      type: object
+      required:
+        - id
+        - stageNumber
+        - topicName
+      properties:
+        id:
+          type: integer
+          description: "Unique identifier for the level"
+          example: 1
+        stageNumber:
+          type: integer
+          minimum: 1
+          description: "Stage number in the learning path"
+          example: 1
+        topicName:
+          type: string
+          description: "Display title of the level"
+          example: "Daily Greetings"
+        languageId:
+          type: integer
+          description: "ID of the language this level belongs to"
+          example: 1
+        isPublished:
+          type: boolean
+          description: "Whether this level is published and visible to learners"
+          example: true
+
+    SubLevel:
+      type: object
+      required:
+        - id
+        - topicName
+        - durationMinutes
+      properties:
+        id:
+          type: integer
+          description: "Unique identifier for the sub-level"
+          example: 1
+        topicName:
+          type: string
+          description: "Topic title for this sub-level"
+          example: "Greeting Strangers"
+        durationMinutes:
+          type: integer
+          minimum: 1
+          description: "Duration of this sub-level in minutes"
+          example: 10
+        content:
+          type: string
+          description: "Learning content / instructions for this sub-level"
+          example: "Learn common phrases used when meeting someone for the first time."
+
+    ContentItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        subLevelId:
+          type: integer
+          example: 1
+        content:
+          type: string
+          example: "Hello, nice to meet you!"
+
+    # === CONTENT — Rooms ===
+    Room:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        levelId:
+          type: integer
+          example: 1
+        status:
+          type: string
+          enum:
+            - LIVE
+            - ENDED
+            - SCHEDULED
+          example: "LIVE"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-05-26T08:00:00.000Z"
+
+    RoomRequest:
+      type: object
+      required:
+        - levelId
+      properties:
+        levelId:
+          type: integer
+          example: 1
+
+    # === CONTENT — Room Materials ===
+    RoomMaterialResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        roomId:
+          type: integer
+          example: 1
+        fileUrl:
+          type: string
+          example: "http://localhost:8080/files/abc-123.pdf"
+        fileType:
+          type: string
+          enum:
+            - PDF
+            - DOCX
+            - IMAGE
+          example: "PDF"
+        pinnedBy:
+          type: integer
+          description: "User ID of the person who pinned the material"
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-05-26T08:00:00.000Z"
+
+    # === CONTENT — Podcasts ===
+    PodcastResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Daily Greetings — Episode 1"
+        description:
+          type: string
+          example: "A podcast about common greeting phrases."
+        audioUrl:
+          type: string
+          example: "http://localhost:8080/files/podcast-001.mp3"
+        durationSeconds:
+          type: integer
+          example: 600
+        isPublic:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-05-26T08:00:00.000Z"
+        creator:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            username:
+              type: string
+              example: "super_user_01"
+        level:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            topicName:
+              type: string
+              example: "Daily Greetings"
+            stageNumber:
+              type: integer
+              example: 1
+
+    PodcastRequest:
+      type: object
+      required:
+        - title
+        - audioUrl
+        - durationSeconds
+        - creatorId
+        - levelId
+      properties:
+        title:
+          type: string
+          example: "Daily Greetings — Episode 1"
+        description:
+          type: string
+          example: "A podcast about common greeting phrases."
+        audioUrl:
+          type: string
+          example: "http://localhost:8080/files/podcast-001.mp3"
+        durationSeconds:
+          type: integer
+          example: 600
+        isPublic:
+          type: boolean
+          default: true
+          example: true
+        creatorId:
+          type: integer
+          example: 1
+        levelId:
+          type: integer
+          example: 1
+
+    # === SHARED — Error ===
+    ErrorResponse:
+      type: object
+      required:
+        - statusCode
+        - error
+        - message
+        - timestamp
+      properties:
+        statusCode:
+          type: integer
+          description: "HTTP status code"
+          example: 400
+        error:
+          type: string
+          description: "Short error type description"
+          example: "Bad Request"
+        message:
+          type: string
+          description: "Human-readable error message"
+          example: "The request body is invalid."
+        timestamp:
+          type: string
+          format: date-time
+          description: "ISO 8601 timestamp when the error occurred"
+          example: "2026-05-26T08:00:00.000Z"
