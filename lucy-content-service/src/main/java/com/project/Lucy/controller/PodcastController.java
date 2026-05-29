@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/podcasts")
+@RequestMapping("/api/v1/podcasts")
 @RequiredArgsConstructor
 @Tag(name = "Podcast", description = "APIs for podcast management")
 public class PodcastController {
