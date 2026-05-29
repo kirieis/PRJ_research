@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/rooms")
+@RequestMapping("/api/v1/rooms")
 @RequiredArgsConstructor
 @Tag(name = "Rooms", description = "Quản lý phòng học real-time")
 public class RoomController {
