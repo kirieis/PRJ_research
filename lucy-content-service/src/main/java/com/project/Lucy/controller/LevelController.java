@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/levels")
+@RequestMapping("/api/v1/levels")
 @RequiredArgsConstructor
 @Tag(name = "Levels", description = "Quản lý cấp độ học tập")
 public class LevelController {
