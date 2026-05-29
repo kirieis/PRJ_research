@@ -123,6 +123,7 @@ public class JsonImporterService {
                             dbSubLevel.setTitle(sl.getTitle());
                             dbSubLevel.setContentType(defaultIfBlank(sl.getContent_type(), "SPEAKING_TOPIC"));
                             dbSubLevel.setDurationMinutes(sl.getDuration_minutes() != null ? sl.getDuration_minutes() : 10);
+                            dbSubLevel.setContentType(sl.getContent_type() != null ? sl.getContent_type() : "GENERAL");
                             dbSubLevel = subLevelRepo.save(dbSubLevel);
 
                             for (NormalizedMaterial.ContentItem ci : sl.getContent_items()) {
