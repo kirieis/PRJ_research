@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/levels/{levelId}/sub-levels")
+@RequestMapping("/api/v1/levels/{levelId}/sub-levels")
 @RequiredArgsConstructor
 @Tag(name = "SubLevels", description = "Các chặng trong mỗi Level")
 public class SubLevelController {
