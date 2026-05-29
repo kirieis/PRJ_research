@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.File;
 
 @RestController
-@RequestMapping("/api/import")
+@RequestMapping("/api/v1/import")
 @RequiredArgsConstructor
 @Tag(name = "Import", description = "API quản lý việc import dữ liệu docx vào database")
 public class ImportController {
@@ -26,7 +26,7 @@ public class ImportController {
     @Operation(summary = "Kích hoạt pipeline import dữ liệu docx vào database")
     public ResponseEntity<?> runImport() {
         try {
-            String[] paths = {"data/import_data", "../data/import_data", "PRJ_research-main/data/import_data"};
+            String[] paths = { "data/import_data", "../data/import_data", "PRJ_research-main/data/import_data" };
             String baseDir = "data/import_data";
             for (String p : paths) {
                 if (new File(p).exists()) {
@@ -40,7 +40,8 @@ public class ImportController {
 
             File dir = new File(inputDir);
             if (!dir.exists()) {
-                return ResponseEntity.badRequest().body("⚠ Thư mục " + dir.getAbsolutePath() + " không tồn tại. Bỏ qua pipeline.");
+                return ResponseEntity.badRequest()
+                        .body("⚠ Thư mục " + dir.getAbsolutePath() + " không tồn tại. Bỏ qua pipeline.");
             }
 
             System.out.println("=== BƯỚC 1: NORMALIZE DOCX -> JSON ===");
