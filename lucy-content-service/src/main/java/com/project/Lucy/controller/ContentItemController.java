@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/sub-levels/{subLevelId}/content-items")
+@RequestMapping("/api/v1/sub-levels/{subLevelId}/content-items")
 @RequiredArgsConstructor
 @Tag(name = "ContentItems", description = "Nội dung chi tiết trong mỗi SubLevel")
 public class ContentItemController {
