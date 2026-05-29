@@ -44,4 +44,21 @@ public class RoomController {
     public RoomResponse updateStatus(@PathVariable Long id, @RequestParam String status) {
         return roomService.updateStatus(id, status);
     }
+    // Thêm vào RoomController.java
+
+    // Lấy thông tin 1 phòng theo ID (Dev 4 gọi khi user join)
+    @GetMapping("/{id}")
+    @Operation(summary = "Lấy thông tin phòng theo ID")
+    public RoomResponse getById(@PathVariable Long id) {
+        return roomService.getById(id);
+    }
+
+    // Cập nhật sub-level hiện tại trong phòng (Dev 4 gọi khi chuyển bài)
+    @PatchMapping("/{id}/current-sub-level")
+    @Operation(summary = "Cập nhật sub-level đang học trong phòng")
+    public RoomResponse updateCurrentSubLevel(
+            @PathVariable Long id,
+            @RequestParam Long subLevelId) {
+        return roomService.updateCurrentSubLevel(id, subLevelId);
+    }
 }
