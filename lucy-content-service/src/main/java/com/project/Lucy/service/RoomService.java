@@ -4,9 +4,11 @@ import com.project.Lucy.dto.request.RoomRequest;
 import com.project.Lucy.dto.response.RoomResponse;
 import com.project.Lucy.entity.Level;
 import com.project.Lucy.entity.Room;
+import com.project.Lucy.entity.SubLevel;
 import com.project.Lucy.entity.User;
 import com.project.Lucy.repository.LevelRepository;
 import com.project.Lucy.repository.RoomRepository;
+import com.project.Lucy.repository.SubLevelRepository;
 import com.project.Lucy.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
     private final LevelRepository levelRepository;
+    private final SubLevelRepository subLevelRepository;
 
     public List<RoomResponse> getLiveRooms() {
         return roomRepository.findByStatus("LIVE")
@@ -74,5 +77,20 @@ public class RoomService {
         dto.setMaxParticipants(room.getMaxParticipants());
         dto.setCreatedAt(room.getCreatedAt());
         return dto;
+    }
+
+    public RoomResponse getById(Long roomId) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found: " + roomId));
+        return toResponse(room);
+    }
+
+    public RoomResponse updateCurrentSubLevel(Long roomId, Long subLevelId) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found: " + roomId));
+        SubLevel subLevel = subLevelRepository.findById(subLevelId)
+                .orElseThrow(() -> new RuntimeException("SubLevel not found: " + subLevelId));
+        room.setCurrentSubLevel(subLevel);
+        return toResponse(roomRepository.save(room));
     }
 }
