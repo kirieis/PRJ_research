@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/rooms/{roomId}/materials")
+@RequestMapping("/api/v1/rooms/{roomId}/materials")
 @RequiredArgsConstructor
 @Tag(name = "Room Materials", description = "APIs for pinning and managing room materials (LMS Pro)")
 public class RoomMaterialController {
