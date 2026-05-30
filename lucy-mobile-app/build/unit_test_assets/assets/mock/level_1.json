@@ -1,0 +1,79 @@
+{
+  "levelId": "lvl-001",
+  "stage": 1,
+  "title": "Daily Greetings",
+  "subLevels": [
+    {
+      "subLevelId": "sl-001",
+      "topic": "Greeting Strangers",
+      "durationMinutes": 10,
+      "content": "Learn common phrases used when meeting someone for the first time. Focus on polite openers and culturally appropriate body language cues.",
+      "aiPrompts": [
+        "How would you greet a stranger at a bus stop?",
+        "Practice introducing yourself to a new classmate.",
+        "Role-play: You meet your neighbor for the first time.",
+        "What cultural differences exist in greeting strangers?"
+      ]
+    },
+    {
+      "subLevelId": "sl-002",
+      "topic": "Morning & Evening Greetings",
+      "durationMinutes": 10,
+      "content": "Master time-specific greetings such as 'Good morning', 'Good afternoon', and 'Good evening' across formal and informal registers.",
+      "aiPrompts": [
+        "Greet your coworker when arriving at the office in the morning.",
+        "How do you say goodbye to a friend after a late dinner?",
+        "Practice switching between formal and casual morning greetings.",
+        "Role-play: Greet your teacher at the start of class."
+      ]
+    },
+    {
+      "subLevelId": "sl-003",
+      "topic": "Asking How Someone Is Doing",
+      "durationMinutes": 10,
+      "content": "Go beyond 'How are you?' to learn natural follow-up phrases and responses that show genuine interest in a conversation partner.",
+      "aiPrompts": [
+        "Ask a friend how their weekend was using casual language.",
+        "Role-play: You meet a colleague who looks tired — ask with empathy.",
+        "Practice three different ways to respond to 'How are you?'",
+        "How would you check on someone who has been sick?"
+      ]
+    },
+    {
+      "subLevelId": "sl-004",
+      "topic": "Introducing Yourself",
+      "durationMinutes": 10,
+      "content": "Build a confident self-introduction covering your name, origin, hobbies, and reason for learning the language.",
+      "aiPrompts": [
+        "Introduce yourself at a language exchange meetup.",
+        "Role-play: You are at a job interview — give a 30-second self-introduction.",
+        "Practice introducing yourself and asking the other person about their hobbies.",
+        "Create a short self-introduction for an online learning community."
+      ]
+    },
+    {
+      "subLevelId": "sl-005",
+      "topic": "Introducing Others",
+      "durationMinutes": 10,
+      "content": "Learn how to introduce two people to each other in social and professional settings, including polite phrasing and context clues.",
+      "aiPrompts": [
+        "Introduce your best friend to your parents at a family dinner.",
+        "Role-play: Introduce a new team member during a work meeting.",
+        "Practice introducing two friends who share a common hobby.",
+        "How would you introduce a guest speaker at a school event?"
+      ]
+    },
+    {
+      "subLevelId": "sl-006",
+      "topic": "Saying Goodbye",
+      "durationMinutes": 10,
+      "content": "Explore various ways to end a conversation gracefully — from casual 'See you later!' to formal farewells and well-wishes.",
+      "aiPrompts": [
+        "Say goodbye to a friend you will see again tomorrow.",
+        "Role-play: End a phone call with a business partner politely.",
+        "Practice saying goodbye at the end of a language class.",
+        "How do you wish someone well before they go on a long trip?"
+      ]
+    }
+  ]
+}
