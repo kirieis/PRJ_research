@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using Lucy.AuthService.Models;
 using Lucy.AuthService.Options;
 using Microsoft.Extensions.Options;
@@ -8,7 +7,10 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Lucy.AuthService.Services;
 
-public sealed class JwtTokenService(IOptions<JwtOptions> options, TimeProvider timeProvider) : IJwtTokenService
+public sealed class JwtTokenService(
+    IOptions<JwtOptions> options,
+    IJwtKeyProvider keyProvider,
+    TimeProvider timeProvider) : IJwtTokenService
 {
     private readonly JwtOptions _options = options.Value;
 
@@ -38,8 +40,7 @@ public sealed class JwtTokenService(IOptions<JwtOptions> options, TimeProvider t
         DateTimeOffset now,
         DateTimeOffset expiresAt)
     {
-        var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Secret));
-        var credentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+        var credentials = new SigningCredentials(keyProvider.SigningKey, keyProvider.Algorithm);
 
         return new JwtSecurityToken(
             issuer: _options.Issuer,

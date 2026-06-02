@@ -12,8 +12,12 @@ public sealed class JwtOptions
     [Required]
     public string Audience { get; init; } = string.Empty;
 
+    public string? RsaPrivateKeyPem { get; init; }
+
+    public string? RsaPrivateKeyPath { get; init; }
+
     [Required]
-    public string Secret { get; init; } = string.Empty;
+    public string RsaKeyId { get; init; } = "lucy-auth-rs256-main";
 
     [Range(1, 1440)]
     public int AccessTokenMinutes { get; init; } = 120;

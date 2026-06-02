@@ -1,4 +1,4 @@
-using System.Text;
+using System.Threading.RateLimiting;
 using Lucy.AuthService.Contracts;
 using Lucy.AuthService.Contracts.Wallet;
 using Lucy.AuthService.Data;
@@ -7,7 +7,8 @@ using Lucy.AuthService.Options;
 using Lucy.AuthService.Services;
 using Lucy.AuthService.Services.Wallet;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,9 @@ builder.Services
     .AddOptions<JwtOptions>()
     .Bind(builder.Configuration.GetSection(JwtOptions.SectionName))
     .ValidateDataAnnotations()
-    .Validate(options => Encoding.UTF8.GetByteCount(options.Secret) >= 32, "JWT secret must be at least 32 bytes.")
+    .Validate(options => !string.IsNullOrWhiteSpace(options.RsaPrivateKeyPem)
+                         || !string.IsNullOrWhiteSpace(options.RsaPrivateKeyPath),
+        "JWT RS256 private key must be configured via RsaPrivateKeyPem or RsaPrivateKeyPath.")
     .ValidateOnStart();
 
 var jwtOptions = builder.Configuration
@@ -28,23 +31,21 @@ var jwtOptions = builder.Configuration
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = jwtOptions.Issuer,
-            ValidateAudience = true,
-            ValidAudience = jwtOptions.Audience,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret)),
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.FromMinutes(1)
-        };
-    });
+    .AddJwtBearer();
 
 builder.Services.AddAuthorization();
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddFixedWindowLimiter("auth", limiter =>
+    {
+        limiter.PermitLimit = 10;
+        limiter.Window = TimeSpan.FromMinutes(1);
+        limiter.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        limiter.QueueLimit = 0;
+    });
+});
+builder.Services.AddHealthChecks();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<IUserRepository, SqlUserRepository>();
 builder.Services.AddScoped<IAnonymousRoomRepository, SqlAnonymousRoomRepository>();
@@ -54,14 +55,20 @@ builder.Services.AddScoped<IWalletLedgerRepository, SqlWalletLedgerRepository>()
 builder.Services.AddScoped<IAuditLogRepository, SqlAuditLogRepository>();
 builder.Services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
 builder.Services.AddSingleton<IPersonaGenerator, RandomPersonaGenerator>();
+builder.Services.AddSingleton<IJwtKeyProvider, RsaJwtKeyProvider>();
+builder.Services.AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAnonymousRoomAccessService, AnonymousRoomAccessService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.Use(async (context, next) =>
 {
@@ -110,8 +117,24 @@ app.Use(async (context, next) =>
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
-var auth = app.MapGroup("/api/auth");
+var auth = app.MapGroup("/api/auth")
+    .RequireRateLimiting("auth");
+
+auth.MapPost("/register", async (
+        RegisterRequest request,
+        IAuthService authService,
+        CancellationToken cancellationToken) =>
+    {
+        var result = await authService.RegisterAsync(request, cancellationToken);
+        return ToAuthHttpResult(result);
+    })
+    .AllowAnonymous()
+    .WithName("Register")
+    .Produces<RegisterResponse>()
+    .ProducesValidationProblem()
+    .Produces<AuthErrorResponse>(StatusCodes.Status409Conflict);
 
 auth.MapPost("/login", async (
         LoginRequest request,
@@ -127,6 +150,43 @@ auth.MapPost("/login", async (
     .WithName("Login")
     .Produces<LoginResponse>()
     .Produces(StatusCodes.Status401Unauthorized);
+
+auth.MapGet("/me", async (
+        HttpContext httpContext,
+        IAuthService authService,
+        CancellationToken cancellationToken) =>
+    {
+        if (!TryGetAuthenticatedUserId(httpContext, out var userId))
+        {
+            return Results.Unauthorized();
+        }
+
+        var result = await authService.GetMeAsync(userId, cancellationToken);
+        return ToAuthHttpResult(result);
+    })
+    .RequireAuthorization()
+    .WithName("GetMe")
+    .Produces<MeResponse>()
+    .Produces(StatusCodes.Status401Unauthorized)
+    .Produces<AuthErrorResponse>(StatusCodes.Status404NotFound);
+
+auth.MapPost("/introspect", (
+        IntrospectRequest request,
+        IJwtKeyProvider keyProvider) =>
+    {
+        var response = IntrospectToken(request, jwtOptions, keyProvider);
+        return Results.Ok(response);
+    })
+    .AllowAnonymous()
+    .WithName("IntrospectToken")
+    .Produces<IntrospectResponse>();
+
+auth.MapGet("/.well-known/jwks.json", (IJwtKeyProvider keyProvider) => Results.Ok(new
+    {
+        keys = new[] { keyProvider.ToJwksKey() }
+    }))
+    .AllowAnonymous()
+    .WithName("GetAuthJwks");
 
 auth.MapPost("/anonymous-room-access", async (
         HttpContext httpContext,
@@ -181,7 +241,7 @@ wallet.MapGet("/balance", async (
         }
 
         var result = await walletService.GetBalanceAsync(userId, cancellationToken);
-        return ToHttpResult(result);
+        return ToWalletHttpResult(result);
     })
     .WithName("GetWalletBalance")
     .Produces<WalletBalanceResponse>()
@@ -205,7 +265,7 @@ wallet.MapPost("/deposit", async (
             httpContext.Connection.RemoteIpAddress?.ToString(),
             httpContext.Request.Headers.UserAgent.ToString(),
             cancellationToken);
-        return ToHttpResult(result);
+        return ToWalletHttpResult(result);
     })
     .WithName("DepositWallet")
     .Produces<DepositResponse>()
@@ -231,7 +291,7 @@ wallet.MapPost("/gift", async (
             httpContext.Connection.RemoteIpAddress?.ToString(),
             httpContext.Request.Headers.UserAgent.ToString(),
             cancellationToken);
-        return ToHttpResult(result);
+        return ToWalletHttpResult(result);
     })
     .WithName("GiftWallet")
     .Produces<GiftResponse>()
@@ -242,6 +302,8 @@ wallet.MapPost("/gift", async (
     .Produces(StatusCodes.Status409Conflict);
 
 app.MapGet("/health", () => Results.Ok(new { status = "ok", service = "lucy-auth-service" }))
+    .AllowAnonymous();
+app.MapHealthChecks("/healthz")
     .AllowAnonymous();
 
 app.Run();
@@ -254,7 +316,7 @@ static bool TryGetAuthenticatedUserId(HttpContext httpContext, out int userId)
     return int.TryParse(userIdClaim, out userId);
 }
 
-static IResult ToHttpResult<T>(WalletServiceResult<T> result) =>
+static IResult ToWalletHttpResult<T>(WalletServiceResult<T> result) =>
     result.Status switch
     {
         WalletServiceStatus.Success => Results.Ok(result.Payload),
@@ -270,3 +332,67 @@ static IResult ToHttpResult<T>(WalletServiceResult<T> result) =>
         WalletServiceStatus.Conflict => Results.Conflict(new { error = result.ErrorMessage }),
         _ => Results.BadRequest(new { error = result.ErrorMessage })
     };
+
+static IResult ToAuthHttpResult<T>(AuthServiceResult<T> result) =>
+    result.Status switch
+    {
+        AuthServiceStatus.Success => Results.Ok(result.Payload),
+        AuthServiceStatus.ValidationError => Results.ValidationProblem(new Dictionary<string, string[]>
+        {
+            ["request"] = [result.ErrorMessage ?? "Invalid auth request."]
+        }),
+        AuthServiceStatus.DuplicateEmail => Results.Conflict(new AuthErrorResponse(
+            result.ErrorMessage ?? "Email is already registered.",
+            "AUTH_DUPLICATE_EMAIL")),
+        AuthServiceStatus.UserNotFound => Results.NotFound(new AuthErrorResponse(
+            result.ErrorMessage ?? "User not found.",
+            "AUTH_USER_NOT_FOUND")),
+        _ => Results.BadRequest(new AuthErrorResponse(
+            result.ErrorMessage ?? "Invalid auth request.",
+            "AUTH_BAD_REQUEST"))
+    };
+
+static IntrospectResponse IntrospectToken(
+    IntrospectRequest request,
+    JwtOptions options,
+    IJwtKeyProvider keyProvider)
+{
+    if (string.IsNullOrWhiteSpace(request.Token))
+    {
+        return new IntrospectResponse(false, null, null, null);
+    }
+
+    var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+    try
+    {
+        var principal = handler.ValidateToken(
+            request.Token.Trim(),
+            JwtTokenValidation.Build(options, keyProvider.ValidationKey, includeRealtimeAudience: true),
+            out var validatedToken);
+
+        if (validatedToken is not System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwtToken)
+        {
+            return new IntrospectResponse(false, null, null, null);
+        }
+
+        var claims = principal.Claims
+            .GroupBy(claim => claim.Type)
+            .ToDictionary(
+                group => group.Key,
+                group => group.Select(claim => claim.Value).ToArray());
+
+        claims.TryGetValue("token_use", out var tokenUseValues);
+        var expiresAt = DateTimeOffset.FromUnixTimeSeconds(long.Parse(
+            claims[System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Exp][0]));
+
+        return new IntrospectResponse(
+            true,
+            tokenUseValues?.FirstOrDefault(),
+            expiresAt,
+            claims);
+    }
+    catch
+    {
+        return new IntrospectResponse(false, null, null, null);
+    }
+}
