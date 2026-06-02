@@ -8,3 +8,15 @@ target/
 
 # Ignore generated output files during import
 data/import_data/out/
+
+# .NET Build Outputs
+[Bb]in/
+[Oo]bj/
+
+# Node.js
+node_modules/
+dist/
+.env
+.env.local
+.env.production
+
