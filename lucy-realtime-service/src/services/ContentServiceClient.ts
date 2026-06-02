@@ -8,6 +8,7 @@ import axios from 'axios';
 
 export interface SpringRoomResponse {
   id: number;
+  hostId?: number;
   levelId: number;
   status: 'LIVE' | 'ENDED' | 'SCHEDULED' | 'WAITING';
   currentSubLevelId: number;
@@ -139,20 +140,36 @@ export class ContentServiceClient {
   }
 
   /**
-   * Synchronize Agora Cloud Recording output details to database.
-   * ⚠️ CẦN XÁC NHẬN Dev 3: endpoint lưu trữ danh sách file ghi âm.
+   * Synchronize Agora Cloud Recording output details to database as a Podcast.
+   * Calls the actual Dev 3 Spring Boot endpoint: POST /api/v1/podcasts
    */
   public static async syncRecordingDetails(
     roomId: number | string,
     fileDetails: { filename: string; audioUrl: string; durationSeconds: number }
   ): Promise<boolean> {
     try {
-      // Giả định Spring Boot nhận endpoint POST /api/v1/rooms/{roomId}/recordings
-      await axios.post(`${this.contentApiUrl}/api/v1/rooms/${roomId}/recordings`, fileDetails);
+      // 1. Fetch room details to get hostId (creatorId) and levelId
+      const room = await this.getRoom(roomId);
+      const creatorId = room?.hostId || 1; // Fallback to system admin (1) if not found
+      const levelId = room?.levelId || 1;   // Fallback to default level (1) if not found
+
+      // 2. Map to official PodcastRequest DTO
+      const podcastPayload = {
+        title: `Podcast Room #${roomId}`,
+        description: `Auto-generated podcast from live practice room #${roomId} (${fileDetails.filename}).`,
+        audioUrl: fileDetails.audioUrl,
+        durationSeconds: fileDetails.durationSeconds,
+        isPublic: true,
+        creatorId: Number(creatorId),
+        levelId: Number(levelId)
+      };
+
+      console.log(`🎙️ [Client] Syncing podcast metadata to Spring Boot (POST /api/v1/podcasts):`, podcastPayload);
+      await axios.post(`${this.contentApiUrl}/api/v1/podcasts`, podcastPayload);
       return true;
     } catch (error: any) {
       console.warn(
-        `Recording details synchronization to Dev 3 failed (endpoint might not exist yet):`,
+        `Podcast synchronization to Dev 3 failed (POST /api/v1/podcasts):`,
         error.message
       );
       return false;
