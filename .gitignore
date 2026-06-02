@@ -6,5 +6,9 @@ target/
 *.class
 *.log
 
+# Ignore .NET and other generated build outputs
+**/bin/
+**/obj/
+
 # Ignore generated output files during import
 data/import_data/out/
