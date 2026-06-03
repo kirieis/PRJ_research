@@ -1,7 +1,7 @@
 # docs/api-docs.yaml
 # ============================================================
 # Project LUCY — OpenAPI 3.0 Contract
-# Version: 1.0.0 | Week 1-2 Foundation
+# Version: 1.1.0 | Week 1-2 Foundation + Week 6-7 Room Management
 # Philosophy: "Zero Conflict" — This schema is the single
 #             source of truth for all mock data and client models.
 # ============================================================
@@ -14,7 +14,7 @@ info:
     Microservices API contract for Project LUCY.
     All services (Auth, Content, Realtime) MUST conform to this specification.
     Mock data files in the Flutter client MUST match these schemas exactly.
-  version: "1.0.0"
+  version: "1.1.0"
   contact:
     name: "LUCY Dev Team"
 
@@ -25,10 +25,23 @@ servers:
     description: "Staging environment"
 
 # ============================================================
+# TAGS
+# ============================================================
+tags:
+  - name: Auth
+    description: "Authentication and authorization (Dev 6 — .NET)"
+  - name: Content
+    description: "Learning content management (Dev 3 — Spring Boot)"
+  - name: Room Management
+    description: |
+      Audio room lifecycle, moderator features, and resource pinning.
+      Endpoints used by Pro Dashboard and Audio Room screens.
+      Auth: All endpoints require Bearer JWT.
+
+# ============================================================
 # PATHS
 # ============================================================
 paths:
-
   # ----------------------------------------------------------
   # AUTH SERVICE
   # ----------------------------------------------------------
@@ -231,11 +244,104 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  # ----------------------------------------------------------
+  # ROOM MANAGEMENT (Dev 5 — Week 6-7)
+  # ----------------------------------------------------------
+  /api/rooms:
+    get:
+      tags:
+        - Room Management
+      summary: Lấy danh sách các phòng đang active
+      description: Trả về danh sách các phòng có trạng thái hoạt động (Active) hoặc đã kết thúc (Ended). Yêu cầu xác thực JWT.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Thành công. Trả về mảng danh sách phòng.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RoomItem"
+
+  /api/rooms/{id}/pin-resource:
+    post:
+      tags:
+        - Room Management
+      summary: Pin resource vào phòng
+      description: Cho phép Host hoặc Mentor ghim một tài nguyên (ảnh hoặc link) vào phòng hiện tại.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID của phòng (Room ID)
+          schema:
+            type: string
+            example: "room_123"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PinResourceRequest"
+      responses:
+        "200":
+          description: Ghim tài nguyên thành công.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PinResourceResponse"
+        "403":
+          description: Forbidden - Người dùng không phải là Host hoặc Mentor của phòng này.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Access denied. Only host or mentor can pin resources."
+
+  /api/rooms/{id}/moderator-hints:
+    get:
+      tags:
+        - Room Management
+      summary: Lấy gợi ý cho Moderator
+      description: Lấy danh sách câu hỏi gợi ý cho Moderator/Host tại một thời điểm (phút) cụ thể trong phiên.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID của phòng (Room ID)
+          schema:
+            type: string
+            example: "room_123"
+        - name: currentMinute
+          in: query
+          required: true
+          description: Phút hiện tại của phòng (ví dụ phiên chạy được 15 phút).
+          schema:
+            type: integer
+            example: 15
+      responses:
+        "200":
+          description: Lấy danh sách gợi ý thành công.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ModeratorHint"
+
 # ============================================================
 # COMPONENTS
 # ============================================================
 components:
-
   # ----------------------------------------------------------
   # SECURITY SCHEMES
   # ----------------------------------------------------------
@@ -250,7 +356,6 @@ components:
   # SCHEMAS
   # ----------------------------------------------------------
   schemas:
-
     # === AUTH ===
     LoginRequest:
       type: object
@@ -319,8 +424,14 @@ components:
           enum:
             - LEARNER
             - TUTOR
+            - MENTOR
+            - HOST
             - ADMIN
-          description: "User's role in the system"
+          description: |
+            User's role in the system.
+            MENTOR and HOST roles grant moderator privileges (pin resources, manage speakers).
+            # TODO: Confirm with Dev 6 (.NET) whether MENTOR/HOST are stored in DB
+            #       or assigned dynamically per room session.
           example: "LEARNER"
 
     # === CONTENT — Import ===
@@ -428,6 +539,93 @@ components:
             - "Practice introducing yourself to a new classmate."
             - "Role-play: You meet your neighbor for the first time."
             - "What cultural differences exist in greeting strangers?"
+
+    # === ROOM MANAGEMENT (Dev 5 — Week 6-7) ===
+    RoomItem:
+      type: object
+      properties:
+        roomId:
+          type: string
+          description: "Mã định danh của phòng"
+          example: "room_123"
+        hostId:
+          type: string
+          description: "Mã định danh của Host tạo phòng"
+          example: "user_456"
+        currentLevelId:
+          type: string
+          description: "Mã định danh của sub-level (hoặc chủ đề) hiện tại"
+          example: "level_02"
+        agoraChannelName:
+          type: string
+          description: "Tên kênh trên hệ thống Agora để client join vào RTC"
+          example: "channel_lucy_room_123"
+        status:
+          type: string
+          description: "Trạng thái hiện tại của phòng"
+          enum: ["Active", "Ended"]
+          example: "Active"
+
+    PinResourceRequest:
+      type: object
+      required:
+        - resourceUrl
+        - type
+      properties:
+        resourceUrl:
+          type: string
+          description: "Đường dẫn của resource cần pin"
+          example: "https://example.com/assets/grammar-chart.png"
+        type:
+          type: string
+          description: "Phân loại resource"
+          enum: ["image", "url"]
+          example: "image"
+        label:
+          type: string
+          description: "Tiêu đề hoặc mô tả ngắn (tuỳ chọn)"
+          example: "Cấu trúc ngữ pháp tuần 2"
+
+    PinResourceResponse:
+      type: object
+      properties:
+        pinId:
+          type: string
+          description: "ID đại diện cho thao tác/bản ghi pin này"
+          example: "pin_789"
+        roomId:
+          type: string
+          description: "Phòng đang chứa resource vừa pin"
+          example: "room_123"
+        resourceUrl:
+          type: string
+          description: "Đường dẫn của resource đã được pin"
+          example: "https://example.com/assets/grammar-chart.png"
+        pinnedAt:
+          type: string
+          format: date-time
+          description: "Thời điểm pin thành công (chuẩn ISO 8601)"
+          example: "2026-06-02T10:30:00Z"
+
+    ModeratorHint:
+      type: object
+      properties:
+        hintId:
+          type: string
+          description: "ID của câu gợi ý"
+          example: "hint_001"
+        question:
+          type: string
+          description: "Nội dung câu hỏi/gợi ý"
+          example: "Bạn đánh giá thế nào về cách tiếp cận này?"
+        triggerMinute:
+          type: integer
+          description: "Phút sẽ xuất hiện gợi ý này kể từ lúc phòng bắt đầu"
+          example: 15
+        category:
+          type: string
+          description: "Phân loại gợi ý"
+          example: "Icebreaker"
 
     # === SHARED — Error ===
     ErrorResponse:
