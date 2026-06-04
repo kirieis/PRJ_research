@@ -32,7 +32,8 @@ public class LevelService {
     }
 
     public LevelResponse getById(Long id) {
-        Level level = levelRepository.findById(id)
+        // Dùng findByIdFetch để JOIN FETCH language trong 1 query — tránh N+1
+        Level level = levelRepository.findByIdFetch(id)
                 .orElseThrow(() -> new RuntimeException("Level not found: " + id));
         return toResponse(level);
     }
