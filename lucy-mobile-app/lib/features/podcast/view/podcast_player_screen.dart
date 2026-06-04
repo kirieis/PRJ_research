@@ -108,7 +108,7 @@ class _PodcastPlayerScreenState extends State<PodcastPlayerScreen> {
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withOpacity(0.3),
+                        color: AppColors.primary.withValues(alpha: 0.3),
                         blurRadius: 24,
                         offset: const Offset(0, 8),
                       ),
@@ -184,7 +184,7 @@ class _PodcastPlayerScreenState extends State<PodcastPlayerScreen> {
                                                   .toDouble()),
                                       onChanged: (value) {},
                                       activeColor:
-                                          AppColors.textHint.withOpacity(0.3),
+                                          AppColors.textHint.withValues(alpha: 0.3),
                                       inactiveColor: AppColors.surfaceDark,
                                     ),
                                     Slider(
@@ -272,7 +272,7 @@ class _PodcastPlayerScreenState extends State<PodcastPlayerScreen> {
                               color: AppColors.primary,
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.primary.withOpacity(0.4),
+                                  color: AppColors.primary.withValues(alpha: 0.4),
                                   blurRadius: 16,
                                   offset: const Offset(0, 4),
                                 ),
@@ -293,7 +293,7 @@ class _PodcastPlayerScreenState extends State<PodcastPlayerScreen> {
                               color: AppColors.primary,
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.primary.withOpacity(0.4),
+                                  color: AppColors.primary.withValues(alpha: 0.4),
                                   blurRadius: 16,
                                   offset: const Offset(0, 4),
                                 ),

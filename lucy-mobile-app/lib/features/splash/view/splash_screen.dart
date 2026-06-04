@@ -72,10 +72,10 @@ class _SplashView extends StatelessWidget {
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
+                        color: Colors.white.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Colors.white.withValues(alpha: 0.3),
                           width: 1.5,
                         ),
                       ),
@@ -102,7 +102,7 @@ class _SplashView extends StatelessWidget {
                       'Language Unity & Collaborative Youth',
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.white.withValues(alpha: 0.7),
                         letterSpacing: 1.2,
                       ),
                     ),
@@ -144,7 +144,7 @@ class _SplashView extends StatelessWidget {
             Text(
               'Preparing your learning experience...',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(alpha: 0.7),
                 fontSize: 13,
               ),
             ),
@@ -168,7 +168,7 @@ class _SplashView extends StatelessWidget {
                 'Something went wrong.\nPlease try again.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.85),
+                  color: Colors.white.withValues(alpha: 0.85),
                   fontSize: 14,
                 ),
               ),

@@ -100,7 +100,7 @@ class _WalkthroughViewState extends State<_WalkthroughView> {
                           child: Text(
                             'Skip',
                             style: TextStyle(
-                              color: AppColors.textSecondary.withOpacity(0.8),
+                              color: AppColors.textSecondary.withValues(alpha: 0.8),
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
                             ),
@@ -252,7 +252,7 @@ class _WalkthroughPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(36),
                 boxShadow: [
                   BoxShadow(
-                    color: _resolveGradient(data.icon).first.withOpacity(0.3),
+                    color: _resolveGradient(data.icon).first.withValues(alpha: 0.3),
                     blurRadius: 30,
                     offset: const Offset(0, 10),
                   ),
@@ -286,7 +286,7 @@ class _WalkthroughPage extends StatelessWidget {
             Text(
               data.description,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: AppColors.textSecondary,
                 fontSize: 15,
                 fontWeight: FontWeight.w400,
@@ -322,11 +322,11 @@ class _DotIndicator extends StatelessWidget {
       height: 8,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
-        color: isActive ? AppColors.primary : AppColors.textHint.withOpacity(0.3),
+        color: isActive ? AppColors.primary : AppColors.textHint.withValues(alpha: 0.3),
         boxShadow: isActive
             ? [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.4),
+                  color: AppColors.primary.withValues(alpha: 0.4),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -357,7 +357,7 @@ class _SecondaryButton extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.textHint.withOpacity(0.4),
+          color: AppColors.textHint.withValues(alpha: 0.4),
           width: 1.5,
         ),
       ),
@@ -366,7 +366,7 @@ class _SecondaryButton extends StatelessWidget {
         child: InkWell(
           onTap: onPressed,
           borderRadius: BorderRadius.circular(16),
-          splashColor: AppColors.primary.withOpacity(0.1),
+          splashColor: AppColors.primary.withValues(alpha: 0.1),
           child: Center(
             child: Text(
               label,

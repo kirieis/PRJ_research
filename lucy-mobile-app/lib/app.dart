@@ -119,4 +119,3 @@ class LucyApp extends StatelessWidget {
     );
   }
 }
-

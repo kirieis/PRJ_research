@@ -68,9 +68,9 @@ class WalletService {
             Dio(BaseOptions(
               baseUrl: AppConstants.apiBaseUrl,
               connectTimeout:
-                  Duration(milliseconds: AppConstants.connectTimeout),
+                  const Duration(milliseconds: AppConstants.connectTimeout),
               receiveTimeout:
-                  Duration(milliseconds: AppConstants.receiveTimeout),
+                  const Duration(milliseconds: AppConstants.receiveTimeout),
             ));
 
   /// Fetches current wallet balance.

@@ -97,12 +97,12 @@ class _AppTextFieldState extends State<AppTextField> {
                   ? AppColors.error
                   : _isFocused
                       ? AppColors.primary
-                      : AppColors.textHint.withOpacity(0.3),
+                      : AppColors.textHint.withValues(alpha: 0.3),
               width: _isFocused || _hasError ? 1.5 : 1.0,
             ),
             color: widget.enabled
-                ? AppColors.surfaceDark.withOpacity(0.6)
-                : AppColors.surfaceDark.withOpacity(0.3),
+                ? AppColors.surfaceDark.withValues(alpha: 0.6)
+                : AppColors.surfaceDark.withValues(alpha: 0.3),
           ),
           child: Focus(
             onFocusChange: (focused) {
@@ -130,7 +130,7 @@ class _AppTextFieldState extends State<AppTextField> {
               decoration: InputDecoration(
                 hintText: widget.hint,
                 hintStyle: TextStyle(
-                  color: AppColors.textHint.withOpacity(0.6),
+                  color: AppColors.textHint.withValues(alpha: 0.6),
                   fontSize: 15,
                 ),
                 contentPadding: const EdgeInsets.symmetric(
