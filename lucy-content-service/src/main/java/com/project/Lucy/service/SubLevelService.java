@@ -16,7 +16,9 @@ public class SubLevelService {
     private final SubLevelRepository subLevelRepository;
 
     public List<SubLevelResponse> getByLevel(Long levelId) {
-        return subLevelRepository.findByLevelIdOrderByOrderIndex(levelId)
+        // Dùng findByLevelIdFetch để JOIN FETCH level → language trong 1 query — tránh
+        // N+1
+        return subLevelRepository.findByLevelIdFetch(levelId)
                 .stream().map(this::toResponse).collect(Collectors.toList());
     }
 
