@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUCY — Phòng Học Audio Real-time</title>
+  <meta name="description" content="LUCY — Nền tảng luyện giao tiếp tiếng Anh qua phòng audio trực tuyến. Luyện nói cùng bạn bè và người hướng dẫn.">
+
+  <!-- Google Fonts — Distinctive pairing, full Vietnamese support -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Socket.io CDN -->
+  <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+
+  <style>
+    /* =========================================
+       CSS VARIABLES — DESIGN TOKENS
+       ========================================= */
+    :root {
+      /* --- Màu sắc gốc, tinh chỉnh cho premium dark --- */
+      --bg-deepest: #0c1220;
+      --bg-base: #111b2e;
+      --bg-surface: #182640;
+      --bg-elevated: #1f3050;
+      --bg-glass: rgba(22, 38, 62, 0.55);
+      --border-subtle: rgba(148, 163, 184, 0.08);
+      --border-focus: rgba(0, 168, 150, 0.5);
+
+      --teal: #00C9A7;
+      --teal-dim: #00A896;
+      --teal-glow: rgba(0, 201, 167, 0.25);
+      --teal-surface: rgba(0, 201, 167, 0.08);
+
+      --gold: #F4A435;
+      --gold-warm: #FFBA5C;
+      --gold-surface: rgba(244, 164, 53, 0.10);
+
+      --danger: #F87171;
+      --danger-deep: #DC2626;
+      --danger-surface: rgba(248, 113, 113, 0.10);
+
+      --text-primary: #F1F5F9;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --white: #FFFFFF;
+
+      /* --- Typography --- */
+      --font-display: 'Outfit', sans-serif;
+      --font-body: 'Be Vietnam Pro', sans-serif;
+
+      /* --- Spacing (4px grid) --- */
+      --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px;
+      --s5: 20px; --s6: 24px; --s7: 32px; --s8: 40px;
+      --s9: 48px; --s10: 64px;
+
+      /* --- Radii --- */
+      --r-sm: 8px; --r-md: 14px; --r-lg: 20px;
+      --r-xl: 28px; --r-full: 9999px;
+
+      /* --- Shadows & Glows --- */
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+      --shadow-lg: 0 12px 32px rgba(0,0,0,0.5);
+      --shadow-xl: 0 24px 48px rgba(0,0,0,0.55);
+      --glow-teal: 0 0 30px rgba(0, 201, 167, 0.15);
+      --glow-gold: 0 0 30px rgba(244, 164, 53, 0.15);
+      --glow-danger: 0 0 20px rgba(248, 113, 113, 0.2);
+      --inset-glow: inset 0 1px 0 rgba(255,255,255,0.04);
+
+      /* --- Transitions --- */
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+      --dur-fast: 150ms;
+      --dur-normal: 250ms;
+      --dur-slow: 400ms;
+    }
+
+    /* --- LIGHT THEME (toggle bằng JS) --- */
+    [data-theme="light"] {
+      --bg-deepest: #F8FAFC;
+      --bg-base: #F1F5F9;
+      --bg-surface: #FFFFFF;
+      --bg-elevated: #E2E8F0;
+      --bg-glass: rgba(255, 255, 255, 0.7);
+      --border-subtle: rgba(15, 23, 42, 0.08);
+      --border-focus: rgba(0, 168, 150, 0.5);
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #94A3B8;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 32px rgba(0,0,0,0.12);
+      --shadow-xl: 0 24px 48px rgba(0,0,0,0.15);
+      --inset-glow: inset 0 1px 0 rgba(255,255,255,0.8);
+      --teal-surface: rgba(0, 201, 167, 0.06);
+      --gold-surface: rgba(244, 164, 53, 0.08);
+      --danger-surface: rgba(248, 113, 113, 0.08);
+    }
+    [data-theme="light"] body::before { opacity: 0.15; }
+    [data-theme="light"] .header {
+      background: rgba(248, 250, 252, 0.85);
+    }
+    [data-theme="light"] .bottom-bar {
+      background: rgba(248, 250, 252, 0.9);
+    }
+    [data-theme="light"] .logo {
+      background: linear-gradient(135deg, #008f7a 0%, #d4922a 100%);
+      -webkit-background-clip: text; background-clip: text;
+    }
+    [data-theme="light"] .room-card { border-color: rgba(15,23,42,0.06); }
+    [data-theme="light"] .room-card:hover { border-color: rgba(0,168,150,0.2); }
+    [data-theme="light"] .btn-join { color: var(--white); }
+    [data-theme="light"] .btn-primary-action { color: var(--white); }
+    [data-theme="light"] .btn-next { color: var(--white); }
+
+    /* =========================================
+       GLOBAL RESET & BASE
+       ========================================= */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* --- SKIP LINK (Accessibility: nhảy thẳng vào nội dung chính) --- */
+    .skip-link {
+      position: absolute; top: -100px; left: var(--s4);
+      background: var(--teal); color: var(--bg-deepest);
+      padding: var(--s3) var(--s5); border-radius: var(--r-md);
+      font-weight: 700; font-size: 14px; z-index: 10000;
+      transition: top var(--dur-normal);
+    }
+    .skip-link:focus { top: var(--s4); }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-deepest);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); line-height: 1.2; }
+
+    button {
+      cursor: pointer; border: none; outline: none;
+      font-family: var(--font-body); font-size: 15px;
+      transition: transform var(--dur-normal) var(--ease-spring),
+                  background var(--dur-normal) var(--ease-smooth),
+                  box-shadow var(--dur-normal) var(--ease-smooth),
+                  color var(--dur-fast) var(--ease-smooth);
+    }
+    button:active { transform: scale(0.97); }
+
+    /* --- FOCUS VISIBLE RING — A11y: hiển thị khi dùng bàn phím, ẩn khi click chuột --- */
+    :focus-visible {
+      outline: 2px solid var(--teal);
+      outline-offset: 2px;
+      border-radius: var(--r-sm);
+    }
+    button:focus-visible {
+      box-shadow: 0 0 0 3px var(--teal-glow);
+    }
+    input:focus-visible {
+      outline: none; /* Đã có custom focus bên dưới */
+    }
+
+    /* --- DISABLED STATE PATTERN — opacity + cursor + no-pointer --- */
+    [disabled], .disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    input { font-family: var(--font-body); font-size: 16px; }
+    a { color: inherit; text-decoration: none; }
+
+    .hidden { display: none !important; }
+
+    /* SVG icon baseline */
+    .icon {
+      width: 22px; height: 22px;
+      fill: none; stroke: currentColor;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+    .icon-sm { width: 16px; height: 16px; }
+    .icon-lg { width: 28px; height: 28px; }
+
+    /* Custom scrollbar cho các panel */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148,163,184,0.15); }
+
+    /* =========================================
+       NOISE / GRAIN OVERLAY — Tạo chiều sâu
+       ========================================= */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 9999;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 200px 200px;
+      opacity: 0.6;
+    }
+
+    /* =========================================
+       PREFERS-REDUCED-MOTION — Tắt animation cho user nhạy cảm
+       ========================================= */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* =========================================
+       TOAST NOTIFICATION — Thông báo tạm thời
+       ========================================= */
+    .toast-container {
+      position: fixed; bottom: 100px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 2000;
+      display: flex; flex-direction: column-reverse; gap: var(--s2);
+      pointer-events: none;
+    }
+    .toast {
+      pointer-events: auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(16px);
+      color: var(--text-primary);
+      padding: var(--s3) var(--s5);
+      border-radius: var(--r-md);
+      font-size: 14px; font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      display: flex; align-items: center; gap: var(--s3);
+      animation: slide-up var(--dur-normal) var(--ease-spring);
+      white-space: nowrap;
+    }
+    .toast .toast-icon {
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .toast .toast-icon.success { background: var(--teal-surface); color: var(--teal); }
+    .toast .toast-icon.warning { background: var(--gold-surface); color: var(--gold); }
+    .toast .toast-icon.error { background: var(--danger-surface); color: var(--danger); }
+    .toast.leaving {
+      animation: toast-out var(--dur-normal) var(--ease-smooth) forwards;
+    }
+    @keyframes toast-out {
+      to { opacity: 0; transform: translateY(8px) scale(0.95); }
+    }
+
+    /* =========================================
+       THEME TOGGLE BUTTON
+       ========================================= */
+    .theme-toggle {
+      width: 44px; height: 44px; /* Touch target min 44px */
+      border-radius: var(--r-sm);
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+      display: flex; align-items: center; justify-content: center;
+      padding: 0;
+    }
+    .theme-toggle:hover {
+      color: var(--gold); border-color: rgba(244,164,53,0.3);
+      background: var(--gold-surface);
+    }
+    .theme-toggle .icon-sun,
+    .theme-toggle .icon-moon { transition: opacity var(--dur-fast), transform var(--dur-normal) var(--ease-spring); }
+    [data-theme="light"] .theme-toggle .icon-moon { display: none; }
+    [data-theme="dark"] .theme-toggle .icon-sun,
+    :root:not([data-theme]) .theme-toggle .icon-sun { display: none; }
+
+    /* =========================================
+       ANIMATIONS
+       ========================================= */
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(0, 201, 167, 0.5); }
+      70% { box-shadow: 0 0 0 12px rgba(0, 201, 167, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(0, 201, 167, 0); }
+    }
+
+    @keyframes live-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.7); }
+    }
+
+    @keyframes ripple-out {
+      0% { transform: scale(0); opacity: 0.5; }
+      100% { transform: scale(4); opacity: 0; }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+
+    @keyframes slide-up {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slide-in-right {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes float-gentle {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    @keyframes waveform {
+      0%, 100% { height: 4px; }
+      25% { height: 14px; }
+      50% { height: 8px; }
+      75% { height: 18px; }
+    }
+
+    @keyframes scale-in {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes timer-glow-pulse {
+      0%, 100% { filter: drop-shadow(0 0 6px rgba(0, 201, 167, 0.3)); }
+      50% { filter: drop-shadow(0 0 16px rgba(0, 201, 167, 0.6)); }
+    }
+
+    /* =========================================
+       HEADER — Fixed, glassmorphism, Safe Areas
+       ========================================= */
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      padding: max(var(--s3), env(safe-area-inset-top)) max(var(--s7), env(safe-area-inset-right)) var(--s3) max(var(--s7), env(safe-area-inset-left));
+      background: rgba(12, 18, 32, 0.8);
+      backdrop-filter: blur(20px) saturate(1.3);
+      -webkit-backdrop-filter: blur(20px) saturate(1.3);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-size: 26px; font-weight: 900;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--teal) 0%, var(--gold-warm) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo-sub {
+      font-size: 11px; font-weight: 500; color: var(--text-muted);
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-left: var(--s2);
+    }
+
+    .user-profile { display: flex; align-items: center; gap: var(--s4); }
+
+    .avatar {
+      width: 40px; height: 40px;
+      border-radius: var(--r-full);
+      background: var(--bg-surface);
+      object-fit: cover;
+      border: 2px solid var(--border-subtle);
+      transition: border-color var(--dur-normal);
+    }
+    .avatar:hover { border-color: var(--teal); }
+
+    .header .user-name {
+      font-weight: 600; font-size: 14px; color: var(--text-primary);
+    }
+
+    .btn-logout {
+      background: transparent; color: var(--text-muted);
+      font-weight: 600; font-size: 13px;
+      padding: var(--s2) var(--s4);
+      min-height: 44px; /* Touch target min */
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--border-subtle);
+    }
+    .btn-logout:hover {
+      color: var(--danger);
+      border-color: rgba(248, 113, 113, 0.3);
+      background: var(--danger-surface);
+    }
+
+    /* =========================================
+       MÀN HÌNH 1: LOBBY
+       ========================================= */
+    .lobby-container {
+      padding: var(--s8) var(--s7);
+      max-width: 1280px; margin: 0 auto;
+    }
+
+    .lobby-hero {
+      margin-bottom: var(--s9);
+      animation: slide-up var(--dur-slow) var(--ease-out);
+    }
+    .lobby-hero h1 {
+      font-size: 42px; font-weight: 900; letter-spacing: -1px;
+      margin-bottom: var(--s2);
+    }
+    .lobby-hero h1 .accent { color: var(--teal); }
+    .lobby-hero p {
+      color: var(--text-secondary); font-size: 17px; max-width: 500px;
+    }
+
+    .lobby-controls {
+      margin-bottom: var(--s7);
+      display: flex; justify-content: space-between; align-items: center; gap: var(--s4);
+      animation: slide-up var(--dur-slow) var(--ease-out) 80ms both;
+    }
+
+    /* Filter pills thay cho search */
+    .filter-group { display: flex; gap: var(--s2); flex-wrap: wrap; }
+    .filter-pill {
+      padding: 0 var(--s5);
+      min-height: 44px; /* Touch target min */
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--r-full);
+      font-size: 13px; font-weight: 600;
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: all var(--dur-normal) var(--ease-smooth);
+    }
+    .filter-pill:hover { border-color: var(--teal); color: var(--text-primary); }
+    .filter-pill.active {
+      background: var(--teal-surface);
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    .search-wrap { position: relative; }
+    .search-icon-wrap {
+      position: absolute; left: var(--s4); top: 50%;
+      transform: translateY(-50%); color: var(--text-muted);
+      display: flex;
+    }
+    .search-input {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      padding: 12px var(--s5) 12px 44px;
+      border-radius: var(--r-full);
+      width: 280px; font-size: 14px;
+      transition: border-color var(--dur-normal), box-shadow var(--dur-normal);
+    }
+    .search-input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--teal-glow);
+      outline: none;
+    }
+    .search-input::placeholder { color: var(--text-muted); }
+
+    /* Room Grid */
+    .room-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: var(--s6);
+    }
+
+    .room-card {
+      position: relative;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-lg);
+      padding: var(--s6);
+      display: flex; flex-direction: column; gap: var(--s4);
+      transition: transform var(--dur-normal) var(--ease-spring),
+                  box-shadow var(--dur-normal) var(--ease-smooth),
+                  border-color var(--dur-normal);
+      animation: slide-up var(--dur-slow) var(--ease-out) both;
+      /* var(--card-delay) gán qua JS */
+      animation-delay: var(--card-delay, 0ms);
+      overflow: hidden;
+      box-shadow: var(--inset-glow);
+    }
+    .room-card::before {
+      /* Gradient accent trên cạnh trên card */
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--teal), transparent);
+      opacity: 0; transition: opacity var(--dur-normal);
+    }
+    .room-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg), var(--glow-teal);
+      border-color: rgba(0, 201, 167, 0.15);
+    }
+    .room-card:hover::before { opacity: 1; }
+
+    .room-header { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s3); }
+    .room-title {
+      font-family: var(--font-display);
+      font-size: 20px; font-weight: 700; line-height: 1.3;
+      margin-bottom: var(--s1);
+    }
+    .room-level {
+      font-size: 12px; font-weight: 700;
+      padding: 3px 10px; border-radius: var(--r-sm);
+      background: var(--gold-surface); color: var(--gold);
+      letter-spacing: 0.5px;
+    }
+
+    /* Status badges */
+    .room-status {
+      font-size: 11px; font-weight: 700;
+      padding: 4px 10px; border-radius: var(--r-full);
+      display: flex; align-items: center; gap: 6px;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .status-live { background: var(--danger-surface); color: var(--danger); }
+    .status-live .dot {
+      width: 7px; height: 7px;
+      background: var(--danger);
+      border-radius: 50%;
+      animation: live-dot 1.4s infinite;
+    }
+    .status-scheduled { background: rgba(148,163,184,0.08); color: var(--text-secondary); }
+    .status-ended { background: transparent; color: var(--text-muted); border: 1px solid rgba(100,116,139,0.2); }
+
+    .room-desc {
+      color: var(--text-secondary); font-size: 14px; line-height: 1.5;
+    }
+
+    .room-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: auto; padding-top: var(--s3);
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .users-count {
+      color: var(--text-muted); font-size: 14px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .users-avatars {
+      display: flex;
+    }
+    .users-avatars .mini-avatar {
+      width: 24px; height: 24px; border-radius: 50%;
+      border: 2px solid var(--bg-surface);
+      margin-left: -6px; background: var(--bg-elevated);
+    }
+    .users-avatars .mini-avatar:first-child { margin-left: 0; }
+
+    .btn-join {
+      background: var(--teal); color: var(--bg-deepest);
+      padding: 0 22px; min-height: 44px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--r-full);
+      font-weight: 700; font-size: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-join:hover:not(:disabled) {
+      background: #00ddb8; box-shadow: var(--shadow-md), var(--glow-teal);
+      transform: translateY(-1px);
+    }
+    .btn-join:disabled {
+      background: var(--bg-elevated); color: var(--text-muted);
+      cursor: not-allowed; box-shadow: none;
+    }
+
+    /* Skeleton loading */
+    .skeleton {
+      background: linear-gradient(90deg, var(--bg-surface) 25%, var(--bg-elevated) 50%, var(--bg-surface) 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.8s infinite;
+      border-radius: var(--r-md);
+    }
+    .skeleton-text { height: 16px; width: 60%; margin-bottom: 8px; }
+    .skeleton-title { height: 24px; width: 80%; margin-bottom: 12px; }
+    .skeleton-badge { height: 22px; width: 50px; border-radius: var(--r-full); }
+    .skeleton-button { height: 38px; width: 100px; border-radius: var(--r-full); }
+
+    /* =========================================
+       MÀN HÌNH 2: VOICE ROOM
+       ========================================= */
+    .room-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr 280px;
+      height: calc(100dvh - 54px - 80px); /* Header + BottomBar */
+      gap: var(--s4);
+      padding: var(--s4);
+      animation: scale-in var(--dur-slow) var(--ease-out);
+    }
+
+    .panel {
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px) saturate(1.2);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-lg);
+      padding: var(--s5);
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+      box-shadow: var(--inset-glow);
+    }
+
+    .panel-title {
+      font-family: var(--font-display);
+      font-size: 12px; font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: var(--s4);
+      text-transform: uppercase; letter-spacing: 1.5px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .panel-count {
+      background: rgba(255,255,255,0.06);
+      padding: 2px 8px; border-radius: var(--r-full);
+      font-size: 11px; color: var(--text-secondary);
+      font-family: var(--font-body);
+    }
+
+    /* --- Cột Trái: Danh sách học viên --- */
+    .user-list { display: flex; flex-direction: column; gap: 6px; }
+
+    .user-item {
+      display: flex; align-items: center; gap: var(--s3);
+      padding: var(--s3);
+      border-radius: var(--r-md);
+      background: transparent;
+      border: 1px solid transparent;
+      transition: all var(--dur-normal) var(--ease-smooth);
+    }
+    .user-item:hover { background: rgba(255,255,255,0.03); }
+
+    .user-avatar-wrap { position: relative; flex-shrink: 0; }
+    .user-avatar {
+      width: 44px; height: 44px;
+      border-radius: var(--r-full);
+      background: var(--bg-elevated);
+      border: 2px solid transparent;
+      transition: border-color var(--dur-normal);
+      object-fit: cover;
+    }
+    /* Pulse khi đang nói */
+    .user-item.speaking .user-avatar {
+      border-color: var(--teal);
+      animation: pulse-ring 1.8s infinite;
+    }
+
+    /* Waveform indicator thay vì icon tĩnh */
+    .waveform-indicator {
+      position: absolute; bottom: -1px; right: -1px;
+      width: 20px; height: 20px;
+      background: var(--teal); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; gap: 1px;
+      opacity: 0; transform: scale(0.5);
+      transition: all var(--dur-normal) var(--ease-spring);
+      border: 2px solid var(--bg-glass);
+    }
+    .user-item.speaking .waveform-indicator { opacity: 1; transform: scale(1); }
+    .wave-bar {
+      width: 2px; background: var(--white); border-radius: 1px;
+      animation: waveform 0.8s infinite;
+    }
+    .wave-bar:nth-child(1) { animation-delay: 0s; height: 4px; }
+    .wave-bar:nth-child(2) { animation-delay: 0.15s; height: 6px; }
+    .wave-bar:nth-child(3) { animation-delay: 0.3s; height: 3px; }
+
+    .user-info { flex: 1; min-width: 0; }
+    .user-name {
+      font-weight: 600; font-size: 14px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      color: var(--text-primary);
+    }
+
+    .role-badge {
+      font-size: 10px; font-weight: 700;
+      padding: 2px 7px; border-radius: 5px;
+      display: inline-block; margin-top: 3px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .role-moderator { background: var(--teal-surface); color: var(--teal); }
+    .role-pro { background: var(--gold-surface); color: var(--gold); }
+    .role-anonymous { background: rgba(100,116,139,0.1); color: var(--text-muted); }
+
+    .user-item.raised-hand {
+      border-color: var(--gold);
+      background: var(--gold-surface);
+    }
+    .user-item.raised-hand .user-name::after {
+      content: ' ✋'; font-size: 13px;
+    }
+
+    .mic-status { display: flex; align-items: center; }
+    .mic-status .icon { color: var(--text-muted); }
+    .mic-status.mic-off .icon { color: var(--danger); }
+
+    /* --- Cột Giữa: Topic & Timer --- */
+    .topic-area {
+      align-items: center; justify-content: center; text-align: center;
+      position: relative;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 40%, rgba(0, 201, 167, 0.06) 0%, transparent 100%),
+        var(--bg-glass);
+    }
+
+    .sublevel-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--teal-surface);
+      border: 1px solid rgba(0, 201, 167, 0.15);
+      color: var(--teal);
+      font-size: 13px; font-weight: 700;
+      padding: 6px 16px; border-radius: var(--r-full);
+      margin-bottom: var(--s3);
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .sublevel-chip .step-num {
+      background: var(--teal); color: var(--bg-deepest);
+      font-size: 10px; font-weight: 800;
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .topic-title {
+      font-family: var(--font-display);
+      font-size: 32px; font-weight: 800;
+      margin-bottom: var(--s7); letter-spacing: -0.5px;
+      color: var(--text-primary);
+    }
+
+    /* Timer Ring — SVG gradient + glow */
+    .timer-container {
+      position: relative;
+      width: 200px; height: 200px;
+      display: flex; justify-content: center; align-items: center;
+      margin-bottom: var(--s7);
+    }
+    .timer-svg {
+      position: absolute; inset: 0;
+      transform: rotate(-90deg);
+      animation: timer-glow-pulse 4s infinite;
+    }
+    .timer-circle-bg {
+      fill: none; stroke: rgba(148,163,184,0.06); stroke-width: 6;
+    }
+    .timer-circle-progress {
+      fill: none; stroke: url(#timerGradient); stroke-width: 6;
+      stroke-dasharray: 596.9; /* 2 * PI * 95 */
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 1s linear;
+      stroke-linecap: round;
+    }
+    .timer-inner {
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .timer-text {
+      font-family: var(--font-display);
+      font-size: 52px; font-weight: 900;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -2px;
+    }
+    .timer-label {
+      font-size: 12px; font-weight: 600;
+      color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px;
+      margin-top: -4px;
+    }
+
+    /* Progress bar ngang cho sub-levels */
+    .sublevel-progress {
+      display: flex; gap: 6px; margin-bottom: var(--s7); width: 100%; max-width: 280px;
+    }
+    .progress-step {
+      flex: 1; height: 4px; border-radius: 2px;
+      background: rgba(148,163,184,0.1);
+      overflow: hidden;
+      transition: all var(--dur-normal);
+    }
+    .progress-step.completed { background: var(--teal); }
+    .progress-step.active {
+      background: rgba(0, 201, 167, 0.2);
+    }
+    .progress-step.active .progress-fill {
+      height: 100%; background: var(--teal);
+      border-radius: 2px;
+      transition: width 1s linear;
+    }
+
+    /* Nút Giơ tay */
+    .btn-raise-hand {
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, var(--gold) 0%, #E8963A 100%);
+      color: var(--bg-deepest);
+      font-size: 16px; font-weight: 800;
+      padding: 0 36px; min-height: 56px;
+      border-radius: var(--r-full);
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      box-shadow: var(--shadow-md), var(--glow-gold);
+      letter-spacing: -0.3px;
+    }
+    .btn-raise-hand:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: var(--shadow-lg), 0 0 40px rgba(244,164,53,0.3);
+    }
+    .btn-raise-hand.active {
+      background: linear-gradient(135deg, var(--teal) 0%, #00B89C 100%);
+      box-shadow: var(--shadow-md), var(--glow-teal);
+    }
+
+    .ripple-circle {
+      position: absolute; border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      transform: scale(0);
+      animation: ripple-out 0.6s ease-out forwards;
+      pointer-events: none;
+    }
+
+    /* --- Cột Phải: Moderator Panel --- */
+    .mod-hints {
+      flex: 1; display: flex; flex-direction: column; gap: var(--s3);
+      overflow-y: auto; padding-right: 4px;
+    }
+    .hint-card {
+      background: var(--bg-deepest);
+      padding: var(--s4); border-radius: var(--r-md);
+      border-left: 3px solid var(--teal);
+      font-size: 14px; line-height: 1.5;
+      color: var(--text-secondary);
+      animation: slide-in-right var(--dur-slow) var(--ease-spring);
+      box-shadow: var(--inset-glow);
+    }
+    .hint-card strong { color: var(--text-primary); }
+
+    .mod-controls {
+      display: flex; flex-direction: column; gap: var(--s2);
+      margin-top: auto; padding-top: var(--s4);
+      border-top: 1px solid var(--border-subtle);
+    }
+    .btn-mod {
+      padding: 12px var(--s4); border-radius: var(--r-md);
+      font-weight: 700; font-size: 14px;
+      display: flex; justify-content: center; align-items: center; gap: 8px;
+    }
+    .btn-next {
+      background: var(--teal); color: var(--bg-deepest);
+    }
+    .btn-next:hover { background: #00ddb8; box-shadow: var(--glow-teal); }
+
+    .btn-record {
+      background: transparent; color: var(--danger);
+      border: 1px solid rgba(248, 113, 113, 0.25);
+    }
+    .btn-record:hover { background: var(--danger-surface); }
+    .btn-record.recording {
+      background: var(--danger-surface);
+      border-color: transparent;
+      color: var(--danger);
+    }
+    .btn-record.recording .rec-dot {
+      width: 8px; height: 8px;
+      background: var(--danger); border-radius: 50%;
+      display: inline-block;
+      animation: live-dot 1s infinite;
+    }
+
+    /* =========================================
+       BOTTOM BAR — Glassmorphism
+       ========================================= */
+    .bottom-bar {
+      height: calc(80px + env(safe-area-inset-bottom));
+      background: rgba(12, 18, 32, 0.95);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border-subtle);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 max(var(--s7), env(safe-area-inset-right)) env(safe-area-inset-bottom) max(var(--s7), env(safe-area-inset-left));
+      position: fixed; bottom: 0; left: 0; width: 100%; z-index: 100;
+    }
+
+    .room-info-bar {
+      display: flex; align-items: center; gap: var(--s3);
+    }
+    .room-info-bar .room-name-mini {
+      font-weight: 700; font-size: 14px; color: var(--text-primary);
+    }
+    .room-info-bar .divider {
+      width: 1px; height: 20px; background: var(--border-subtle);
+    }
+    .room-info-bar .user-count-mini {
+      font-size: 13px; color: var(--text-muted);
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    .controls-center {
+      display: flex; gap: var(--s4);
+      position: absolute; left: 50%; transform: translateX(-50%);
+    }
+
+    .btn-circle {
+      width: 52px; height: 52px; border-radius: 50%;
+      display: flex; justify-content: center; align-items: center;
+      background: var(--bg-elevated); color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-circle:hover {
+      background: var(--bg-surface);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .btn-mic-on { background: var(--bg-elevated); }
+    .btn-mic-off {
+      background: var(--danger-deep) !important;
+      border-color: transparent !important;
+      color: var(--white) !important;
+    }
+    .btn-mic-off:hover { background: #c81e1e !important; box-shadow: var(--glow-danger); }
+
+    .btn-leave-room {
+      background: transparent; color: var(--danger);
+      font-weight: 700; font-size: 14px;
+      padding: 0 20px; min-height: 44px;
+      border-radius: var(--r-full);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all var(--dur-normal);
+    }
+    .btn-leave-room:hover {
+      background: var(--danger); color: var(--white);
+      border-color: transparent;
+      box-shadow: var(--glow-danger);
+    }
+
+    /* =========================================
+       MÀN HÌNH 3: ENDED
+       ========================================= */
+    .ended-container {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      min-height: 100dvh; text-align: center;
+      padding: var(--s8);
+      background:
+        radial-gradient(ellipse 60% 40% at 50% 30%, rgba(0, 201, 167, 0.08) 0%, transparent 100%),
+        var(--bg-deepest);
+    }
+
+    .ended-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: var(--s9) var(--s8);
+      border-radius: var(--r-xl);
+      max-width: 480px; width: 100%;
+      box-shadow: var(--shadow-xl);
+      animation: slide-up var(--dur-slow) var(--ease-spring);
+    }
+
+    .ended-checkmark {
+      width: 72px; height: 72px;
+      background: var(--teal-surface);
+      border: 2px solid rgba(0, 201, 167, 0.15);
+      border-radius: 50%;
+      display: flex; justify-content: center; align-items: center;
+      margin: 0 auto var(--s6);
+      color: var(--teal);
+    }
+
+    .ended-title {
+      font-family: var(--font-display);
+      font-size: 28px; font-weight: 800;
+      margin-bottom: var(--s2); letter-spacing: -0.5px;
+    }
+    .ended-subtitle {
+      color: var(--text-secondary); font-size: 15px; line-height: 1.6;
+      margin-bottom: var(--s7);
+    }
+
+    .ended-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: var(--s4); margin-bottom: var(--s7);
+    }
+    .stat-card {
+      background: var(--bg-elevated);
+      border-radius: var(--r-md); padding: var(--s5);
+      border: 1px solid var(--border-subtle);
+    }
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 36px; font-weight: 900;
+      color: var(--teal);
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-label {
+      font-size: 12px; font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-top: var(--s1);
+    }
+
+    .record-link-card {
+      display: flex; align-items: center; gap: var(--s3);
+      background: var(--gold-surface);
+      border: 1px solid rgba(244,164,53,0.15);
+      padding: var(--s4); border-radius: var(--r-md);
+      margin-bottom: var(--s6); text-align: left;
+      color: var(--gold); font-weight: 600; font-size: 14px;
+      transition: background var(--dur-normal);
+      cursor: pointer;
+    }
+    .record-link-card:hover { background: rgba(244,164,53,0.15); }
+    .record-link-card .icon { flex-shrink: 0; }
+
+    .ended-actions { display: flex; gap: var(--s3); }
+    .btn-primary-action {
+      flex: 1; padding: 14px var(--s5); border-radius: var(--r-full);
+      font-weight: 700; font-size: 15px;
+      background: var(--teal); color: var(--bg-deepest);
+      min-height: 44px;
+    }
+    .btn-primary-action:hover { background: #00ddb8; box-shadow: var(--glow-teal); }
+
+    .btn-ghost-action {
+      flex: 1; padding: 14px var(--s5); border-radius: var(--r-full);
+      font-weight: 700; font-size: 15px;
+      background: transparent; color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+      min-height: 44px;
+    }
+    .btn-ghost-action:hover {
+      background: var(--bg-elevated); color: var(--text-primary);
+    }
+
+    /* =========================================
+       DIALOG
+       ========================================= */
+    .dialog-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(8px);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 1000;
+      opacity: 0; pointer-events: none;
+      transition: opacity var(--dur-normal);
+    }
+    .dialog-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .dialog {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: var(--s7); border-radius: var(--r-xl);
+      width: 400px; max-width: 90%;
+      transform: scale(0.92) translateY(10px);
+      transition: transform var(--dur-slow) var(--ease-spring);
+      box-shadow: var(--shadow-xl);
+    }
+    .dialog-overlay.active .dialog { transform: scale(1) translateY(0); }
+
+    .dialog-icon {
+      width: 48px; height: 48px;
+      background: var(--danger-surface);
+      border-radius: var(--r-md);
+      display: flex; justify-content: center; align-items: center;
+      color: var(--danger); margin-bottom: var(--s4);
+    }
+
+    .dialog-title {
+      font-family: var(--font-display);
+      font-size: 20px; font-weight: 700;
+      margin-bottom: var(--s2);
+    }
+    .dialog-desc {
+      color: var(--text-secondary); font-size: 14px; line-height: 1.6;
+      margin-bottom: var(--s6);
+    }
+    .dialog-actions { display: flex; gap: var(--s3); }
+
+    /* =========================================
+       RESPONSIVE
+       ========================================= */
+    @media (max-width: 1100px) {
+      .room-layout {
+        grid-template-columns: 240px 1fr;
+        grid-template-rows: 1fr auto;
+      }
+      .mod-panel { grid-column: 1 / -1; max-height: 240px; }
+      .mod-hints { max-height: 120px; }
+      .mod-controls { flex-direction: row; }
+      .btn-mod { flex: 1; }
+    }
+
+    @media (max-width: 768px) {
+      .header { padding: var(--s3) var(--s4); padding-top: max(var(--s3), env(safe-area-inset-top)); }
+      .logo { font-size: 22px; }
+      .logo-sub { display: none; }
+
+      .lobby-container { padding: var(--s6) var(--s4); }
+      .lobby-hero h1 { font-size: 28px; }
+      .lobby-controls { flex-direction: column; align-items: stretch; }
+      .search-input { width: 100%; }
+      .room-grid { grid-template-columns: 1fr; }
+
+      .room-layout { grid-template-columns: 1fr; gap: var(--s3); padding: var(--s3); }
+      .user-panel { max-height: 200px; }
+      .topic-title { font-size: 24px; }
+      .timer-container { width: 160px; height: 160px; }
+      .timer-text { font-size: 40px; }
+
+      .bottom-bar { padding: 0 var(--s4); height: calc(72px + env(safe-area-inset-bottom)); }
+      .room-info-bar { display: none; }
+      .controls-center { position: static; transform: none; }
+
+      .ended-actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Skip Link: A11y — người dùng bàn phím nhảy thẳng tới nội dung -->
+  <a href="#main-content" class="skip-link">Chuyển tới nội dung chính</a>
+
+  <!-- Toast Container — thông báo tạm thời -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <div id="app">
+
+    <!-- ==========================================
+         MÀN HÌNH 1: LOBBY
+         ========================================== -->
+    <div id="screen-lobby" class="screen">
+      <header class="header">
+        <div style="display:flex;align-items:center;">
+          <div class="logo">LUCY</div>
+          <span class="logo-sub">Audio Room</span>
+        </div>
+        <div class="user-profile">
+          <button class="theme-toggle" id="theme-toggle-lobby" aria-label="Chuyển đổi sáng/tối">
+            <svg class="icon icon-sm icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+            <svg class="icon icon-sm icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+          <img src="https://api.dicebear.com/9.x/notionists/svg?seed=MinhTu&backgroundColor=c0aede" alt="Avatar của Minh Tú" class="avatar">
+          <span class="user-name">Minh Tú</span>
+          <button class="btn-logout" aria-label="Đăng xuất">Đăng xuất</button>
+        </div>
+      </header>
+
+      <main class="lobby-container" id="main-content">
+        <div class="lobby-hero">
+          <h1>Chào buổi sáng, <span class="accent">Tú</span> 👋</h1>
+          <p>Chọn một phòng học bên dưới để bắt đầu luyện nói tiếng Anh cùng mọi người.</p>
+        </div>
+
+        <div class="lobby-controls">
+          <div class="filter-group" id="filter-group">
+            <button class="filter-pill active" data-level="">Tất cả</button>
+            <button class="filter-pill" data-level="A1">A1</button>
+            <button class="filter-pill" data-level="A2">A2</button>
+            <button class="filter-pill" data-level="B1">B1</button>
+            <button class="filter-pill" data-level="B2">B2</button>
+          </div>
+          <div class="search-wrap">
+            <span class="search-icon-wrap">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </span>
+            <input type="text" class="search-input" id="search-room" placeholder="Tìm phòng..." aria-label="Tìm kiếm phòng học">
+          </div>
+        </div>
+
+        <div class="room-grid" id="room-list">
+          <!-- Render bằng JS -->
+        </div>
+      </main>
+    </div>
+
+    <!-- ==========================================
+         MÀN HÌNH 2: VOICE ROOM
+         ========================================== -->
+    <div id="screen-room" class="screen hidden">
+      <header class="header">
+        <div style="display:flex;align-items:center;">
+          <div class="logo">LUCY</div>
+          <span class="logo-sub">Audio Room</span>
+        </div>
+        <div class="user-profile">
+          <button class="theme-toggle" id="theme-toggle-room" aria-label="Chuyển đổi sáng/tối">
+            <svg class="icon icon-sm icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+            <svg class="icon icon-sm icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+          <img src="https://api.dicebear.com/9.x/notionists/svg?seed=MinhTu&backgroundColor=c0aede" alt="Avatar" class="avatar">
+          <span class="user-name">Minh Tú</span>
+        </div>
+      </header>
+
+      <div class="room-layout">
+        <!-- TRÁI: Danh sách học viên -->
+        <aside class="panel user-panel">
+          <div class="panel-title">
+            Đang tham gia
+            <span class="panel-count"><span id="user-count">0</span></span>
+          </div>
+          <div class="user-list" id="active-users"></div>
+        </aside>
+
+        <!-- GIỮA: Topic & Timer -->
+        <main class="panel topic-area">
+          <div class="sublevel-chip">
+            <span class="step-num" id="step-num">1</span>
+            <span id="current-sublevel">Greeting Strangers</span>
+          </div>
+          <h2 class="topic-title">Thảo luận & Thực hành</h2>
+
+          <!-- Sub-level progress bar -->
+          <div class="sublevel-progress" id="sublevel-progress"></div>
+
+          <!-- Timer Ring -->
+          <div class="timer-container">
+            <svg class="timer-svg" viewBox="0 0 200 200">
+              <defs>
+                <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="var(--teal)"/>
+                  <stop offset="100%" stop-color="var(--gold-warm)"/>
+                </linearGradient>
+              </defs>
+              <circle class="timer-circle-bg" cx="100" cy="100" r="95"></circle>
+              <circle class="timer-circle-progress" id="timer-progress" cx="100" cy="100" r="95"></circle>
+            </svg>
+            <div class="timer-inner">
+              <div class="timer-text" id="timer-display">10:00</div>
+              <div class="timer-label">còn lại</div>
+            </div>
+          </div>
+
+          <button class="btn-raise-hand" id="btn-raise-hand" aria-label="Giơ tay phát biểu" aria-pressed="false">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0M14 10V4a2 2 0 0 0-4 0v7M10 10.5V6a2 2 0 0 0-4 0v8M7 15a6 6 0 0 0 12 0v-3a2 2 0 0 0-4 0"/></svg>
+            Giơ tay phát biểu
+          </button>
+        </main>
+
+        <!-- PHẢI: Moderator Panel -->
+        <aside class="panel mod-panel" id="mod-panel">
+          <div class="panel-title">
+            Bảng điều khiển
+            <span class="role-badge role-moderator">MOD</span>
+          </div>
+
+          <div class="mod-hints" id="mod-hints">
+            <div class="hint-card"><strong>Gợi ý:</strong> Mời một bạn đang giơ tay giới thiệu bản thân bằng tiếng Anh nhé!</div>
+          </div>
+
+          <div class="mod-controls">
+            <button class="btn-mod btn-next" id="btn-next-sublevel" aria-label="Chuyển chủ đề tiếp theo">
+              Chủ đề tiếp
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+            <button class="btn-mod btn-record" id="btn-toggle-record" aria-label="Bật/tắt ghi âm" aria-pressed="false">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/></svg>
+              Ghi âm
+            </button>
+          </div>
+        </aside>
+      </div>
+
+      <!-- BOTTOM BAR -->
+      <footer class="bottom-bar">
+        <div class="room-info-bar">
+          <span class="room-name-mini" id="bottom-room-name">Morning Conversation</span>
+          <span class="divider"></span>
+          <span class="user-count-mini">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span id="bottom-user-count">0</span>
+          </span>
+        </div>
+
+        <div class="controls-center">
+          <button class="btn-circle btn-mic-on" id="btn-toggle-mic" aria-label="Bật/tắt Micro" aria-pressed="true">
+            <svg class="icon" viewBox="0 0 24 24" id="icon-mic-on"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+            <svg class="icon hidden" viewBox="0 0 24 24" id="icon-mic-off"><line x1="1" x2="23" y1="1" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V5a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .36-.03.71-.08 1.06"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+          </button>
+        </div>
+
+        <button class="btn-leave-room" id="btn-leave-room" aria-label="Rời phòng">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          Rời phòng
+        </button>
+      </footer>
+    </div>
+
+    <!-- ==========================================
+         MÀN HÌNH 3: ENDED
+         ========================================== -->
+    <div id="screen-ended" class="screen hidden">
+      <div class="ended-container">
+        <div class="ended-card">
+          <div class="ended-checkmark">
+            <svg class="icon" style="width:32px;height:32px;" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <h2 class="ended-title">Buổi học kết thúc!</h2>
+          <p class="ended-subtitle">Tuyệt vời! Bạn đã hoàn thành buổi giao tiếp rất xuất sắc. Hẹn gặp lại bạn ở phòng tiếp theo nhé.</p>
+
+          <div class="ended-stats">
+            <div class="stat-card">
+              <div class="stat-value" id="ended-time">30</div>
+              <div class="stat-label">Phút học</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="ended-sublevels">3</div>
+              <div class="stat-label">Chủ đề đã qua</div>
+            </div>
+          </div>
+
+          <a href="#" class="record-link-card" id="record-link">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            <span>Tải file ghi âm — dành cho tài khoản Super</span>
+          </a>
+
+          <div class="ended-actions">
+            <button class="btn-ghost-action" id="btn-back-lobby">Về Lobby</button>
+            <button class="btn-primary-action" id="btn-join-other">Tìm phòng khác</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dialog Xác nhận rời phòng -->
+    <div class="dialog-overlay" id="leave-dialog">
+      <div class="dialog" role="alertdialog" aria-labelledby="dialog-title" aria-describedby="dialog-desc">
+        <div class="dialog-icon">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+        </div>
+        <h3 class="dialog-title" id="dialog-title">Rời phòng học?</h3>
+        <p class="dialog-desc" id="dialog-desc">Bạn có chắc chắn muốn rời? Mọi người vẫn đang thảo luận rất sôi nổi.</p>
+        <div class="dialog-actions">
+          <button class="btn-ghost-action" id="btn-cancel-leave">Ở lại</button>
+          <button class="btn-leave-room" id="btn-confirm-leave" style="flex:1;justify-content:center;">Xác nhận rời</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // =========================================
+    // === DỮ LIỆU MẪU (MOCKS)
+    // =========================================
+    const MOCK_USERS = [
+      { id: 1, name: "Minh Tú",   role: "moderator", mic: true,  speaking: true,  handRaised: false },
+      { id: 2, name: "Lan Anh",   role: "pro",       mic: true,  speaking: false, handRaised: false },
+      { id: 3, name: "Khách #3",  role: "anonymous",  mic: false, speaking: false, handRaised: false },
+      { id: 4, name: "Hoàng Duy", role: "pro",       mic: false, speaking: false, handRaised: true  },
+      { id: 5, name: "Thanh Mai", role: "pro",       mic: true,  speaking: false, handRaised: false }
+    ];
+
+    const MOCK_ROOMS = [
+      { id: 101, name: "Morning Conversation",  level: "B1", users: 5, status: "LIVE",
+        desc: "Buổi giao tiếp sáng — luyện phản xạ với chủ đề đời thường." },
+      { id: 102, name: "Beginner Talk",          level: "A1", users: 2, status: "LIVE",
+        desc: "Phòng dành cho người mới bắt đầu, tốc độ chậm, thân thiện." },
+      { id: 103, name: "Advanced Discussion",    level: "B2", users: 0, status: "SCHEDULED",
+        desc: "Thảo luận sâu về thời sự và văn hoá. Bắt đầu lúc 14:00." },
+      { id: 104, name: "Daily Vocabulary",       level: "A2", users: 8, status: "LIVE",
+        desc: "Học từ vựng qua tình huống thực tế, có flashcard hỗ trợ." },
+      { id: 105, name: "IELTS Speaking Club",    level: "B2", users: 0, status: "ENDED",
+        desc: "Luyện Part 2 & 3 cùng examiner ảo. Phòng đã kết thúc." },
+      { id: 106, name: "Travel English",         level: "A2", users: 3, status: "LIVE",
+        desc: "Tiếng Anh du lịch: đặt phòng, hỏi đường, gọi món." }
+    ];
+
+    const SUB_LEVELS = ["Greeting Strangers", "Daily Routines", "Travel Stories", "Future Plans"];
+    const TIMER_SECONDS = 10 * 60; // 10 phút mỗi sub-level
+    const CIRCLE_CIRC = 2 * Math.PI * 95; // ~596.9
+
+    // =========================================
+    // === ROOM STATE (Quản lý trạng thái)
+    // =========================================
+    const state = {
+      currentUserRole: "moderator", // Đổi thành "pro" / "anonymous" để test
+      currentScreen: "lobby",
+      currentRoomName: "",
+      users: [...MOCK_USERS],
+      isMicOn: true,
+      isHandRaised: false,
+      isRecording: false,
+      currentSublevelIndex: 0,
+      timeRemaining: TIMER_SECONDS,
+      timerInterval: null,
+      totalStudyTimeSecs: 0,
+      socketMockActive: false,
+      activeFilter: ""
+    };
+
+    // =========================================
+    // === UI RENDERER (Render Giao diện)
+    // =========================================
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => document.querySelectorAll(sel);
+
+    const el = {
+      screenLobby:  $('#screen-lobby'),
+      screenRoom:   $('#screen-room'),
+      screenEnded:  $('#screen-ended'),
+      roomList:     $('#room-list'),
+      searchInput:  $('#search-room'),
+      activeUsers:  $('#active-users'),
+      userCount:    $('#user-count'),
+      bottomUserCount: $('#bottom-user-count'),
+      bottomRoomName:  $('#bottom-room-name'),
+      btnRaiseHand: $('#btn-raise-hand'),
+      btnToggleMic: $('#btn-toggle-mic'),
+      iconMicOn:    $('#icon-mic-on'),
+      iconMicOff:   $('#icon-mic-off'),
+      timerDisplay: $('#timer-display'),
+      timerProgress: $('#timer-progress'),
+      currentSublevelTxt: $('#current-sublevel'),
+      stepNum:      $('#step-num'),
+      sublevelProgress: $('#sublevel-progress'),
+      modPanel:     $('#mod-panel'),
+      modHints:     $('#mod-hints'),
+      btnNextSublevel: $('#btn-next-sublevel'),
+      btnToggleRecord: $('#btn-toggle-record'),
+      leaveDialog:  $('#leave-dialog')
+    };
+
+    // Chuyển màn hình
+    function switchScreen(name) {
+      el.screenLobby.classList.add('hidden');
+      el.screenRoom.classList.add('hidden');
+      el.screenEnded.classList.add('hidden');
+
+      if (name === 'lobby') {
+        el.screenLobby.classList.remove('hidden');
+        renderLobbyRooms();
+      } else if (name === 'room') {
+        el.screenRoom.classList.remove('hidden');
+        initRoom();
+      } else if (name === 'ended') {
+        el.screenEnded.classList.remove('hidden');
+        renderEndedScreen();
+      }
+      state.currentScreen = name;
+    }
+
+    // --- Lobby: Skeleton ---
+    function renderSkeletons() {
+      el.roomList.innerHTML = Array(6).fill('').map((_, i) => `
+        <div class="room-card" style="--card-delay:${i * 80}ms;">
+          <div class="room-header">
+            <div style="flex:1">
+              <div class="skeleton skeleton-title"></div>
+              <div class="skeleton skeleton-text" style="width:40%"></div>
+            </div>
+            <div class="skeleton skeleton-badge"></div>
+          </div>
+          <div class="skeleton skeleton-text" style="width:90%; margin-top:8px"></div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:12px;">
+            <div class="skeleton skeleton-text" style="width:25%; margin:0"></div>
+            <div class="skeleton skeleton-button"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // --- Lobby: Render phòng ---
+    function renderLobbyRooms() {
+      const filterLevel = state.activeFilter;
+      const searchTerm = el.searchInput.value.toLowerCase();
+      el.roomList.innerHTML = '';
+
+      const filtered = MOCK_ROOMS.filter(r => {
+        const matchLevel = filterLevel ? r.level === filterLevel : true;
+        const matchSearch = searchTerm
+          ? r.name.toLowerCase().includes(searchTerm) || r.level.toLowerCase().includes(searchTerm)
+          : true;
+        return matchLevel && matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        el.roomList.innerHTML = `
+          <p style="color:var(--text-muted); grid-column:1/-1; text-align:center; padding:60px 20px; font-size:16px;">
+            Không tìm thấy phòng phù hợp.
+          </p>`;
+        return;
+      }
+
+      filtered.forEach((room, idx) => {
+        let statusClass = 'status-ended';
+        let dot = '';
+        if (room.status === 'LIVE') { statusClass = 'status-live'; dot = '<span class="dot"></span>'; }
+        else if (room.status === 'SCHEDULED') { statusClass = 'status-scheduled'; }
+
+        const btn = room.status === 'ENDED'
+          ? '<button class="btn-join" disabled>Đã kết thúc</button>'
+          : `<button class="btn-join" onclick="joinRoom(${room.id}, '${room.name}')">Tham gia</button>`;
+
+        // Giả lập mini-avatar cluster
+        const avatarCount = Math.min(room.users, 3);
+        let avatarHTML = '';
+        if (room.users > 0) {
+          avatarHTML = '<div class="users-avatars">';
+          for (let i = 0; i < avatarCount; i++) {
+            avatarHTML += `<img src="https://api.dicebear.com/9.x/notionists/svg?seed=user${room.id}${i}&backgroundColor=c0aede" class="mini-avatar" alt="">`;
+          }
+          avatarHTML += '</div>';
+        }
+
+        el.roomList.innerHTML += `
+          <div class="room-card" style="--card-delay:${idx * 60}ms;">
+            <div class="room-header">
+              <div>
+                <h3 class="room-title">${room.name}</h3>
+                <span class="room-level">${room.level}</span>
+              </div>
+              <span class="room-status ${statusClass}">${dot}${room.status}</span>
+            </div>
+            <p class="room-desc">${room.desc}</p>
+            <div class="room-footer">
+              <div class="users-count">
+                ${avatarHTML}
+                <span>${room.users} người</span>
+              </div>
+              ${btn}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // --- Room: Render user list ---
+    function renderUsers() {
+      el.activeUsers.innerHTML = '';
+      el.userCount.textContent = state.users.length;
+      el.bottomUserCount.textContent = state.users.length;
+
+      state.users.forEach(user => {
+        const speakingCls = user.speaking ? 'speaking' : '';
+        const handCls = user.handRaised ? 'raised-hand' : '';
+        const roleLabels = { moderator: 'MOD', pro: 'PRO', anonymous: 'GUEST' };
+
+        const micCls = user.mic ? '' : 'mic-off';
+        const micSVG = user.mic
+          ? '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>'
+          : '<svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="1" x2="23" y1="1" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V5a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .36-.03.71-.08 1.06"/><line x1="12" x2="12" y1="19" y2="22"/></svg>';
+
+        const avatarSeed = user.role === 'anonymous' ? `guest${user.id}` : user.name;
+        const bgColor = user.role === 'anonymous' ? 'b6e3f4' : 'c0aede';
+
+        el.activeUsers.innerHTML += `
+          <div class="user-item ${speakingCls} ${handCls}" id="user-${user.id}">
+            <div class="user-avatar-wrap">
+              <img src="https://api.dicebear.com/9.x/notionists/svg?seed=${avatarSeed}&backgroundColor=${bgColor}" class="user-avatar" alt="${user.name}">
+              <div class="waveform-indicator">
+                <span class="wave-bar"></span>
+                <span class="wave-bar"></span>
+                <span class="wave-bar"></span>
+              </div>
+            </div>
+            <div class="user-info">
+              <div class="user-name">${user.name}</div>
+              <span class="role-badge role-${user.role}">${roleLabels[user.role]}</span>
+            </div>
+            <div class="mic-status ${micCls}">${micSVG}</div>
+          </div>
+        `;
+      });
+    }
+
+    // --- Room: Sub-level progress bar ---
+    function renderSublevelProgress() {
+      el.sublevelProgress.innerHTML = '';
+      SUB_LEVELS.forEach((_, i) => {
+        const div = document.createElement('div');
+        div.className = 'progress-step';
+        if (i < state.currentSublevelIndex) div.classList.add('completed');
+        if (i === state.currentSublevelIndex) {
+          div.classList.add('active');
+          div.innerHTML = '<div class="progress-fill" id="progress-fill"></div>';
+        }
+        el.sublevelProgress.appendChild(div);
+      });
+    }
+
+    // --- Room: Timer ---
+    function updateTimerDisplay() {
+      const mins = Math.floor(state.timeRemaining / 60);
+      const secs = state.timeRemaining % 60;
+      el.timerDisplay.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+
+      const pct = state.timeRemaining / TIMER_SECONDS;
+      el.timerProgress.style.strokeDashoffset = CIRCLE_CIRC - (pct * CIRCLE_CIRC);
+
+      // Cập nhật thanh fill progress
+      const fillEl = document.getElementById('progress-fill');
+      if (fillEl) {
+        fillEl.style.width = `${(1 - pct) * 100}%`;
+      }
+
+      // Màu đỏ khi còn < 1 phút
+      if (state.timeRemaining <= 60) {
+        el.timerDisplay.style.color = 'var(--danger)';
+      } else {
+        el.timerDisplay.style.color = 'var(--text-primary)';
+      }
+    }
+
+    // --- Ended screen ---
+    function renderEndedScreen() {
+      const mins = Math.max(1, Math.ceil(state.totalStudyTimeSecs / 60));
+      document.getElementById('ended-time').textContent = mins;
+      document.getElementById('ended-sublevels').textContent = state.currentSublevelIndex + 1;
+    }
+
+    // =========================================
+    // === EVENT HANDLERS (Gắn sự kiện)
+    // =========================================
+
+    // Filter pills
+    document.getElementById('filter-group').addEventListener('click', (e) => {
+      const pill = e.target.closest('.filter-pill');
+      if (!pill) return;
+      $$('.filter-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      state.activeFilter = pill.dataset.level;
+      renderLobbyRooms();
+    });
+
+    // Search
+    el.searchInput.addEventListener('input', () => renderLobbyRooms());
+
+    // Toggle Hand
+    el.btnRaiseHand.addEventListener('click', function() {
+      state.isHandRaised = !state.isHandRaised;
+      if (state.isHandRaised) {
+        this.classList.add('active');
+        this.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg> Đã giơ tay';
+        this.setAttribute('aria-pressed', 'true');
+      } else {
+        this.classList.remove('active');
+        this.innerHTML = '✋ Giơ tay phát biểu';
+        this.setAttribute('aria-pressed', 'false');
+      }
+      // Hiệu ứng ripple
+      const circle = document.createElement('span');
+      circle.classList.add('ripple-circle');
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      circle.style.width = circle.style.height = size + 'px';
+      // Fallback cho event e
+      circle.style.left = (rect.width / 2 - size / 2) + 'px';
+      circle.style.top = (rect.height / 2 - size / 2) + 'px';
+      this.appendChild(circle);
+      setTimeout(() => circle.remove(), 600);
+
+      mockSocketEmit('raise_hand', state.isHandRaised);
+    });
+
+    // Toggle Mic
+    el.btnToggleMic.addEventListener('click', () => {
+      state.isMicOn = !state.isMicOn;
+      if (state.isMicOn) {
+        el.btnToggleMic.classList.remove('btn-mic-off');
+        el.btnToggleMic.classList.add('btn-mic-on');
+        el.iconMicOn.classList.remove('hidden');
+        el.iconMicOff.classList.add('hidden');
+        el.btnToggleMic.setAttribute('aria-pressed', 'true');
+      } else {
+        el.btnToggleMic.classList.add('btn-mic-off');
+        el.btnToggleMic.classList.remove('btn-mic-on');
+        el.iconMicOn.classList.add('hidden');
+        el.iconMicOff.classList.remove('hidden');
+        el.btnToggleMic.setAttribute('aria-pressed', 'false');
+      }
+      mockSocketEmit('user_mic_toggle', state.isMicOn);
+    });
+
+    // Leave flow
+    $('#btn-leave-room').addEventListener('click', () => el.leaveDialog.classList.add('active'));
+    $('#btn-cancel-leave').addEventListener('click', () => el.leaveDialog.classList.remove('active'));
+    $('#btn-confirm-leave').addEventListener('click', () => {
+      el.leaveDialog.classList.remove('active');
+      endRoom();
+    });
+
+    // Moderator controls
+    el.btnNextSublevel.addEventListener('click', () => mockSocketEmit('next_sublevel'));
+
+    el.btnToggleRecord.addEventListener('click', () => {
+      state.isRecording = !state.isRecording;
+      if (state.isRecording) {
+        el.btnToggleRecord.classList.add('recording');
+        el.btnToggleRecord.innerHTML = '<span class="rec-dot"></span> Đang ghi âm...';
+        mockSocketEmit('recording_started');
+      } else {
+        el.btnToggleRecord.classList.remove('recording');
+        el.btnToggleRecord.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/></svg> Ghi âm';
+        mockSocketEmit('recording_stopped');
+      }
+    });
+
+    // Ended → Lobby
+    $('#btn-back-lobby').addEventListener('click', () => switchScreen('lobby'));
+    $('#btn-join-other').addEventListener('click', () => switchScreen('lobby'));
+
+    // =========================================
+    // === SOCKET MOCK (Giả lập Server)
+    // =========================================
+    function mockSocketEmit(event, payload) {
+      console.log(`[Socket] ${event}`, payload);
+
+      setTimeout(() => {
+        if (event === 'raise_hand') {
+          const me = state.users.find(u => u.id === 1);
+          if (me) { me.handRaised = payload; renderUsers(); }
+        }
+        else if (event === 'user_mic_toggle') {
+          const me = state.users.find(u => u.id === 1);
+          if (me) { me.mic = payload; me.speaking = payload; renderUsers(); }
+        }
+        else if (event === 'next_sublevel') {
+          state.currentSublevelIndex = (state.currentSublevelIndex + 1) % SUB_LEVELS.length;
+          el.currentSublevelTxt.textContent = SUB_LEVELS[state.currentSublevelIndex];
+          el.stepNum.textContent = state.currentSublevelIndex + 1;
+          state.timeRemaining = TIMER_SECONDS;
+          updateTimerDisplay();
+          renderSublevelProgress();
+        }
+      }, 200);
+    }
+
+    // Giả lập event server gửi về
+    function startSocketSimulation() {
+      if (state.socketMockActive) return;
+      state.socketMockActive = true;
+
+      // Sau 12s: user mới join
+      setTimeout(() => {
+        if (state.currentScreen !== 'room') return;
+        state.users.push({
+          id: Date.now(), name: "Phương Linh", role: "anonymous",
+          mic: false, speaking: false, handRaised: false
+        });
+        renderUsers();
+        addModHint("Một học viên mới vừa tham gia. Hãy chào đón và mời bạn ấy giới thiệu!");
+        showToast('Phương Linh vừa tham gia phòng', 'success');
+      }, 12000);
+
+      // Sau 8s: Lan Anh bắt đầu nói
+      setTimeout(() => {
+        if (state.currentScreen !== 'room') return;
+        const user = state.users.find(u => u.id === 2);
+        if (user) { user.speaking = true; renderUsers(); }
+      }, 8000);
+
+      // Sau 18s: Lan Anh ngừng nói
+      setTimeout(() => {
+        if (state.currentScreen !== 'room') return;
+        const user = state.users.find(u => u.id === 2);
+        if (user) { user.speaking = false; renderUsers(); }
+      }, 18000);
+
+      // Sau 25s: Khách #3 rời phòng
+      setTimeout(() => {
+        if (state.currentScreen !== 'room') return;
+        state.users = state.users.filter(u => u.id !== 3);
+        renderUsers();
+        showToast('Khách #3 đã rời phòng', 'warning');
+      }, 25000);
+
+      // Moderator hints mỗi 18s
+      const hintInterval = setInterval(() => {
+        if (state.currentScreen !== 'room') { clearInterval(hintInterval); return; }
+        if (state.currentUserRole !== 'moderator') return;
+        const hints = [
+          "Hãy thử hỏi: <strong>\"What did you do last weekend?\"</strong>",
+          "Khích lệ học viên ít nói tham gia. Gọi tên cụ thể sẽ hiệu quả hơn.",
+          "Phòng đang sôi nổi! Hãy tóm tắt ý chính trước khi chuyển chủ đề.",
+          "Thử đặt câu hỏi mở: <strong>\"If you could travel anywhere, where would you go?\"</strong>",
+          "Chủ đề sắp hết thời gian. Cân nhắc chuyển sang phần tiếp theo."
+        ];
+        addModHint(hints[Math.floor(Math.random() * hints.length)]);
+      }, 18000);
+    }
+
+    function addModHint(htmlText) {
+      const hint = document.createElement('div');
+      hint.className = 'hint-card';
+      hint.innerHTML = '<strong>Gợi ý:</strong> ' + htmlText;
+      el.modHints.prepend(hint);
+    }
+
+    // =========================================
+    // === MAIN APP LOGIC
+    // =========================================
+    function joinRoom(roomId, roomName) {
+      state.currentRoomName = roomName || 'Phòng học';
+      renderSkeletons();
+
+      // Fake loading 800ms
+      setTimeout(() => switchScreen('room'), 800);
+    }
+
+    function initRoom() {
+      // Ẩn Mod panel nếu không phải moderator
+      if (state.currentUserRole !== 'moderator') {
+        el.modPanel.classList.add('hidden');
+        document.querySelector('.room-layout').style.gridTemplateColumns = '260px 1fr';
+      } else {
+        el.modPanel.classList.remove('hidden');
+        document.querySelector('.room-layout').style.gridTemplateColumns = '260px 1fr 280px';
+      }
+
+      el.bottomRoomName.textContent = state.currentRoomName;
+      renderUsers();
+      el.currentSublevelTxt.textContent = SUB_LEVELS[state.currentSublevelIndex];
+      el.stepNum.textContent = state.currentSublevelIndex + 1;
+      renderSublevelProgress();
+
+      // Timer
+      clearInterval(state.timerInterval);
+      state.timeRemaining = TIMER_SECONDS;
+      state.totalStudyTimeSecs = 0;
+      updateTimerDisplay();
+
+      state.timerInterval = setInterval(() => {
+        state.timeRemaining--;
+        state.totalStudyTimeSecs++;
+        updateTimerDisplay();
+        if (state.timeRemaining <= 0) {
+          mockSocketEmit('next_sublevel');
+        }
+      }, 1000);
+
+      startSocketSimulation();
+    }
+
+    function endRoom() {
+      clearInterval(state.timerInterval);
+      state.socketMockActive = false;
+      switchScreen('ended');
+    }
+
+    // =========================================
+    // === THEME TOGGLE (Chuyển đổi sáng/tối)
+    // =========================================
+    function getTheme() {
+      return localStorage.getItem('lucy-theme') || 'dark';
+    }
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('lucy-theme', theme);
+    }
+    // Gắn event cho tất cả nút theme toggle (lobby + room)
+    document.querySelectorAll('.theme-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const next = getTheme() === 'dark' ? 'light' : 'dark';
+        setTheme(next);
+        showToast(next === 'light' ? 'Đã chuyển sang chế độ sáng' : 'Đã chuyển sang chế độ tối', 'success');
+      });
+    });
+
+    // =========================================
+    // === TOAST SYSTEM (Thông báo tạm thời)
+    // =========================================
+    function showToast(message, type = 'success', durationMs = 3500) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.setAttribute('role', 'status');
+
+      const iconSVG = {
+        success: '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+        warning: '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+        error: '<svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+      };
+
+      toast.innerHTML = `
+        <span class="toast-icon ${type}">${iconSVG[type] || iconSVG.success}</span>
+        <span>${message}</span>
+      `;
+
+      container.appendChild(toast);
+
+      // Tự động tắt sau N giây
+      setTimeout(() => {
+        toast.classList.add('leaving');
+        setTimeout(() => toast.remove(), 300);
+      }, durationMs);
+    }
+
+    // =========================================
+    // === KEYBOARD ACCESSIBILITY
+    // =========================================
+    // Escape đóng dialog
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const dialog = document.getElementById('leave-dialog');
+        if (dialog.classList.contains('active')) {
+          dialog.classList.remove('active');
+        }
+      }
+    });
+
+    // Click overlay (bên ngoài dialog) cũng đóng
+    document.getElementById('leave-dialog').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('active');
+      }
+    });
+
+    // =========================================
+    // === KHỞI TẠO APP
+    // =========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      // Áp dụng theme đã lưu
+      setTheme(getTheme());
+      // Bắt đầu ở Lobby
+      switchScreen('lobby');
+    });
+  </script>
+</body>
+</html>
