@@ -28,12 +28,15 @@ public class RoomService {
     private final SubLevelRepository subLevelRepository;
 
     public List<RoomResponse> getLiveRooms() {
-        return roomRepository.findByStatus("LIVE")
+        // Dùng findByStatusFetch để JOIN FETCH host + level + currentSubLevel — tránh
+        // N+1
+        return roomRepository.findByStatusFetch("LIVE")
                 .stream().map(this::toResponse).collect(Collectors.toList());
     }
 
     public List<RoomResponse> getRoomsByLevel(Long levelId) {
-        return roomRepository.findByLevel_Id(levelId)
+        // Dùng findByLevelIdFetch để JOIN FETCH relations — tránh N+1
+        return roomRepository.findByLevelIdFetch(levelId)
                 .stream().map(this::toResponse).collect(Collectors.toList());
     }
 
@@ -80,7 +83,8 @@ public class RoomService {
     }
 
     public RoomResponse getById(Long roomId) {
-        Room room = roomRepository.findById(roomId)
+        // Dùng findByIdFetch để JOIN FETCH host + level + currentSubLevel — tránh N+1
+        Room room = roomRepository.findByIdFetch(roomId)
                 .orElseThrow(() -> new RuntimeException("Room not found: " + roomId));
         return toResponse(room);
     }
