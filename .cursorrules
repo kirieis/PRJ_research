@@ -1,0 +1,129 @@
+# Taste-Skill Project Rules - Premium Multi-Theme Design System
+
+You must follow these premium UI/UX design principles and anti-slop guidelines at all times for this project. These are derived from the Taste-Skill framework (v2 experimental and gpt-taste) and adapted to support our specific target languages.
+
+---
+
+## 1. ABSOLUTE ZERO DIRECTIVE (Anti-Slop Guidelines)
+If your code includes any of the following, the design fails immediately:
+- **Banned Fonts:** `Inter` (unless public-sector/A11y), `Roboto`, `Arial`, `Open Sans`, `Helvetica`. Use premium display fonts (`Instrument Serif`, `Geist Sans`, `Outfit`, `Shippori Mincho`, `Noto Serif SC`, `Cabinet Grotesk`, `Satoshi`).
+- **Banned Icons:** Standard thick-stroked Lucide icons. Use ultra-light, precise icon lines (`@phosphor-icons/react`, Radix Icons, or Tabler Icons). Keep `strokeWidth` consistent globally.
+- **Banned Borders & Shadows:** Generic 1px solid gray borders. Harsh, dark drop shadows (`rgba(0,0,0,0.3)`). Instead, use ultra-diffuse low-opacity shadows (<0.04) or pure hairline dividers.
+- **Banned Layouts:** Edge-to-edge sticky navbars glued to the top. Symmetrical, boring grids without visual variance. Alternating left/right zig-zag sections beyond 2 consecutive sections.
+- **Banned Motion:** Standard `linear` or `ease-in-out` transitions. All motion must simulate real-world mass and spring physics.
+- **Banned Copywriting:** Emojis (unless explicitly asked), AI clichés like *"Elevate"*, *"Seamless"*, *"Unleash"*, *"Next-Gen"*, *"Game-changer"*, *"Delve"*. Write plain, specific copy.
+
+---
+
+## 2. MULTI-LANGUAGE PRESET THEMES
+
+### A. Theme: English (EN) - Swiss Neo-Minimalism (Light Mode)
+* **Background:** Warm Bone/Off-white (`#FBFBFA`).
+* **Surfaces:** Pure White (`#FFFFFF`) or light bone (`#F9F9F8`).
+* **Borders:** Thin grey dividers (`#EAEAEA` or `rgba(0, 0, 0, 0.06)`).
+* **Typography:** Serif headers (`Instrument Serif`) + clean Sans-serif (`Geist Sans` or `Be Vietnam Pro`).
+* **Feel:** High-end publication, textured paper grain, flat aesthetic, clean grid lines.
+* **CTAs:** Solid black background (`#111111`) with white text, crisp corners (4px to 6px border radius).
+
+### B. Theme: Japanese (JA) - Zen Sakura (Warm Pink Mode)
+* **Background:** Soft cherry blossom cream (`#FFF0F5`).
+* **Surfaces:** Pure White (`#FFFFFF`).
+* **Borders:** Soft rose-pink lines (`rgba(219, 138, 156, 0.2)`).
+* **Typography:** `Shippori Mincho` / Mincho Serif (Japanese) + `Outfit`.
+* **Feel:** Traditional Zen garden meets modern lofi. Rice-paper textures, minimal borders, falling sakura petals vertically like snow.
+* **CTAs:** Soft pink/rose (`#db8a9c`) background, rounded corners (8px border radius).
+
+### C. Theme: Chinese (ZH) - Festive Celebration (Vibrant Red & Gold)
+* **Background:** Imperial Deep Crimson Red (`#8B0000`).
+* **Surfaces:** Translucent crimson velvet glass (`rgba(139, 0, 0, 0.85)`).
+* **Borders:** Shimmering gold lines (`rgba(255, 234, 0, 0.35)`).
+* **Typography:** `Noto Serif SC` (Chinese) + `Outfit`.
+* **Feel:** Lively street festival, Chinese paper-cut art elements, scroll borders, floating firework sparks/gold dust and rising red lanterns.
+* **CTAs:** Bright gold (`#FFEA00`) background with dark red text, rounded corners (4px border-radius).
+
+---
+
+## 3. DESIGN ENGINEERING DIRECTIVES
+
+### 3.1 Typography Stack
+- **Headlines:** Large scale (`text-4xl md:text-6xl tracking-tighter leading-none`). Keep container width wide (e.g., `max-w-5xl`, `max-w-6xl`) to avoid ugly 5-line wraps.
+- **Body:** `text-base text-gray-600 leading-relaxed max-w-[65ch]`.
+- **Emphasis:** To emphasize words within a headline, use *italic* or **bold** of the SAME font family. Do not mix unrelated serif and sans-serif fonts in the same headline.
+- **Italic Descender Clearance:** Italicized words with descenders (`y, g, j, p, q`) need `leading-[1.1]` minimum and `pb-1`/`mb-1` spacing to prevent clipping.
+
+### 3.2 Layout & Spacing
+- **Massive Section Padding:** Add huge vertical padding between major landing page sections (e.g., `py-32 md:py-48`). Sections must feel like distinct chapters.
+- **No Symmetric 3-Column Grids:** Avoid three identical feature cards in a row. Use bento grids, asymmetric grids, or horizontal-scroll columns.
+- **Bento Grids:**
+  - Must use Tailwind's `grid-flow-dense` (`grid-auto-flow: dense`) to prevent empty spaces.
+  - Bento cell count must equal content count exactly. No blank spacer cells.
+  - Bento cells must have background diversity: at least 2-3 cells should contain real images, patterns, or gradients instead of pure white/beige.
+- **Hero Constraints:**
+  - Must fit within the initial viewport. Headline max 2 lines on desktop. Subtext max 20 words. CTAs visible without scroll.
+  - Hero top padding is capped at `pt-24` (6rem) at desktop so content does not drift too low.
+  - Max 4 text elements: eyebrow/strip, headline, subtext, CTAs. Move taglines, logo walls, or feature lists to lower sections.
+- **Section-Layout-Repetition Ban:** No two sections on the same page can share the same layout family. Alternate layout styles (e.g., bento, vertical-stack, 2-col asymmetric).
+- **Navigation single-line:** Navigation must render on a single line at desktop. Height capped at 80px.
+
+### 3.3 Interactive UI States & Colors
+- **Color Consistency Lock:** Once an accent color is chosen for a page/theme, use it identically across all sections.
+- **Shape Consistency Lock:** Pick one corner-radius scale for the page (e.g., all-sharp, all-soft, all-pill) and apply it to buttons, inputs, and cards.
+- **Button Contrast Check:** Every CTA text must be legible and pass WCAG AA contrast (4.5:1 ratio). White text on white background or invisible ghost buttons are banned.
+- **No Duplicate CTA Intent:** One primary conversion label per page intent (e.g., do not mix "Get in touch" and "Let's talk" as buttons on the same page).
+- **Form Contrast:** Form inputs, placeholders, focus rings, and labels must pass WCAG AA contrast against their section background.
+- **Interactive States:** Provide skeletal loader styles for loading, beautiful empty states, clear error states, and tactile scale-down physics (`scale-[0.98]` or `-translate-y-[1px]`) on `:active`.
+
+---
+
+## 4. MOTION & PERFORMANCE (GSAP & Framer Motion)
+- **GPU-Safe Animation:** Never animate `top`, `left`, `width`, or `height`. Animate exclusively via `transform` (scale, translate) and `opacity`.
+- **Cubic Bezier:** All transitions must use custom spring-like curves, e.g. `transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1)`.
+- **No Scroll Listeners:** `window.addEventListener('scroll')` is banned. Use `motion`'s `useScroll` or GSAP's `ScrollTrigger` for scroll-driven animations.
+- **Reduced Motion:** Any animation above `MOTION_INTENSITY > 3` must honor `prefers-reduced-motion` and collapse to static under reduced motion configurations.
+- **Motion Motivated:** Every animation must have a purpose (hierarchy, feedback, state transition, storytelling). No decorative motion for show.
+- **Backdrop-Blur Constraints:** Apply `backdrop-blur` only to fixed/sticky elements (navbars, dialog overlays). Never apply blur filters to scrolling containers.
+- **Marquee Capping:** Maximum 1 horizontal marquee per page.
+
+---
+
+## 5. EM-DASH BAN (Absolute and Binary)
+**Em-dashes (`—`) and En-dashes (`–`) are COMPLETELY banned.**
+- Banned in headlines, eyebrows, pills, body copy, quotes, attribution, captions, buttons, and alt text.
+- Replace with a hyphen (`-`), period, comma, colon, or parentheses.
+- Minus signs in math (`-5°C`) and standard hyphenators in layout code are permitted.
+
+---
+
+## 6. FINAL PRE-FLIGHT CHECKLIST (Run before completing any task)
+- [ ] Brief inference declared in one line?
+- [ ] Dial values (Variance, Motion, Density) explicit and reasoned?
+- [ ] ZERO em-dashes (`—`) anywhere on the page?
+- [ ] Page Theme Lock: ONE theme (light or dark) for the whole page?
+- [ ] Color Consistency Lock: one accent color used identically across all sections?
+- [ ] Shape Consistency Lock: one corner-radius system applied consistently?
+- [ ] Button Contrast Check: every CTA text is readable (WCAG AA 4.5:1)?
+- [ ] CTA Button Wrap: no CTA label wraps to 2+ lines at desktop?
+- [ ] Form Contrast Check: all form elements pass WCAG AA?
+- [ ] Hero fits the viewport: headline ≤ 2 lines, subtext ≤ 20 words, CTA visible without scroll?
+- [ ] Hero top padding: max `pt-24` at desktop?
+- [ ] Hero stack discipline: max 4 text elements in hero?
+- [ ] EYEBROW COUNT: count of uppercase tracking micro-labels ≤ ceil(sectionCount / 3)?
+- [ ] Split-Header Ban: no "left big headline + right small explainer paragraph" section headers?
+- [ ] Zigzag Alternation Cap: no 3+ consecutive sections with the same split layout?
+- [ ] No Duplicate CTA Intent: only one button text per intent?
+- [ ] Logo wall = logo only: no industry/category labels under logos?
+- [ ] Bento Background Diversity: at least 2-3 cells have real visual variation?
+- [ ] "Used by" logo wall lives UNDER the hero, not inside it, uses SVG logos/marks?
+- [ ] Copy Self-Audit: every visible string checked for grammar and AI Tells?
+- [ ] Motion motivated: every animation justified in one sentence?
+- [ ] Marquee max-one-per-page: no two horizontal marquees on the same page?
+- [ ] Navigation on ONE line at desktop, height ≤ 80px?
+- [ ] Section-Layout-Repetition check: no two sections share the same layout family?
+- [ ] Bento has rhythm and exact cell count?
+- [ ] Long lists use card grid, tabs, or snap pills, not default `border-b` spec tables?
+- [ ] Real images used: gen-tool first, picsum-seed second, or explicit placeholder slots?
+- [ ] No version labels in hero (`V0.6`, `BETA`) unless launch?
+- [ ] No section-numbering eyebrows (`00 / INDEX`, `01 · Capabilities`)?
+- [ ] No decorative dots?
+- [ ] Viewport stability: `min-h-[100dvh]` used, never `h-screen`?
+- [ ] `useEffect` animations have strict cleanups?

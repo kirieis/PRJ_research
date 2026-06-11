@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en" class="theme-en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Outfit:wght@300;400;600;800;900&family=Instrument+Serif:ital@0;1&family=Shippori+Mincho:wght@400;700&family=Noto+Serif+SC:wght@500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
@@ -17,6 +17,12 @@
   <div class="glow-blob blob-1"></div>
   <div class="glow-blob blob-2"></div>
   <div class="glow-blob blob-3"></div>
+
+  <!-- Background particles canvas for Sakura petals / Lanterns / Sparkles -->
+  <canvas id="theme-particles-canvas"></canvas>
+
+  <!-- Fullscreen curtain sweep transition overlay -->
+  <div class="curtain-transition" id="curtain-transition"></div>
 
   <!-- Toast Container -->
   <div class="toast-container" id="toast-container" aria-live="polite"></div>
@@ -28,9 +34,15 @@
       <nav class="top-nav">
         <div class="nav-brand">LUCY<span class="nav-brand-sub">ARCHIVE</span></div>
         <div class="nav-actions">
+          <!-- Premium Language Switcher -->
+          <div class="lang-switcher" id="lang-switcher">
+            <button class="lang-btn active" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="ja">JA</button>
+            <button class="lang-btn" data-lang="zh">ZH</button>
+          </div>
           <div class="nav-user">
-            <span class="user-name">Minh Tú</span>
-            <div class="avatar-wrap"><img src="https://api.dicebear.com/9.x/notionists/svg?seed=MinhTu" alt="Avatar"></div>
+            <span class="user-name">Alex</span>
+            <div class="avatar-wrap"><img src="https://api.dicebear.com/9.x/notionists/svg?seed=Alex" alt="Avatar"></div>
           </div>
         </div>
       </nav>
