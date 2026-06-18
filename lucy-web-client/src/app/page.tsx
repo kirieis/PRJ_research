@@ -666,11 +666,14 @@ export default function LobbyPage() {
 
   // Fetch Rooms & Sync with backend
   useEffect(() => {
-    const fetchRoomsAndLevels = async () => {
+    let cancelled = false;
+
+    const fetchRoomsAndLevels = async (retryCount = 0): Promise<void> => {
+      const MAX_RETRIES = 15; // Tối đa 15 lần thử (mỗi lần cách 3 giây = 45 giây chờ)
       try {
         let levelMap: Record<number, { lang: string; stage: number; num: number }> = {};
         try {
-          const lvRes = await fetch("http://localhost:8081/api/v1/levels/published");
+          const lvRes = await fetch("/api/v1/levels/published");
           if (lvRes.ok) {
             const lvData = await lvRes.json();
             if (Array.isArray(lvData)) {
@@ -685,12 +688,19 @@ export default function LobbyPage() {
             }
           }
         } catch (err) {
+          // Nếu chưa hết số lần retry, đợi 3 giây rồi thử lại
+          if (retryCount < MAX_RETRIES && !cancelled) {
+            console.log(`[LUCY] Backend chua san sang, thu lai lan ${retryCount + 1}/${MAX_RETRIES}...`);
+            await new Promise(r => setTimeout(r, 3000));
+            return fetchRoomsAndLevels(retryCount + 1);
+          }
           console.warn("Failed to fetch levels metadata. Using offline fallback mapping.", err);
         }
 
-        const res = await fetch("http://localhost:8081/api/v1/rooms/live");
+        const res = await fetch("/api/v1/rooms/live");
         if (res.ok) {
           const data = await res.json();
+          console.log("[LUCY] Ket noi Database thanh cong!");
           if (Array.isArray(data) && data.length > 0) {
             const mappedRooms = data.map((r: any) => {
               const langCode = r.levelId === 2 || r.agoraChannelName?.includes("日本語") || r.agoraChannelName?.includes("Japanese") ? "ja" : 
@@ -726,6 +736,12 @@ export default function LobbyPage() {
           }
         }
       } catch (err) {
+        // Nếu chưa hết số lần retry, đợi 3 giây rồi thử lại
+        if (retryCount < MAX_RETRIES && !cancelled) {
+          console.log(`[LUCY] Backend chua san sang, thu lai lan ${retryCount + 1}/${MAX_RETRIES}...`);
+          await new Promise(r => setTimeout(r, 3000));
+          return fetchRoomsAndLevels(retryCount + 1);
+        }
         console.warn("Backend API not reachable. Using fallback local localized room data.");
       }
       
@@ -735,6 +751,7 @@ export default function LobbyPage() {
     };
 
     fetchRoomsAndLevels();
+    return () => { cancelled = true; };
   }, [activeLang]);
 
   const handleJoin = (id: number) => {
