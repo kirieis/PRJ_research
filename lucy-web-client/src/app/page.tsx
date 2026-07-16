@@ -633,16 +633,57 @@ export default function LobbyPage() {
   const [activeLevel, setActiveLevel] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [isSwapping, setIsSwapping] = useState(false);
+  const [userName, setUserName] = useState("User");
+  const [userEmail, setUserEmail] = useState("");
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
-  // Sync state from localStorage on mount
+  const handleLogout = () => {
+    // Clear cookies
+    document.cookie = 'lucy_token=; path=/; max-age=0';
+    document.cookie = 'lucy_user=; path=/; max-age=0';
+    router.push('/login');
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.nav-user')) {
+        setShowUserMenu(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
+  // Sync state from localStorage & cookie on mount
   useEffect(() => {
     const savedLang = localStorage.getItem("activeLang");
     if (savedLang) {
       setActiveLang(savedLang);
     } else {
-      // Default to empty to show the initial select screen if desired, 
-      // but let's default to "en" for instant access or keep landing screen empty
       setActiveLang("");
+    }
+
+    // Read user info from cookie
+    try {
+      const userCookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('lucy_user='));
+      if (userCookie) {
+        const userJson = decodeURIComponent(userCookie.split('=').slice(1).join('='));
+        const user = JSON.parse(userJson);
+        if (user.displayName) {
+          setUserName(user.displayName);
+        } else if (user.email) {
+          setUserName(user.email.split('@')[0]);
+        }
+        if (user.email) {
+          setUserEmail(user.email);
+        }
+      }
+    } catch (e) {
+      // ignore parse errors
     }
   }, []);
 
@@ -874,14 +915,74 @@ export default function LobbyPage() {
                 </button>
               </div>
 
-              <div className="nav-user">
-                <span className="user-name">Alex</span>
-                <div className="avatar-wrap">
-                  <img
-                    src="https://api.dicebear.com/9.x/notionists/svg?seed=Alex"
-                    alt="Avatar"
-                  />
-                </div>
+              <div className="nav-user" style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="flex items-center gap-3 cursor-pointer bg-transparent border-none outline-none"
+                  style={{ background: 'none', border: 'none', padding: 0 }}
+                >
+                  <span className="user-name">{userName}</span>
+                  <div className="avatar-wrap">
+                    <img
+                      src={`https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(userName)}`}
+                      alt="Avatar"
+                    />
+                  </div>
+                </button>
+
+                {/* User Dropdown */}
+                <AnimatePresence>
+                  {showUserMenu && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      className="user-dropdown"
+                      style={{
+                        position: 'absolute',
+                        top: 'calc(100% + 12px)',
+                        right: 0,
+                        minWidth: '220px',
+                        background: 'var(--surface)',
+                        border: '1px solid var(--border)',
+                        borderRadius: '16px',
+                        padding: '8px',
+                        zIndex: 999,
+                        backdropFilter: 'blur(20px)',
+                        boxShadow: '0 16px 48px rgba(0,0,0,0.3)',
+                      }}
+                    >
+                      <div style={{ padding: '12px 14px', borderBottom: '1px solid var(--border)', marginBottom: '6px' }}>
+                        <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-main)' }}>{userName}</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>{userEmail}</div>
+                      </div>
+                      <button
+                        onClick={handleLogout}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
+                          width: '100%',
+                          padding: '10px 14px',
+                          background: 'none',
+                          border: 'none',
+                          borderRadius: '10px',
+                          cursor: 'pointer',
+                          color: '#ef4444',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          transition: 'background 0.15s',
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(239,68,68,0.08)')}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = 'none')}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Sign Out
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </nav>

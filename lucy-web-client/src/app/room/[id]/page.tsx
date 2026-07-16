@@ -3,8 +3,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Microphone, MicrophoneSlash, HandWaving, Door, Record } from "@phosphor-icons/react";
+import { Microphone, MicrophoneSlash, HandWaving, Door, Record, Gift } from "@phosphor-icons/react";
 import io, { Socket } from "socket.io-client";
+import AgoraRTC, { IAgoraRTCClient, IMicrophoneAudioTrack } from "agora-rtc-sdk-ng";
 
 const CountryThemeBackground = ({ lang }: { lang: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -704,7 +705,7 @@ export default function VoiceRoomPage() {
   const [roomName, setRoomName] = useState("Audio Session");
   const [lang, setLang] = useState("en"); // Room targeted language
   const [activeLang, setActiveLang] = useState("en"); // UI language
-  const [users, setUsers] = useState(DEFAULT_USERS);
+  const [users, setUsers] = useState<any[]>(DEFAULT_USERS);
   const [timeRemaining, setTimeRemaining] = useState(TIMER_SECONDS);
   const [sublevelIndex, setSublevelIndex] = useState(0);
   const [isMicOn, setIsMicOn] = useState(true);
@@ -712,9 +713,16 @@ export default function VoiceRoomPage() {
   const [isRecording, setIsRecording] = useState(false);
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
   const [toasts, setToasts] = useState<ToastMsg[]>([]);
+  const [showGiftDrawer, setShowGiftDrawer] = useState(false);
+  const [balance, setBalance] = useState<number>(0);
+  const [activeGiftAnim, setActiveGiftAnim] = useState<{ id: number; gift: string }[]>([]);
 
   // Refs
   const socketRef = useRef<Socket | null>(null);
+  const agoraClientRef = useRef<IAgoraRTCClient | null>(null);
+  const localAudioTrackRef = useRef<IMicrophoneAudioTrack | null>(null);
+  const jwtTokenRef = useRef<string>("");
+  const myUidRef = useRef<number>(Math.floor(Math.random() * 10000));
 
   // Toast System
   const showToast = (text: string) => {
@@ -733,54 +741,141 @@ export default function VoiceRoomPage() {
     }
   }, []);
 
-  // Fetch Room & Connect Socket.io
+  // Fetch JWT Token & Connect Agora + Socket
   useEffect(() => {
-    const fetchRoom = async () => {
+    let isMounted = true;
+    const initRealtime = async () => {
+      // 1. Fetch JWT from Next.js BFF (Cookie Proxy)
+      try {
+        const tokenRes = await fetch("/api/auth/token");
+        if (tokenRes.ok) {
+          const { token } = await tokenRes.json();
+          jwtTokenRef.current = token;
+        }
+      } catch (e) { console.error("Failed to fetch token", e); }
+
+      // Fetch Wallet Balance
+      if (jwtTokenRef.current) {
+        try {
+          const authUrl = process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || "http://localhost:5086";
+          const balanceRes = await fetch(`${authUrl}/api/wallet/balance`, {
+            headers: { "Authorization": `Bearer ${jwtTokenRef.current}` }
+          });
+          if (balanceRes.ok) {
+            const data = await balanceRes.json();
+            setBalance(data.balance);
+          }
+        } catch (e) { console.error("Failed to fetch balance", e); }
+      }
+
+      // 2. Fetch Room Info
+      let channelName = `Room_${roomId}`;
       try {
         const res = await fetch(`http://localhost:8081/api/v1/rooms/${roomId}`);
         if (res.ok) {
           const data = await res.json();
-          setRoomName(data.agoraChannelName || `Room #${data.id}`);
+          channelName = data.agoraChannelName || channelName;
+          setRoomName(channelName);
           const roomLang = data.levelId === 2 ? "ja" : data.levelId === 3 ? "zh" : "en";
           setLang(roomLang);
-          // Auto swap active theme to room language for best localized atmosphere
           setActiveLang(roomLang);
           localStorage.setItem("activeLang", roomLang);
         }
       } catch (err) {
         console.warn("Backend content service unavailable, falling back to mock room.");
-        if (roomId === 102) {
-          setRoomName("Beginner Talk (日本語)");
-          setLang("ja");
-          setActiveLang("ja");
-        } else if (roomId === 103) {
-          setRoomName("Advanced Discussion (中文)");
-          setLang("zh");
-          setActiveLang("zh");
-        } else if (roomId === 104) {
-          setRoomName("Daily Vocabulary (English)");
-          setLang("en");
-          setActiveLang("en");
+      }
+
+      // 3. Init Socket.io
+      socketRef.current = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001");
+      socketRef.current.on("connect", () => {
+        socketRef.current?.emit("join-room", roomId, myUidRef.current);
+      });
+
+      socketRef.current.on("speaking-state", (data: { userId: number; speaking: boolean }) => {
+        setUsers((prev) => prev.map((u) => (u.id === data.userId ? { ...u, speaking: data.speaking } : u)));
+      });
+
+      socketRef.current.on("user-raised-hand", (userId: number) => {
+        setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, handRaised: true } : u)));
+        showToast(`User ${userId} raised hand!`);
+      });
+
+      socketRef.current.on("receive-gift", (data: any) => {
+        showToast(`Gift received! ${data.amount} coins`);
+        const animId = Date.now();
+        const icon = data.giftType === "car" ? "🏎️" : data.giftType === "rocket" ? "🚀" : "🌹";
+        setActiveGiftAnim((prev) => [...prev, { id: animId, gift: icon }]);
+        setTimeout(() => setActiveGiftAnim((prev) => prev.filter(g => g.id !== animId)), 3000);
+      });
+
+      // 4. Init Agora RTC
+      if (!agoraClientRef.current) {
+        agoraClientRef.current = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+      }
+      const client = agoraClientRef.current;
+
+      client.on("user-published", async (user, mediaType) => {
+        await client.subscribe(user, mediaType);
+        if (mediaType === "audio") {
+          user.audioTrack?.play();
+          setUsers((prev) => {
+            if (!prev.find(u => u.id === user.uid)) {
+              return [...prev, { id: user.uid, name: `User_${user.uid}`, role: "guest", mic: true, speaking: false, handRaised: false }];
+            }
+            return prev;
+          });
         }
+      });
+
+      client.on("user-unpublished", (user) => {
+        setUsers((prev) => prev.filter(u => u.id !== user.uid));
+      });
+
+      client.on("token-privilege-will-expire", async () => {
+        console.log("Token expiring, renewing...");
+        const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001";
+        const res = await fetch(`${baseUrl}/api/agora/token`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ channelName, uid: myUidRef.current })
+        });
+        const data = await res.json();
+        await client.renewToken(data.token);
+      });
+
+      // Join Channel
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001";
+        const tokenRes = await fetch(`${baseUrl}/api/agora/token`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ channelName, uid: myUidRef.current })
+        });
+        const { token } = await tokenRes.json();
+        // Using a dummy appId if env is not set, since the Node backend handles the token generation anyway
+        await client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID || "ff0b01c1072940259b3112c3f15c7e18", channelName, token, myUidRef.current);
+        
+        // Publish mic
+        localAudioTrackRef.current = await AgoraRTC.createMicrophoneAudioTrack();
+        await client.publish([localAudioTrackRef.current]);
+        
+        // Add self to users
+        setUsers((prev) => {
+          if (!prev.find(u => u.id === myUidRef.current)) {
+            return [{ id: myUidRef.current, name: "Me", role: "pro", mic: true, speaking: false, handRaised: false }, ...prev.filter(u => u.name !== "Me")];
+          }
+          return prev;
+        });
+      } catch (err) {
+        console.error("Agora join failed", err);
       }
     };
-    fetchRoom();
 
-    socketRef.current = io("http://localhost:5000");
-
-    socketRef.current.on("connect", () => {
-      console.log("Connected to Realtime Audio Socket.");
-      socketRef.current?.emit("join-room", roomId);
-    });
-
-    socketRef.current.on("speaking-state", (data: { userId: number; speaking: boolean }) => {
-      setUsers((prev) =>
-        prev.map((u) => (u.id === data.userId ? { ...u, speaking: data.speaking } : u))
-      );
-    });
+    initRealtime();
 
     return () => {
+      isMounted = false;
       socketRef.current?.disconnect();
+      localAudioTrackRef.current?.close();
+      agoraClientRef.current?.leave();
     };
   }, [roomId]);
 
@@ -822,18 +917,43 @@ export default function VoiceRoomPage() {
     const nextState = !isHandRaised;
     setIsHandRaised(nextState);
     setUsers((prev) =>
-      prev.map((u) => (u.id === 1 ? { ...u, handRaised: nextState } : u))
+      prev.map((u) => (u.id === myUidRef.current ? { ...u, handRaised: nextState } : u))
     );
-    socketRef.current?.emit("raise-hand", { roomId, raised: nextState });
+    socketRef.current?.emit("raise-hand", roomId, myUidRef.current);
   };
 
-  const handleToggleMic = () => {
+  const handleToggleMic = async () => {
     const nextState = !isMicOn;
     setIsMicOn(nextState);
     setUsers((prev) =>
-      prev.map((u) => (u.id === 1 ? { ...u, mic: nextState, speaking: nextState } : u))
+      prev.map((u) => (u.id === myUidRef.current ? { ...u, mic: nextState, speaking: nextState } : u))
     );
+    if (localAudioTrackRef.current) {
+      await localAudioTrackRef.current.setMuted(!nextState);
+    }
     socketRef.current?.emit("speaking", { roomId, speaking: nextState });
+  };
+
+  const handleSendGift = (giftType: string, amount: number, icon: string) => {
+    setShowGiftDrawer(false);
+    
+    // Play local animation immediately for perceived performance
+    const animId = Date.now();
+    setActiveGiftAnim((prev) => [...prev, { id: animId, gift: icon }]);
+    setTimeout(() => setActiveGiftAnim((prev) => prev.filter(g => g.id !== animId)), 3000);
+
+    if (!jwtTokenRef.current) {
+      showToast("Demo Gift Sent: " + giftType);
+      return;
+    }
+    socketRef.current?.emit("send-gift", roomId, {
+      token: jwtTokenRef.current,
+      amount: amount,
+      receiverUserId: users.find(u => u.id !== myUidRef.current)?.id || 2, // Send to first other user for demo
+      giftType: giftType,
+      idempotencyKey: Date.now().toString()
+    });
+    showToast(`Sending ${giftType}...`);
   };
 
   const handleNextTopic = async () => {
@@ -1093,7 +1213,7 @@ export default function VoiceRoomPage() {
           <span className="users-mini">[{users.length}]</span>
         </div>
 
-        <div className="bar-center">
+        <div className="bar-center flex items-center justify-center">
           <button
             onClick={handleToggleMic}
             className={`btn-mic w-14 h-14 flex items-center justify-center text-2xl transition-all duration-300 ${
@@ -1104,6 +1224,51 @@ export default function VoiceRoomPage() {
           >
             {isMicOn ? <Microphone weight="fill" /> : <MicrophoneSlash weight="fill" />}
           </button>
+          
+          <div className="relative">
+            <button
+              onClick={() => setShowGiftDrawer(!showGiftDrawer)}
+              className={`btn-gift w-14 h-14 ml-4 flex items-center justify-center text-2xl transition-all duration-300 rounded-full ${
+                showGiftDrawer 
+                  ? "bg-[var(--gold)] text-white shadow-[0_0_25px_var(--gold-glow)] scale-110" 
+                  : "bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)] shadow-[0_0_20px_var(--gold-glow)] hover:scale-105"
+              }`}
+              title="Send Gift"
+            >
+              <Gift weight="fill" />
+            </button>
+            
+            {/* Gift Selection Drawer */}
+            <AnimatePresence>
+              {showGiftDrawer && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  className="absolute bottom-[80px] left-1/2 -translate-x-1/2 w-[300px] bg-[var(--surface)]/95 backdrop-blur-xl border border-[var(--border)] p-4 rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.5)] flex flex-col gap-3"
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <div className="font-bold text-xs text-[var(--text-muted)] tracking-widest uppercase">Send a Gift</div>
+                    <div className="text-xs font-bold text-[var(--gold)]">Balance: {balance} Coins</div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <button onClick={() => handleSendGift("flower", 10, "🌹")} className="flex flex-col items-center p-3 rounded-2xl hover:bg-[var(--gold)]/10 border border-transparent hover:border-[var(--gold)]/30 transition-all group">
+                      <span className="text-4xl group-hover:scale-110 transition-transform mb-2">🌹</span>
+                      <span className="text-[10px] font-bold text-[var(--gold)]">10 Coins</span>
+                    </button>
+                    <button onClick={() => handleSendGift("car", 100, "🏎️")} className="flex flex-col items-center p-3 rounded-2xl hover:bg-[var(--gold)]/10 border border-transparent hover:border-[var(--gold)]/30 transition-all group">
+                      <span className="text-4xl group-hover:scale-110 transition-transform mb-2">🏎️</span>
+                      <span className="text-[10px] font-bold text-[var(--gold)]">100 Coins</span>
+                    </button>
+                    <button onClick={() => handleSendGift("rocket", 500, "🚀")} className="flex flex-col items-center p-3 rounded-2xl hover:bg-[var(--gold)]/10 border border-transparent hover:border-[var(--gold)]/30 transition-all group">
+                      <span className="text-4xl group-hover:scale-110 transition-transform mb-2">🚀</span>
+                      <span className="text-[10px] font-bold text-[var(--gold)]">500 Coins</span>
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
         <div className="bar-right">
@@ -1117,6 +1282,29 @@ export default function VoiceRoomPage() {
       </div>
 
       {/* Leave Dialog */}
+      
+      {/* Gift Animations Overlay */}
+      <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
+        <AnimatePresence>
+          {activeGiftAnim.map((anim) => (
+            <motion.div
+              key={anim.id}
+              initial={{ opacity: 0, y: "100vh", x: "50vw", scale: 0.5 }}
+              animate={{ 
+                opacity: [0, 1, 1, 0], 
+                y: "-10vh", 
+                x: ["50vw", "45vw", "55vw", "50vw"],
+                scale: [0.5, 2.5, 3.5, 4]
+              }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 3, ease: "easeOut" }}
+              className="absolute text-[100px] drop-shadow-[0_0_30px_var(--gold-glow)]"
+            >
+              {anim.gift}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
       {showLeaveDialog && (
         <div className="dialog-overlay active">
           <motion.div

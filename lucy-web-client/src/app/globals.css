@@ -1,22 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #faf7f0; /* Mediterranean warm white sand paper */
-  --surface: rgba(255, 255, 255, 0.7);
-  --surface-hover: rgba(255, 255, 255, 0.95);
-  --border: rgba(15, 23, 42, 0.06);
-  --border-glow: rgba(29, 78, 216, 0.15);
-  --text-main: #0f172a; /* Slate 900 */
-  --text-muted: #5c6c84; /* Muted Slate Blue */
+  --bg: #0B0B0F; /* Deep luxurious space dark */
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-hover: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(37, 99, 235, 0.2);
+  --text-main: #ffffff; 
+  --text-muted: rgba(255, 255, 255, 0.5);
   
-  --cyan: #2563eb; /* Ocean Cobalt Blue */
-  --cyan-glow: rgba(37, 99, 235, 0.15);
-  --magenta: #b45309; /* Warm Terracotta Gold */
-  --magenta-glow: rgba(180, 83, 9, 0.15);
-  --gold: #d97706; /* Amber Sun */
-  --gold-glow: rgba(217, 119, 6, 0.15);
-  --danger: #d93838;
-  --danger-glow: rgba(217, 56, 56, 0.15);
+  --cyan: #3b82f6; /* Ocean Cobalt Blue but brighter for dark mode */
+  --cyan-glow: rgba(59, 130, 246, 0.25);
+  --magenta: #f59e0b; /* Warm Terracotta Gold but brighter */
+  --magenta-glow: rgba(245, 158, 11, 0.25);
+  --gold: #fbbf24; /* Amber Sun */
+  --gold-glow: rgba(251, 191, 36, 0.25);
+  --danger: #ef4444;
+  --danger-glow: rgba(239, 68, 68, 0.25);
 
   --font-display: var(--font-display);
   --font-body: var(--font-body);
@@ -64,14 +64,14 @@ body {
 .blob-1 {
   width: 480px;
   height: 480px;
-  background: #93c5fd; /* Soft Blue */
+  background: #3b82f6; /* Deep blue */
   top: -100px;
   left: -100px;
 }
 .blob-2 {
   width: 580px;
   height: 580px;
-  background: #fef08a; /* Warm Sunshine */
+  background: #1e1b4b; /* Deep Indigo */
   bottom: -150px;
   right: -100px;
   animation-duration: 30s;
@@ -80,7 +80,7 @@ body {
 .blob-3 {
   width: 380px;
   height: 380px;
-  background: #fed7aa; /* Warm Terracotta */
+  background: #b45309; /* Deep Orange */
   top: 35%;
   left: 55%;
   animation-duration: 35s;
@@ -105,11 +105,11 @@ button:active { transform: scale(0.96); }
   display: flex; justify-content: space-between; align-items: center;
   padding: 20px 48px;
   border-bottom: 1px solid var(--border);
-  background: rgba(250, 247, 240, 0.4);
+  background: rgba(11, 11, 15, 0.4);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   position: sticky; top: 0; z-index: 50;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.02);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 .nav-brand { font-size: 22px; font-weight: 900; letter-spacing: -0.05em; font-family: var(--font-display); color: var(--cyan); }
 .nav-brand-sub { font-size: 9px; font-family: var(--font-mono); color: var(--magenta); margin-left: 8px; letter-spacing: 0.2em; font-weight: 700; }
@@ -134,11 +134,11 @@ button:active { transform: scale(0.96); }
   position: relative; height: 500px; 
   border-radius: var(--card-radius); overflow: hidden; 
   border: var(--card-border);
-  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 .hero-visual-overlay { 
   position: absolute; inset: 0; 
-  background: linear-gradient(135deg, rgba(250, 247, 240, 0.1) 0%, rgba(250, 247, 240, 0.7) 100%); 
+  background: linear-gradient(135deg, rgba(11, 11, 15, 0.1) 0%, rgba(11, 11, 15, 0.7) 100%); 
 }
 
 /* CTAS */
@@ -183,7 +183,7 @@ button:active { transform: scale(0.96); }
   border-radius: var(--btn-radius); font-family: var(--font-mono);
   transition: all 0.3s; 
 }
-.search-input:focus { border-color: var(--cyan); box-shadow: 0 0 10px var(--cyan-glow); background: #fff; }
+.search-input:focus { border-color: var(--cyan); box-shadow: 0 0 10px var(--cyan-glow); background: rgba(255, 255, 255, 0.05); }
 
 /* BENTO CARDS */
 .glass-panel {
@@ -192,7 +192,7 @@ button:active { transform: scale(0.96); }
   -webkit-backdrop-filter: blur(25px);
   border: var(--card-border);
   border-radius: var(--card-radius);
-  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .room-card {

@@ -1,76 +1,36 @@
 @echo off
 cd /d "%~dp0"
-title LUCY Application - Khoi dong
-color 0A
+title LUCY Application - Startup
+color 0B
 
 echo ========================================================
-echo               KHOI DONG HE THONG LUCY
+echo               STARTING LUCY MICROSERVICES
 echo ========================================================
 echo.
-echo Thu muc hien tai: %cd%
-echo.
+echo [+] Starting Content Service (Spring Boot) on Port 8081...
+start "LUCY Content Service (8081)" cmd /k "cd /d "%~dp0lucy-content-service" && mvnw.cmd spring-boot:run"
 
-echo [+] Dang khoi dong Content Service (Spring Boot)...
-start "LUCY Content Service" cmd /k "cd /d "%~dp0lucy-content-service" && mvnw.cmd spring-boot:run"
+echo [+] Starting Auth Service (.NET) on Port 5086...
+start "LUCY Auth Service (5086)" cmd /k "cd /d "%~dp0lucy-auth-service" && dotnet run"
 
-echo [+] Dang khoi dong Realtime Service (NodeJS)...
-start "LUCY Realtime Service" cmd /k "cd /d "%~dp0lucy-realtime-service" && npm run dev"
+echo [+] Starting Realtime Service (NodeJS) on Port 3001...
+start "LUCY Realtime Service (3001)" cmd /k "cd /d "%~dp0lucy-realtime-service" && npm run dev"
 
-echo [+] Dang khoi dong Web Client (Next.js)...
-start "LUCY Web Client" cmd /k "cd /d "%~dp0lucy-web-client" && npm run dev"
+echo [+] Starting Web Client (Next.js) on Port 3000...
+start "LUCY Web Client (3000)" cmd /k "cd /d "%~dp0lucy-web-client" && npm run dev"
 
-echo.
-echo ========================================================
-echo  Dang doi Spring Boot khoi dong va ket noi Database...
-echo  Co the mat 30-60 giay, vui long doi...
-echo ========================================================
-echo.
-
-set count=0
-
-:WAIT_LOOP
-set /a count=%count%+1
-if %count% GTR 60 goto FAILED
-
-echo   Thu lan %count%/60 - Dang cho backend...
-
-powershell -NoProfile -Command "try { $r = Invoke-WebRequest -Uri 'http://127.0.0.1:8081/api/v1/languages' -UseBasicParsing -TimeoutSec 3; exit 0 } catch { exit 1 }" >nul 2>nul
-
-if %ERRORLEVEL% EQU 0 goto SUCCESS
-
-ping -n 3 127.0.0.1 >nul 2>nul
-goto WAIT_LOOP
-
-:SUCCESS
-color 0A
 echo.
 echo ========================================================
-echo.
-echo   [OK] KET NOI DATABASE THANH CONG!
-echo.
-echo   API: http://127.0.0.1:8081 -- HOAT DONG
-echo   DB:  LucyDB (SQL Server)   -- DA KET NOI
-echo.
+echo   Services are starting up in separate windows.
+echo   Please wait 10-15 seconds for all services to boot.
 echo ========================================================
 echo.
-echo [+] Dang mo trinh duyet...
-start http://localhost:3000
+echo   [1] Web Client      : http://localhost:3000
+echo   [2] Realtime Socket : ws://localhost:3001
+echo   [3] Auth API (.NET) : http://localhost:5086
+echo   [4] Content API     : http://localhost:8081
 echo.
-echo   LUCY da khoi dong thanh cong!
-echo   KHONG DONG CUA SO NAY!
-echo.
-pause
-goto END
-
-:FAILED
-color 0C
-echo.
-echo ========================================================
-echo   [X] LOI: Khong the ket noi Database sau 120 giay!
-echo   Vui long kiem tra SQL Server va thu lai.
+echo   DO NOT CLOSE THIS WINDOW to keep this summary visible.
 echo ========================================================
 echo.
 pause
-goto END
-
-:END
