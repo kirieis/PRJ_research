@@ -3,9 +3,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Microphone, MicrophoneSlash, HandWaving, Door, Record, Gift } from "@phosphor-icons/react";
+import { Microphone, MicrophoneSlash, HandWaving, Door, Record, Gift, Wallet } from "@phosphor-icons/react";
 import io, { Socket } from "socket.io-client";
-import AgoraRTC, { IAgoraRTCClient, IMicrophoneAudioTrack } from "agora-rtc-sdk-ng";
+import type { IAgoraRTCClient, IMicrophoneAudioTrack } from "agora-rtc-sdk-ng";
 
 const CountryThemeBackground = ({ lang }: { lang: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -760,19 +760,21 @@ export default function VoiceRoomPage() {
           const authUrl = process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || "http://localhost:5086";
           const balanceRes = await fetch(`${authUrl}/api/wallet/balance`, {
             headers: { "Authorization": `Bearer ${jwtTokenRef.current}` }
-          });
-          if (balanceRes.ok) {
+          }).catch(() => null);
+          if (balanceRes && balanceRes.ok) {
             const data = await balanceRes.json();
             setBalance(data.balance);
           }
-        } catch (e) { console.error("Failed to fetch balance", e); }
+        } catch (e) {
+          console.warn("Wallet balance service currently offline, using cached state.");
+        }
       }
 
       // 2. Fetch Room Info
       let channelName = `Room_${roomId}`;
       try {
-        const res = await fetch(`http://localhost:8081/api/v1/rooms/${roomId}`);
-        if (res.ok) {
+        const res = await fetch(`http://localhost:8081/api/v1/rooms/${roomId}`).catch(() => null);
+        if (res && res.ok) {
           const data = await res.json();
           channelName = data.agoraChannelName || channelName;
           setRoomName(channelName);
@@ -786,78 +788,98 @@ export default function VoiceRoomPage() {
       }
 
       // 3. Init Socket.io
-      socketRef.current = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001");
-      socketRef.current.on("connect", () => {
-        socketRef.current?.emit("join-room", roomId, myUidRef.current);
-      });
-
-      socketRef.current.on("speaking-state", (data: { userId: number; speaking: boolean }) => {
-        setUsers((prev) => prev.map((u) => (u.id === data.userId ? { ...u, speaking: data.speaking } : u)));
-      });
-
-      socketRef.current.on("user-raised-hand", (userId: number) => {
-        setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, handRaised: true } : u)));
-        showToast(`User ${userId} raised hand!`);
-      });
-
-      socketRef.current.on("receive-gift", (data: any) => {
-        showToast(`Gift received! ${data.amount} coins`);
-        const animId = Date.now();
-        const icon = data.giftType === "car" ? "🏎️" : data.giftType === "rocket" ? "🚀" : "🌹";
-        setActiveGiftAnim((prev) => [...prev, { id: animId, gift: icon }]);
-        setTimeout(() => setActiveGiftAnim((prev) => prev.filter(g => g.id !== animId)), 3000);
-      });
-
-      // 4. Init Agora RTC
-      if (!agoraClientRef.current) {
-        agoraClientRef.current = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-      }
-      const client = agoraClientRef.current;
-
-      client.on("user-published", async (user, mediaType) => {
-        await client.subscribe(user, mediaType);
-        if (mediaType === "audio") {
-          user.audioTrack?.play();
-          setUsers((prev) => {
-            if (!prev.find(u => u.id === user.uid)) {
-              return [...prev, { id: user.uid, name: `User_${user.uid}`, role: "guest", mic: true, speaking: false, handRaised: false }];
-            }
-            return prev;
-          });
-        }
-      });
-
-      client.on("user-unpublished", (user) => {
-        setUsers((prev) => prev.filter(u => u.id !== user.uid));
-      });
-
-      client.on("token-privilege-will-expire", async () => {
-        console.log("Token expiring, renewing...");
-        const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001";
-        const res = await fetch(`${baseUrl}/api/agora/token`, {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ channelName, uid: myUidRef.current })
-        });
-        const data = await res.json();
-        await client.renewToken(data.token);
-      });
-
-      // Join Channel
       try {
+        socketRef.current = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001");
+        socketRef.current.on("connect", () => {
+          socketRef.current?.emit("join-room", roomId, myUidRef.current);
+        });
+
+        socketRef.current.on("speaking-state", (data: { userId: number; speaking: boolean }) => {
+          setUsers((prev) => prev.map((u) => (u.id === data.userId ? { ...u, speaking: data.speaking } : u)));
+        });
+
+        socketRef.current.on("user-raised-hand", (userId: number) => {
+          setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, handRaised: true } : u)));
+          showToast(`User ${userId} raised hand!`);
+        });
+
+        socketRef.current.on("receive-gift", (data: any) => {
+          showToast(`Gift received! ${data.amount} coins`);
+          const animId = Date.now();
+          const icon = data.giftType === "car" ? "🏎️" : data.giftType === "rocket" ? "🚀" : "🌹";
+          setActiveGiftAnim((prev) => [...prev, { id: animId, gift: icon }]);
+          setTimeout(() => setActiveGiftAnim((prev) => prev.filter(g => g.id !== animId)), 3000);
+        });
+      } catch (err) {
+        console.warn("Socket realtime service connection failed:", err);
+      }
+
+      // 4. Init Agora RTC (Dynamic import to fix SSR window is not defined error)
+      try {
+        const AgoraRTC = (await import("agora-rtc-sdk-ng")).default;
+        if (!agoraClientRef.current) {
+          agoraClientRef.current = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+        }
+        const client = agoraClientRef.current;
+
+        client.on("user-published", async (user, mediaType) => {
+          try {
+            await client.subscribe(user, mediaType);
+            if (mediaType === "audio") {
+              user.audioTrack?.play();
+              setUsers((prev) => {
+                if (!prev.find(u => u.id === user.uid)) {
+                  return [...prev, { id: user.uid, name: `User_${user.uid}`, role: "guest", mic: true, speaking: false, handRaised: false }];
+                }
+                return prev;
+              });
+            }
+          } catch (e) {
+            console.warn("Agora user-published subscribe failed:", e);
+          }
+        });
+
+        client.on("user-unpublished", (user) => {
+          setUsers((prev) => prev.filter(u => u.id !== user.uid));
+        });
+
+        client.on("token-privilege-will-expire", async () => {
+          try {
+            const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001";
+            const res = await fetch(`${baseUrl}/api/agora/token`, {
+              method: "POST", headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ channelName, uid: myUidRef.current })
+            });
+            const data = await res.json();
+            await client.renewToken(data.token);
+          } catch (e) {
+            console.warn("Failed to renew Agora token:", e);
+          }
+        });
+
+        // Join Channel Safely
         const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001";
         const tokenRes = await fetch(`${baseUrl}/api/agora/token`, {
           method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ channelName, uid: myUidRef.current })
-        });
-        const { token } = await tokenRes.json();
-        // Using a dummy appId if env is not set, since the Node backend handles the token generation anyway
-        await client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID || "ff0b01c1072940259b3112c3f15c7e18", channelName, token, myUidRef.current);
+        }).catch(() => null);
         
-        // Publish mic
-        localAudioTrackRef.current = await AgoraRTC.createMicrophoneAudioTrack();
-        await client.publish([localAudioTrackRef.current]);
-        
-        // Add self to users
+        let token = null;
+        if (tokenRes && tokenRes.ok) {
+          const tokenData = await tokenRes.json();
+          token = tokenData.token;
+        }
+
+        const appId = process.env.NEXT_PUBLIC_AGORA_APP_ID;
+        if (appId && appId !== "ff0b01c1072940259b3112c3f15c7e18") {
+          await client.join(appId, channelName, token, myUidRef.current);
+          localAudioTrackRef.current = await AgoraRTC.createMicrophoneAudioTrack();
+          await client.publish([localAudioTrackRef.current]);
+        } else {
+          console.warn("Agora App ID is not set or invalid in environment. Voice room running in local UI mode.");
+        }
+
+        // Add self to users list
         setUsers((prev) => {
           if (!prev.find(u => u.id === myUidRef.current)) {
             return [{ id: myUidRef.current, name: "Me", role: "pro", mic: true, speaking: false, handRaised: false }, ...prev.filter(u => u.name !== "Me")];
@@ -865,7 +887,7 @@ export default function VoiceRoomPage() {
           return prev;
         });
       } catch (err) {
-        console.error("Agora join failed", err);
+        console.warn("Agora RTC setup warning (non-fatal):", err);
       }
     };
 
@@ -1016,11 +1038,18 @@ export default function VoiceRoomPage() {
       </div>
 
       {/* Nav */}
-      <nav className="top-nav">
+      <nav className="top-nav flex justify-between items-center w-full">
         <div className="nav-brand">
           LUCY
           <span className="nav-brand-sub">LIVE</span>
         </div>
+        <button 
+          onClick={() => router.push('/wallet')}
+          className="flex items-center gap-2 px-5 py-2 rounded-full font-semibold transition-all duration-300 z-50 cursor-pointer bg-white/10 hover:bg-white/20 border border-white/20 text-white backdrop-blur-md hover:shadow-[0_0_20px_var(--cyan-glow)] hover:border-[var(--cyan)]/50"
+        >
+          <Wallet size={20} weight="duotone" className="text-white" />
+          <span>Nạp Xu</span>
+        </button>
       </nav>
 
       {/* Room Grid Layout */}

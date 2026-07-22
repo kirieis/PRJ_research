@@ -44,6 +44,8 @@ export const metadata: Metadata = {
   description: "Anonymous, high-fidelity language practice rooms. Speak without fear in English, Japanese, and Chinese.",
 };
 
+import RealtimeCallModal from "@/components/RealtimeCallModal";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -61,6 +63,9 @@ export default function RootLayout({
         <div className="glow-blob blob-3"></div>
 
         {children}
+
+        {/* Global Real-time 1-on-1 Call & Webhook Deposit Notification Listener */}
+        <RealtimeCallModal />
       </body>
     </html>
   );

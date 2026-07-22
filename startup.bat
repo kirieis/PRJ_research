@@ -19,6 +19,9 @@ start "LUCY Realtime Service (3001)" cmd /k "cd /d "%~dp0lucy-realtime-service" 
 echo [+] Starting Web Client (Next.js) on Port 3000...
 start "LUCY Web Client (3000)" cmd /k "cd /d "%~dp0lucy-web-client" && npm run dev"
 
+echo [+] Starting Ngrok Tunnel for SEPAY Webhook (Auth Service 5086)...
+start "LUCY Ngrok Tunnel" cmd /k "cd /d "%~dp0" && .\ngrok.exe http 127.0.0.1:5086"
+
 echo.
 echo ========================================================
 echo   Services are starting up in separate windows.
@@ -29,6 +32,7 @@ echo   [1] Web Client      : http://localhost:3000
 echo   [2] Realtime Socket : ws://localhost:3001
 echo   [3] Auth API (.NET) : http://localhost:5086
 echo   [4] Content API     : http://localhost:8081
+echo   [5] SEPAY Webhook   : Check Ngrok window for HTTPS link
 echo.
 echo   DO NOT CLOSE THIS WINDOW to keep this summary visible.
 echo ========================================================

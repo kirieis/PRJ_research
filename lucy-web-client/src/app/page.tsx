@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MagnifyingGlass, Globe, ChatCircleText } from "@phosphor-icons/react";
+import { MagnifyingGlass, Globe, ChatCircleText, Wallet } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
 
 // Mock Fallback Data (Multilingual EN, JA, ZH but keep copy in English)
@@ -892,7 +892,14 @@ export default function LobbyPage() {
               {t.brand}
               <span className="nav-brand-sub">{t.sub}</span>
             </div>
-            <div className="nav-actions">
+            <div className="nav-actions flex items-center gap-4">
+              <button 
+                onClick={() => router.push('/wallet')}
+                className="flex items-center gap-2 px-5 py-2 rounded-full font-semibold transition-all duration-300 z-50 cursor-pointer bg-white/10 hover:bg-white/20 border border-white/20 text-white backdrop-blur-md hover:shadow-[0_0_20px_var(--cyan-glow)] hover:border-[var(--cyan)]/50"
+              >
+                <Wallet size={20} weight="duotone" className="text-white" />
+                <span>Nạp Xu</span>
+              </button>
               {/* Target Language Switcher (Button Group) */}
               <div className="lang-switcher">
                 <button 

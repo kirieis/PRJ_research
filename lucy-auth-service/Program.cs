@@ -301,46 +301,85 @@ wallet.MapPost("/gift", async (
     .Produces(StatusCodes.Status404NotFound)
     .Produces(StatusCodes.Status409Conflict);
 
-wallet.MapPost("/sepay-webhook", async (
-        HttpContext httpContext,
-        SepayWebhookRequest request,
-        IWalletService walletService,
-        CancellationToken cancellationToken) =>
+async Task<IResult> HandleSepayWebhook(
+    HttpContext httpContext,
+    SepayWebhookRequest request,
+    IWalletService walletService,
+    IConfiguration config,
+    ILoggerFactory loggerFactory,
+    CancellationToken cancellationToken)
+{
+    var logger = loggerFactory.CreateLogger("SepayWebhook");
+
+    // 1. Parse UserId from "Content" or Description (e.g. "LUCY 123" => userId = 123)
+    var rawText = $"{request.Content} {request.ReferenceCode}".ToUpper();
+    var match = System.Text.RegularExpressions.Regex.Match(rawText, @"LUCY\s*(\d+)");
+    if (!match.Success)
     {
-        // 1. Parse UserId from "Content" (e.g. "LUCY 123" => userId = 123)
-        var content = request.Content?.ToUpper() ?? "";
-        var match = System.Text.RegularExpressions.Regex.Match(content, @"LUCY\s*(\d+)");
-        if (!match.Success)
+        logger.LogInformation("Ignored SePay webhook: No LUCY <UserId> syntax found in content '{Content}'", request.Content);
+        return Results.Ok(new { message = "Ignored: Invalid transfer content syntax. Required format: LUCY <userId>" });
+    }
+    var userId = int.Parse(match.Groups[1].Value);
+
+    // 2. Ensure it's a deposit (in)
+    if (!string.Equals(request.TransferType, "in", StringComparison.OrdinalIgnoreCase))
+    {
+        return Results.Ok(new { message = "Ignored: Outgoing transfer." });
+    }
+
+    // 3. Extract robust transaction ID (Code -> ReferenceCode -> Id)
+    var txCode = !string.IsNullOrWhiteSpace(request.Code) 
+        ? request.Code 
+        : (!string.IsNullOrWhiteSpace(request.ReferenceCode) ? request.ReferenceCode : request.Id.ToString());
+
+    // 4. Calculate coin equivalent (e.g. 1,000 VND = 1 Coin)
+    var coins = request.TransferAmount / 1000m;
+
+    // 5. Deposit
+    var depositRequest = new DepositRequest(coins, $"SEPAY_{txCode}", "SEPAY Top-up");
+    var result = await walletService.DepositAsync(
+        userId, 
+        depositRequest, 
+        httpContext.Connection.RemoteIpAddress?.ToString(), 
+        "SEPAY Webhook", 
+        cancellationToken);
+    
+    if (result.Status == WalletServiceStatus.Success)
+    {
+        // Notify Realtime service via HTTP API to push socket event to user
+        try
         {
-             return Results.Ok(new { message = "Ignored: Invalid transfer content syntax." });
+            var realtimeUrl = config["REALTIME_SERVICE_URL"] ?? "http://localhost:3001";
+            using var client = new HttpClient();
+            await client.PostAsJsonAsync($"{realtimeUrl}/api/notify-coin-deposit", new
+            {
+                userId = userId,
+                coins = coins,
+                newBalance = result.Payload?.BalanceAfter ?? 0,
+                transactionId = txCode
+            }, cancellationToken);
         }
-        var userId = int.Parse(match.Groups[1].Value);
-
-        // 2. Ensure it's a deposit (in)
-        if (request.TransferType != "in")
+        catch (Exception ex)
         {
-             return Results.Ok(new { message = "Ignored: outgoing transfer" });
+            logger.LogWarning(ex, "Failed to send real-time socket notification for user {UserId}", userId);
         }
 
-        // 3. Calculate coin equivalent (e.g. 1,000 VND = 1 Coin)
-        var coins = request.TransferAmount / 1000m;
+        return Results.Ok(new { success = true, newBalance = result.Payload?.BalanceAfter });
+    }
 
-        // 4. Deposit
-        var depositRequest = new DepositRequest(coins, $"SEPAY_{request.Code}", "SEPAY Top-up");
-        var result = await walletService.DepositAsync(
-            userId, 
-            depositRequest, 
-            httpContext.Connection.RemoteIpAddress?.ToString(), 
-            "SEPAY Webhook", 
-            cancellationToken);
-        
-        return result.Status == WalletServiceStatus.Success 
-            ? Results.Ok(new { success = true }) 
-            : Results.BadRequest(new { error = "Deposit failed" });
-    })
+    return Results.BadRequest(new { error = "Deposit failed" });
+}
+
+// Register Webhook endpoints on both /api/wallet/sepay-webhook and /api/auth/sepay-webhook
+wallet.MapPost("/sepay-webhook", HandleSepayWebhook)
     .AllowAnonymous()
-    .WithName("SepayWebhook");
+    .WithName("SepayWalletWebhook");
 
+auth.MapPost("/sepay-webhook", HandleSepayWebhook)
+    .AllowAnonymous()
+    .WithName("SepayAuthWebhook");
+
+app.MapGet("/", () => "LUCY Auth Service is running! Webhooks are ready.");
 app.MapGet("/health", () => Results.Ok(new { status = "ok", service = "lucy-auth-service" }))
     .AllowAnonymous();
 app.MapHealthChecks("/healthz")
