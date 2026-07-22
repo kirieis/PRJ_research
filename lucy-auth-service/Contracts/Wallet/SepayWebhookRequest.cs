@@ -1,11 +1,13 @@
 namespace Lucy.AuthService.Contracts.Wallet;
 
 public sealed record SepayWebhookRequest(
-    string Gateway,
-    string TransactionDate,
-    string AccountNumber,
-    string Code,
-    string Content,
-    string TransferType,
+    string? Gateway,
+    string? TransactionDate,
+    string? AccountNumber,
+    string? Code,
+    string? Content,
+    string? TransferType,
     decimal TransferAmount,
-    decimal Accumulated);
+    decimal Accumulated,
+    string? ReferenceCode,
+    long Id);
