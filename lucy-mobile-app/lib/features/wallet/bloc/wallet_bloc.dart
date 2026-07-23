@@ -54,7 +54,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
 
       emit(state.copyWith(
         balance: result.balance,
-        status: WalletStatus.success,
+        status: WalletStatus.balanceLoaded,
       ));
     } on WalletException catch (e) {
       developer.log('❌ Fetch balance error: $e', name: 'WalletBloc');
@@ -88,7 +88,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
 
       emit(state.copyWith(
         balance: result.balance,
-        status: WalletStatus.success,
+        status: WalletStatus.depositSuccess,
       ));
     } on WalletException catch (e) {
       developer.log('❌ Deposit error: $e', name: 'WalletBloc');
@@ -130,7 +130,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       // Deduct balance locally after confirmed server success.
       emit(state.copyWith(
         balance: state.balance - event.amount,
-        status: WalletStatus.success,
+        status: WalletStatus.giftSuccess,
         isInsufficientBalance: false,
       ));
     } on WalletException catch (e) {

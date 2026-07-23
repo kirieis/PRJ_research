@@ -1,6 +1,13 @@
 // lib/features/wallet/view/wallet_deposit_screen.dart
 // ============================================================
-// Project LUCY — Wallet Deposit Screen (BLoC-driven)
+// Project LUCY — Wallet Deposit & VietQR Screen
+//
+// Matches Web client `/wallet` page functionality:
+//   - Balance display
+//   - Package selection (10k -> 500k VND)
+//   - VietQR code rendering via VietQR API (MB Bank 3399377355)
+//   - Account info & transfer memo copying
+//   - BLoC real-time balance integration
 // ============================================================
 
 import 'package:flutter/material.dart';
@@ -9,65 +16,75 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/primary_button.dart';
 import '../bloc/wallet_bloc.dart';
 import '../bloc/wallet_event.dart';
 import '../bloc/wallet_state.dart';
 
 class WalletDepositScreen extends StatefulWidget {
-  const WalletDepositScreen({super.key});
+  final String userId;
+
+  const WalletDepositScreen({
+    super.key,
+    this.userId = '2',
+  });
 
   @override
   State<WalletDepositScreen> createState() => _WalletDepositScreenState();
 }
 
-class _WalletDepositScreenState extends State<WalletDepositScreen>
-    with SingleTickerProviderStateMixin {
-  final TextEditingController _amountController = TextEditingController();
+class _WalletDepositScreenState extends State<WalletDepositScreen> {
   final NumberFormat _fmt = NumberFormat('#,###', 'vi_VN');
-  late AnimationController _bounceCtrl;
-  late Animation<double> _bounceAnim;
-  int _selectedPreset = 0;
 
-  static const List<int> _presets = [50000, 100000, 200000, 500000];
+  // Bank Info (matching Web)
+  static const String myBankBin = '970422'; // MB Bank
+  static const String myAccountNo = '3399377355';
+  static const String myAccountName = 'NGUYEN TRI THIEN';
+
+  // Packages (matching Web)
+  static const List<Map<String, dynamic>> _packages = [
+    {'amount': 10000, 'coins': 100},
+    {'amount': 20000, 'coins': 200},
+    {'amount': 50000, 'coins': 500},
+    {'amount': 100000, 'coins': 1000},
+    {'amount': 500000, 'coins': 5000},
+  ];
+
+  int _selectedAmount = 10000;
+  bool _copied = false;
 
   @override
   void initState() {
     super.initState();
-    _bounceCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
-    _bounceAnim = Tween<double>(begin: 1.0, end: 1.05).animate(
-      CurvedAnimation(parent: _bounceCtrl, curve: Curves.easeOutBack),
-    );
     context.read<WalletBloc>().add(const WalletBalanceFetched());
   }
 
-  @override
-  void dispose() {
-    _amountController.dispose();
-    _bounceCtrl.dispose();
-    super.dispose();
+  String get _transferContent => 'LUCY ${widget.userId}';
+
+  String get _qrUrl {
+    final encodedInfo = Uri.encodeComponent(_transferContent);
+    final encodedName = Uri.encodeComponent(myAccountName);
+    return 'https://img.vietqr.io/image/$myBankBin-$myAccountNo-compact2.png?amount=$_selectedAmount&addInfo=$encodedInfo&accountName=$encodedName';
   }
 
-  int _parseAmount() {
-    final raw = _amountController.text.replaceAll(RegExp(r'[^0-9]'), '');
-    return raw.isEmpty ? 0 : (int.tryParse(raw) ?? 0);
-  }
-
-  void _setPreset(int amount) {
-    setState(() => _selectedPreset = amount);
-    _amountController.text = _fmt.format(amount);
-    _amountController.selection = TextSelection.fromPosition(
-      TextPosition(offset: _amountController.text.length),
+  void _copyToClipboard(String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    HapticFeedback.lightImpact();
+    setState(() => _copied = true);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Row(children: [
+          Icon(Icons.check_circle_rounded, color: AppColors.success, size: 18),
+          SizedBox(width: 8),
+          Text('Đã sao chép vào bộ nhớ tạm'),
+        ]),
+        backgroundColor: AppColors.surfaceDark,
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 2),
+      ),
     );
-  }
-
-  void _deposit() {
-    final amount = _parseAmount();
-    if (amount <= 0) return;
-    context.read<WalletBloc>().add(WalletDepositRequested(amount: amount));
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) setState(() => _copied = false);
+    });
   }
 
   @override
@@ -75,53 +92,44 @@ class _WalletDepositScreenState extends State<WalletDepositScreen>
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       appBar: AppBar(
-        title: const Text('Nạp Tiền'),
+        title: const Text('Nạp Xu (VietQR)'),
         backgroundColor: AppColors.backgroundDark,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
-      body: BlocListener<WalletBloc, WalletState>(
-        listener: (context, state) {
-          if (state.status == WalletStatus.success) {
-            _bounceCtrl.forward().then((_) => _bounceCtrl.reverse());
-            _amountController.clear();
-            setState(() => _selectedPreset = 0);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: const Row(children: [
-                Icon(Icons.check_circle, color: AppColors.success, size: 20),
-                SizedBox(width: 8),
-                Text('Nạp tiền thành công!'),
-              ]),
-              backgroundColor: AppColors.surfaceDark,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            ));
-          } else if (state.status == WalletStatus.error) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Row(children: [
-                const Icon(Icons.error_outline, color: AppColors.error, size: 20),
-                const SizedBox(width: 8),
-                Expanded(child: Text(state.errorMessage ?? 'Lỗi nạp tiền')),
-              ]),
-              backgroundColor: AppColors.surfaceDark,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            ));
-          }
-        },
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildBalanceCard(),
-              const SizedBox(height: 32),
-              _buildAmountInput(),
-              const SizedBox(height: 20),
-              _buildPresetRow(),
-              const SizedBox(height: 40),
-              _buildDepositButton(),
-            ],
-          ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Current Balance Card
+            _buildBalanceCard(),
+            const SizedBox(height: 24),
+
+            // Package Selector
+            const Text(
+              'Chọn gói nạp xu',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            _buildPackageGrid(),
+            const SizedBox(height: 24),
+
+            // VietQR Card
+            _buildQrCard(),
+            const SizedBox(height: 24),
+
+            // Bank Details Card
+            _buildBankDetailsCard(),
+            const SizedBox(height: 32),
+          ],
         ),
       ),
     );
@@ -129,151 +137,311 @@ class _WalletDepositScreenState extends State<WalletDepositScreen>
 
   Widget _buildBalanceCard() {
     return BlocBuilder<WalletBloc, WalletState>(
-      buildWhen: (p, c) => p.balance != c.balance,
       builder: (context, state) {
-        return ScaleTransition(
-          scale: _bounceAnim,
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-                AppColors.primary.withValues(alpha: 0.15),
-                AppColors.accent.withValues(alpha: 0.08),
-              ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 1.5),
+        return Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: AppColors.primaryGradient,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            child: Column(children: [
-              const Text('Số dư hiện tại',
-                  style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
-              const SizedBox(height: 8),
-              Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.end, children: [
-                Text(_fmt.format(state.balance),
-                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 36, fontWeight: FontWeight.w700)),
-                const SizedBox(width: 4),
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 4),
-                  child: Text('VND', style: TextStyle(color: AppColors.accent, fontSize: 16, fontWeight: FontWeight.w600)),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.3),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  shape: BoxShape.circle,
                 ),
-              ]),
-            ]),
+                child: const Icon(
+                  Icons.account_balance_wallet_rounded,
+                  color: Colors.white,
+                  size: 28,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Số dư hiện tại',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white70,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Text(
+                        '${_fmt.format(state.balance)} Xu',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      const Text(
+                        '🪙',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
           ),
         );
       },
     );
   }
 
-  Widget _buildAmountInput() {
+  Widget _buildPackageGrid() {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 1.6,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+      ),
+      itemCount: _packages.length,
+      itemBuilder: (context, index) {
+        final pkg = _packages[index];
+        final amount = pkg['amount'] as int;
+        final coins = pkg['coins'] as int;
+        final isSelected = amount == _selectedAmount;
+
+        return InkWell(
+          onTap: () {
+            HapticFeedback.selectionClick();
+            setState(() => _selectedAmount = amount);
+          },
+          borderRadius: BorderRadius.circular(14),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? AppColors.accent.withValues(alpha: 0.15)
+                  : AppColors.surfaceDark,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: isSelected
+                    ? AppColors.accent
+                    : AppColors.textHint.withValues(alpha: 0.2),
+                width: isSelected ? 1.5 : 1.0,
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '${_fmt.format(coins)} Xu',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    color:
+                        isSelected ? AppColors.accent : AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '${_fmt.format(amount)}đ',
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildQrCard() {
     return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceDark,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppColors.accent.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        children: [
+          const Text(
+            'Mã VietQR Thanh Toán',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Mở app ngân hàng quét mã QR bên dưới để nạp tự động',
+            style: TextStyle(
+              fontSize: 11,
+              color: AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+
+          // QR Image from VietQR API
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Image.network(
+              _qrUrl,
+              height: 220,
+              fit: BoxFit.contain,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return const SizedBox(
+                  height: 220,
+                  width: 220,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.primary,
+                      strokeWidth: 2,
+                    ),
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) => const SizedBox(
+                height: 220,
+                width: 220,
+                child: Center(
+                  child: Text(
+                    'Không thể tải QR\nVui lòng thử lại',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.black54, fontSize: 12),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Selected amount badge
+          Text(
+            'Số tiền: ${_fmt.format(_selectedAmount)} VNĐ',
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              color: AppColors.accent,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBankDetailsCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.surfaceDark,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
       ),
-      child: TextField(
-        controller: _amountController,
-        keyboardType: TextInputType.number,
-        style: const TextStyle(color: AppColors.textPrimary, fontSize: 20, fontWeight: FontWeight.w600),
-        inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
-          TextInputFormatter.withFunction((oldValue, newValue) {
-            if (newValue.text.isEmpty) return newValue;
-            final int value = int.parse(newValue.text);
-            final String formatted = _fmt.format(value);
-            return TextEditingValue(text: formatted, selection: TextSelection.collapsed(offset: formatted.length));
-          }),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Thông tin chuyển khoản thủ công',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          _buildInfoRow('Ngân hàng', 'MB Bank (Ngân hàng Quân Đội)'),
+          const SizedBox(height: 8),
+          _buildInfoRow('Chủ tài khoản', myAccountName),
+          const SizedBox(height: 8),
+          _buildCopyRow('Số tài khoản', myAccountNo),
+          const SizedBox(height: 8),
+          _buildCopyRow('Nội dung CK', _transferContent, highlight: true),
         ],
-        decoration: InputDecoration(
-          labelText: 'Số tiền cần nạp',
-          labelStyle: const TextStyle(color: AppColors.textSecondary),
-          suffixText: 'VND',
-          suffixStyle: const TextStyle(color: AppColors.accent, fontWeight: FontWeight.w600),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(Icons.account_balance_wallet_rounded, color: AppColors.primary, size: 20),
-            ),
-          ),
-        ),
-        onChanged: (_) {
-          if (_selectedPreset != 0) setState(() => _selectedPreset = 0);
-        },
       ),
     );
   }
 
-  Widget _buildPresetRow() {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const Padding(
-        padding: EdgeInsets.only(left: 4, bottom: 12),
-        child: Text('Chọn nhanh',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 13, fontWeight: FontWeight.w500)),
-      ),
-      Row(
-        children: _presets.map((amount) {
-          final isSelected = _selectedPreset == amount;
-          return Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: amount == _presets.last ? 0 : 8),
-              child: _presetChip(amount, isSelected),
-            ),
-          );
-        }).toList(),
-      ),
-    ]);
+  Widget _buildInfoRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
+        ),
+      ],
+    );
   }
 
-  Widget _presetChip(int amount, bool isSelected) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => _setPreset(amount),
-        borderRadius: BorderRadius.circular(12),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          decoration: BoxDecoration(
-            gradient: isSelected
-                ? const LinearGradient(colors: AppColors.primaryGradient, begin: Alignment.topLeft, end: Alignment.bottomRight)
-                : null,
-            color: isSelected ? null : AppColors.surfaceDark,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: isSelected ? Colors.transparent : AppColors.textHint.withValues(alpha: 0.3)),
-            boxShadow: isSelected
-                ? [BoxShadow(color: AppColors.primary.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))]
-                : null,
-          ),
-          child: Center(
-            child: Text('${_fmt.format(amount)}đ',
+  Widget _buildCopyRow(String label, String value, {bool highlight = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+        ),
+        GestureDetector(
+          onTap: () => _copyToClipboard(value),
+          child: Row(
+            children: [
+              Text(
+                value,
                 style: TextStyle(
-                    color: isSelected ? Colors.white : AppColors.textSecondary,
-                    fontSize: 13,
-                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500)),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: highlight ? AppColors.accent : AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Icon(
+                _copied ? Icons.check_circle_rounded : Icons.copy_rounded,
+                size: 14,
+                color: _copied
+                    ? AppColors.success
+                    : (highlight ? AppColors.accent : AppColors.textHint),
+              ),
+            ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildDepositButton() {
-    return BlocBuilder<WalletBloc, WalletState>(
-      buildWhen: (p, c) => p.isDepositing != c.isDepositing,
-      builder: (context, state) {
-        return PrimaryButton(
-          label: 'Nạp tiền',
-          icon: Icons.add_card_rounded,
-          isLoading: state.isDepositing,
-          isDisabled: state.isDepositing,
-          onPressed: _deposit,
-        );
-      },
+      ],
     );
   }
 }

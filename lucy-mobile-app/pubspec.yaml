@@ -34,6 +34,8 @@ dependencies:
   cupertino_icons: ^1.0.8       # iOS-style icons
   just_audio: ^0.9.36           # Audio player (HLS support)
   intl: ^0.20.2
+  agora_rtc_engine: ^6.5.4
+  permission_handler: ^12.0.3
 
 dev_dependencies:
   flutter_test:
@@ -41,6 +43,7 @@ dev_dependencies:
   flutter_lints: ^4.0.0         # Recommended lint rules
   mockito: ^5.4.4
   build_runner: ^2.4.9
+  bloc_test: ^9.1.7             # BLoC unit test helpers
 
 flutter:
   uses-material-design: true

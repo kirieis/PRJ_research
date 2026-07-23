@@ -59,8 +59,8 @@ class _WalkthroughViewState extends State<_WalkthroughView> {
     return BlocListener<WalkthroughBloc, WalkthroughState>(
       listenWhen: (prev, curr) => curr.isCompleted && !prev.isCompleted,
       listener: (context, state) {
-        // Navigate to home when walkthrough is finished.
-        context.go('/home');
+        // Navigate to login when walkthrough is finished.
+        context.go('/login');
       },
       child: BlocConsumer<WalkthroughBloc, WalkthroughState>(
         listenWhen: (prev, curr) =>

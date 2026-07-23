@@ -1,16 +1,28 @@
 // lib/features/wallet/bloc/wallet_state.dart
 // ============================================================
 // Project LUCY — Wallet BLoC State
+//
+// FIX (Audit): Tách WalletStatus.success thành sub-types
+// để tránh snackbar hiện sai context (deposit vs gift vs balance).
 // ============================================================
 
 import 'package:equatable/equatable.dart';
 
 /// Possible wallet operation statuses.
+///
+/// FIX: Tách `success` thành 3 sub-types rõ ràng:
+/// - [balanceLoaded] — GET balance thành công
+/// - [depositSuccess] — POST deposit thành công
+/// - [giftSuccess] — POST gift thành công
 enum WalletStatus {
   initial,
   loading,
   depositing,
   sendingGift,
+  balanceLoaded,
+  depositSuccess,
+  giftSuccess,
+  /// @deprecated — giữ lại cho backward compatibility, dùng sub-types ở trên.
   success,
   error,
 }
@@ -46,6 +58,13 @@ class WalletState extends Equatable {
       status == WalletStatus.loading ||
       status == WalletStatus.depositing ||
       status == WalletStatus.sendingGift;
+
+  /// Whether any success status is active (for backward compat).
+  bool get isSuccess =>
+      status == WalletStatus.success ||
+      status == WalletStatus.depositSuccess ||
+      status == WalletStatus.giftSuccess ||
+      status == WalletStatus.balanceLoaded;
 
   WalletState copyWith({
     int? balance,

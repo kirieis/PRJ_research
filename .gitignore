@@ -12,3 +12,10 @@ target/
 
 # Ignore generated output files during import
 data/import_data/out/
+
+# ── Flutter / Dart ────────────────────────────────────
+**/build/
+**/.dart_tool/
+**/.flutter-plugins-dependencies
+**/.metadata
+**/pubspec.lock

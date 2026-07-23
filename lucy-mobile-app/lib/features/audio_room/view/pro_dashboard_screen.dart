@@ -52,41 +52,56 @@ class _ProDashboardScreenState extends State<ProDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
-      appBar: AppBar(
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
         backgroundColor: AppColors.backgroundDark,
-        elevation: 0,
-        title: const Text(
-          'Pro Dashboard',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+        appBar: AppBar(
+          backgroundColor: AppColors.backgroundDark,
+          elevation: 0,
+          title: const Text(
+            'Pro Dashboard',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          actions: const [
+            Padding(
+              padding: EdgeInsets.only(right: 12),
+              child: CountdownDisplay(),
+            ),
+          ],
+          bottom: const TabBar(
+            isScrollable: true,
+            labelColor: AppColors.primary,
+            unselectedLabelColor: AppColors.textHint,
+            indicatorColor: AppColors.primary,
+            tabs: [
+              Tab(text: 'Timer', icon: Icon(Icons.timer_rounded)),
+              Tab(text: 'Queue', icon: Icon(Icons.record_voice_over_rounded)),
+              Tab(text: 'Pinned', icon: Icon(Icons.push_pin_rounded)),
+              Tab(text: 'Hints', icon: Icon(Icons.lightbulb_rounded)),
+            ],
           ),
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 12),
-            child: CountdownDisplay(),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        body: TabBarView(
           children: [
-            _buildTimerControlZone(),
-            const SizedBox(height: 20),
-            _buildSpeakerQueueZone(),
-            const SizedBox(height: 20),
-            _buildPinnedResourcesZone(),
-            const SizedBox(height: 20),
-            _buildModeratorHintsZone(),
+            _buildTabContent(_buildTimerControlZone()),
+            _buildTabContent(_buildSpeakerQueueZone()),
+            _buildTabContent(_buildPinnedResourcesZone()),
+            _buildTabContent(_buildModeratorHintsZone()),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTabContent(Widget child) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: child,
     );
   }
 
@@ -442,7 +457,8 @@ class _ActionButton extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(10),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          constraints: const BoxConstraints(minHeight: 48), // >= 48dp touch target
           decoration: BoxDecoration(
             color: AppColors.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(10),
