@@ -109,14 +109,14 @@ class _GiftButtonState extends State<GiftButton> {
       final bloc = context.read<WalletBloc>();
       final resultState = await bloc.stream
           .where((s) =>
-              s.status == WalletStatus.success ||
+              s.status == WalletStatus.giftSuccess ||
               s.status == WalletStatus.error)
           .first
           .timeout(const Duration(seconds: 10));
 
       if (!mounted) return;
 
-      if (resultState.status == WalletStatus.success) {
+      if (resultState.status == WalletStatus.giftSuccess) {
         _triggerFlyAnimation(gift.emoji);
       } else if (resultState.isInsufficientBalance) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

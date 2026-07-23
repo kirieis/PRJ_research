@@ -52,6 +52,16 @@ class MockSocketService extends _i1.Mock implements _i2.SocketService {
       ) as bool);
 
   @override
+  set onTokenRefresh(_i3.Future<String?> Function()? value) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #onTokenRefresh,
+          value,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   void connect({
     String? url,
     String? jwtToken,
