@@ -45,6 +45,8 @@ export const metadata: Metadata = {
 };
 
 import RealtimeCallModal from "@/components/RealtimeCallModal";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import DebugTerminal from "@/components/DebugTerminal";
 
 export default function RootLayout({
   children,
@@ -62,10 +64,13 @@ export default function RootLayout({
         <div className="glow-blob blob-2"></div>
         <div className="glow-blob blob-3"></div>
 
-        {children}
+        <ErrorBoundary>
+          {children}
 
-        {/* Global Real-time 1-on-1 Call & Webhook Deposit Notification Listener */}
-        <RealtimeCallModal />
+          {/* Global Real-time 1-on-1 Call & Webhook Deposit Notification Listener */}
+          <RealtimeCallModal />
+          <DebugTerminal />
+        </ErrorBoundary>
       </body>
     </html>
   );

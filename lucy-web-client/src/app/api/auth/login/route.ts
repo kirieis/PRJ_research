@@ -4,46 +4,43 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    // Call the .NET backend Auth Service
-    // Adjust the URL if your backend is hosted elsewhere
-    const backendUrl = process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || 'http://127.0.0.1:5086';
+    // Target the consolidated LUCY backend on port 3001
+    const backendUrl = process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || 'http://127.0.0.1:3001';
     
+    const email = body.email || body.Email;
+    const password = body.password || body.Password;
+
     const response = await fetch(`${backendUrl}/api/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        Email: body.email,
-        Password: body.password,
-      }),
+      body: JSON.stringify({ email, password }),
     });
 
     const data = await response.json().catch(() => null);
 
     if (!response.ok) {
       return NextResponse.json(
-        { error: data?.error || data?.detail || data?.title || 'Authentication failed. Please check your credentials.' },
-        { status: response.status }
+        { error: data?.error || data?.detail || 'Authentication failed. Please check your credentials.' },
+        { status: response.status || 401 }
       );
     }
 
-    // On success, we set the JWT token as an HTTP-only cookie
     const res = NextResponse.json(data);
     
-    const tokenToSet = data?.accessToken || data?.AccessToken || data?.token;
+    const tokenToSet = data?.token || data?.accessToken || data?.AccessToken;
     
     if (tokenToSet) {
       res.cookies.set('lucy_token', tokenToSet, {
         httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
+        secure: false,
         sameSite: 'lax',
         path: '/',
         maxAge: 7 * 24 * 60 * 60, // 7 days
       });
     }
 
-    // Store user info in a readable cookie for the frontend
     const user = data?.user || data?.User;
     if (user) {
       const userInfo = JSON.stringify({
@@ -55,7 +52,7 @@ export async function POST(request: Request) {
       });
       res.cookies.set('lucy_user', userInfo, {
         httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
+        secure: false,
         sameSite: 'lax',
         path: '/',
         maxAge: 7 * 24 * 60 * 60,
@@ -66,7 +63,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Login proxy error:', error);
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: 'Internal Server Error. Please make sure LUCY Backend on port 3001 is running.' },
       { status: 500 }
     );
   }

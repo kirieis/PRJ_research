@@ -1,108 +1,319 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import axios from 'axios';
+import cors from 'cors';
 import { generateAgoraToken } from './services/AgoraTokenService';
+import { db } from './services/DatabaseService';
+import { AuthService } from './services/AuthService';
 
 const app = express();
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-// Enable CORS for all routes
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
+// Auth helper middleware
+function getAuthenticatedUserId(req: Request): number | null {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return null;
+  const payload = AuthService.verifyToken(authHeader);
+  return payload ? parseInt(payload.nameid, 10) : null;
+}
+
+// ==========================================
+// 1. AUTH API ROUTES
+// ==========================================
+app.post('/api/auth/register', (req: Request, res: Response) => {
+  const { email, password, displayName } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
   }
-  next();
+
+  const result = AuthService.register(email, password, displayName);
+  if (!result.success) {
+    return res.status(409).json({ error: result.error });
+  }
+
+  return res.json(result);
 });
 
-// Agora Token Endpoint
-app.post('/api/agora/token', (req, res) => {
+app.post('/api/auth/login', (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
+  }
+
+  const result = AuthService.login(email, password);
+  if (!result.success) {
+    return res.status(401).json({ error: result.error });
+  }
+
+  return res.json(result);
+});
+
+app.get('/api/auth/me', (req: Request, res: Response) => {
+  const userId = getAuthenticatedUserId(req);
+  if (!userId) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const user = db.findUserById(userId);
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  return res.json({
+    id: user.id,
+    email: user.email,
+    displayName: user.displayName,
+    role: user.role,
+    balance: user.balance,
+    avatarUrl: user.avatarUrl,
+  });
+});
+
+app.post('/api/auth/introspect', (req: Request, res: Response) => {
+  const { token } = req.body;
+  if (!token) return res.json({ active: false });
+
+  const payload = AuthService.verifyToken(token);
+  return res.json({
+    active: !!payload,
+    user: payload,
+  });
+});
+
+app.post('/api/auth/anonymous-room-access', (req: Request, res: Response) => {
+  const userId = getAuthenticatedUserId(req);
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+  const user = db.findUserById(userId);
+  return res.json({
+    status: 'Success',
+    payload: {
+      userId,
+      channelName: req.body.channelName || 'Room_1',
+      role: user?.role || 'anonymous',
+    },
+  });
+});
+
+app.get('/api/auth/token', (req: Request, res: Response) => {
+  // Returns demo JWT token for quick testing
+  const user = db.findUserById(2) || db.findUserById(1);
+  if (!user) return res.status(500).json({ error: 'No seed user' });
+  const token = AuthService.generateToken(user);
+  return res.json({ token, userId: user.id });
+});
+
+// ==========================================
+// 2. WALLET & WEBHOOK API ROUTES
+// ==========================================
+app.get('/api/wallet/balance', (req: Request, res: Response) => {
+  const userId = getAuthenticatedUserId(req) || 2; // Default fallback to user 2 for demo
+  const user = db.findUserById(userId);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  return res.json({ balance: user.balance, userId: user.id });
+});
+
+app.get('/api/auth/wallet/:id', (req: Request, res: Response) => {
+  const userId = parseInt(req.params.id, 10);
+  const user = db.findUserById(userId);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  return res.json({ balance: user.balance, userId: user.id });
+});
+
+app.post('/api/wallet/deposit', (req: Request, res: Response) => {
+  const userId = getAuthenticatedUserId(req) || req.body.userId || 2;
+  const coins = Number(req.body.coins || req.body.amount || 0);
+
+  if (coins <= 0) return res.status(400).json({ error: 'Invalid deposit amount' });
+
+  const newBalance = db.updateUserBalance(userId, coins);
+
+  // Push socket event
+  io.to(`user-${userId}`).emit('coin-deposited', {
+    userId,
+    coins,
+    newBalance,
+    transactionId: `DEP_${Date.now()}`,
+    timestamp: new Date().toISOString(),
+  });
+
+  return res.json({ success: true, balanceAfter: newBalance });
+});
+
+app.post('/api/wallet/gift', (req: Request, res: Response) => {
+  const senderUserId = getAuthenticatedUserId(req) || 2;
+  const { ReceiverUserId, Amount, RoomId, GiftType } = req.body;
+
+  const coins = Number(Amount);
+  if (coins <= 0) return res.status(400).json({ error: 'Invalid gift amount' });
+
+  const sender = db.findUserById(senderUserId);
+  if (!sender || sender.balance < coins) {
+    return res.status(402).json({ error: 'Insufficient balance' });
+  }
+
+  // Transfer balance
+  db.updateUserBalance(senderUserId, -coins);
+  if (ReceiverUserId) {
+    try { db.updateUserBalance(Number(ReceiverUserId), coins); } catch (e) { /* ignore */ }
+  }
+
+  // Broadcast to room
+  if (RoomId) {
+    io.to(String(RoomId)).emit('receive-gift', {
+      amount: coins,
+      giftType: GiftType || 'flower',
+      senderId: senderUserId,
+    });
+  }
+
+  return res.json({ success: true, newBalance: sender.balance });
+});
+
+// Unified SePay Webhook Handler (mapped to BOTH /api/wallet/sepay-webhook and /api/auth/sepay-webhook)
+const handleSepayWebhook = (req: Request, res: Response) => {
+  try {
+    const { content, transferType, transferAmount, code, referenceCode, id, description } = req.body;
+
+    console.log('[SePay Webhook Received]:', req.body);
+
+    // 1. Parse UserId from content or description (e.g. "LUCY 2" => 2)
+    const rawText = `${content || ''} ${description || ''} ${referenceCode || ''}`.toUpperCase();
+    const match = rawText.match(/LUCY\s*(\d+)/);
+
+    if (!match) {
+      console.log('Ignored SePay webhook: No LUCY <userId> in payload');
+      return res.json({ message: 'Ignored: Invalid transfer content syntax. Required: LUCY <userId>' });
+    }
+
+    const userId = parseInt(match[1], 10);
+
+    // 2. Ensure deposit type
+    if (transferType && String(transferType).toLowerCase() !== 'in') {
+      return res.json({ message: 'Ignored: Outgoing transfer' });
+    }
+
+    // 3. Calculate coins (1,000 VND = 1 Coin)
+    const amount = Number(transferAmount || 0);
+    const coins = Math.floor(amount / 1000);
+
+    if (coins <= 0) {
+      return res.json({ message: 'Ignored: Transfer amount too small' });
+    }
+
+    // 4. Credit balance in DB
+    const newBalance = db.updateUserBalance(userId, coins);
+    const txCode = code || referenceCode || String(id || Date.now());
+
+    console.log(`🎉 [SePay Deposit Success] User ${userId} +${coins} Xu! New Balance: ${newBalance}`);
+
+    // 5. Instantly emit WebSocket event to User's active sockets!
+    io.to(`user-${userId}`).emit('coin-deposited', {
+      userId,
+      coins,
+      newBalance,
+      transactionId: txCode,
+      timestamp: new Date().toISOString(),
+    });
+
+    return res.json({ success: true, newBalance });
+  } catch (err: any) {
+    console.error('Error handling SePay Webhook:', err);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+app.post('/api/wallet/sepay-webhook', handleSepayWebhook);
+app.post('/api/auth/sepay-webhook', handleSepayWebhook);
+
+// ==========================================
+// 3. CONTENT & ROOM API ROUTES
+// ==========================================
+app.get('/api/v1/rooms', (req: Request, res: Response) => {
+  return res.json(db.getAllRooms());
+});
+
+app.get('/api/v1/rooms/:id', (req: Request, res: Response) => {
+  const id = parseInt(req.params.id, 10);
+  const room = db.getRoomById(id);
+  if (!room) return res.status(404).json({ error: 'Room not found' });
+  return res.json(room);
+});
+
+app.patch('/api/v1/rooms/:id/current-sub-level', (req: Request, res: Response) => {
+  const id = parseInt(req.params.id, 10);
+  const subLevel = parseInt(req.query.subLevelId as string, 10) || 1;
+  const room = db.updateRoomSubLevel(id, subLevel);
+  return res.json(room || { success: true });
+});
+
+// ==========================================
+// 4. AGORA RTC TOKEN ENDPOINT
+// ==========================================
+app.post('/api/agora/token', (req: Request, res: Response) => {
   try {
     const { channelName, uid } = req.body;
-    
     if (!channelName) {
       return res.status(400).json({ error: 'channelName is required' });
     }
 
     const appId = process.env.AGORA_APP_ID || 'dummy_app_id';
     const appCertificate = process.env.AGORA_APP_CERTIFICATE || 'dummy_app_certificate';
-    const role = 1; // Publisher
-    const expireTime = 3600; // 1 hour
+    console.log(`[Agora Token API] Generating token for AppID: ${appId}, Cert: ${appCertificate}, Channel: ${channelName}, UID: ${uid}`);
+    const token = generateAgoraToken(appId, appCertificate, channelName, uid || 0, 1, 3600);
 
-    const token = generateAgoraToken(appId, appCertificate, channelName, uid || 0, role, expireTime);
-    
-    return res.json({ token });
+    return res.json({ token, appIdUsed: appId });
   } catch (error) {
     console.error('Error generating token:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-// Internal endpoint to notify coin deposit from Auth Webhook
-app.post('/api/notify-coin-deposit', (req, res) => {
-  try {
-    const { userId, coins, newBalance, transactionId } = req.body;
-    if (!userId) {
-      return res.status(400).json({ error: 'userId is required' });
-    }
-
-    console.log(`[Webhook Notification] Coin deposit for User ${userId}: +${coins} coins, new balance: ${newBalance}`);
-
-    // Broadcast real-time coin deposit notification to all user's active sockets
-    io.to(`user-${userId}`).emit('coin-deposited', {
-      userId,
-      coins,
-      newBalance,
-      transactionId,
-      timestamp: new Date().toISOString()
-    });
-
-    return res.json({ success: true, message: `Realtime socket event emitted to user-${userId}` });
-  } catch (error) {
-    console.error('Error handling notify-coin-deposit:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
-  }
+// Root & Health check
+app.get('/', (req: Request, res: Response) => {
+  res.send('LUCY Consolidated Backend Service (Auth + Wallet + Realtime + Webhook + Content) is running!');
 });
 
+app.get('/health', (req: Request, res: Response) => {
+  res.json({ status: 'ok', service: 'lucy-backend' });
+});
+
+// ==========================================
+// 5. SOCKET.IO REALTIME SERVER
+// ==========================================
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-  cors: {
-    origin: "*"
-  }
+  cors: { origin: '*' },
 });
 
-// Map to keep track of online user sockets
 const userSocketMap = new Map<number, string>();
 const socketUserMap = new Map<string, number>();
 
 io.on('connection', (socket) => {
-  console.log(`a user connected ${socket.id}`);
+  console.log(`[Socket.IO] Connected: ${socket.id}`);
 
-  // Register user socket & room
   socket.on('register-user', (userId: number) => {
     if (!userId) return;
     const numId = Number(userId);
     userSocketMap.set(numId, socket.id);
     socketUserMap.set(socket.id, numId);
     socket.join(`user-${numId}`);
-    console.log(`User ${numId} registered with socket ${socket.id}`);
+    console.log(`[Socket.IO] User ${numId} registered to room user-${numId}`);
   });
 
   socket.on('join-room', (roomId: string, userId: number) => {
-    socket.join(roomId);
+    socket.join(String(roomId));
     if (userId) {
       const numId = Number(userId);
       userSocketMap.set(numId, socket.id);
       socketUserMap.set(socket.id, numId);
       socket.join(`user-${numId}`);
     }
-    console.log(`User ${userId} joined room ${roomId}`);
+    console.log(`[Socket.IO] User ${userId} joined room ${roomId}`);
   });
 
-  // 1-on-1 Call Signaling Events
+  // 1-on-1 Real-time Call Signaling Events
   socket.on('call-user', (data: { targetUserId: number; callerId: number; callerName: string; callerAvatar?: string; isVideo?: boolean }) => {
     const { targetUserId, callerId, callerName, callerAvatar, isVideo } = data;
     const channelName = `call_${callerId}_${targetUserId}_${Date.now()}`;
@@ -110,16 +321,15 @@ io.on('connection', (socket) => {
     const appCertificate = process.env.AGORA_APP_CERTIFICATE || 'dummy_app_certificate';
     const callerToken = generateAgoraToken(appId, appCertificate, channelName, callerId, 1, 3600);
 
-    console.log(`[Call-User] ${callerName} (${callerId}) calling User ${targetUserId} in channel ${channelName}`);
+    console.log(`[Call-User] ${callerName} (${callerId}) -> User ${targetUserId}`);
 
-    // Emit incoming call event to target user room
     io.to(`user-${targetUserId}`).emit('incoming-call', {
       callerId,
       callerName,
       callerAvatar: callerAvatar || `https://api.dicebear.com/9.x/notionists/svg?seed=${callerName}`,
       channelName,
-      isVideo: isVideo !== false, // default true
-      callerToken
+      isVideo: isVideo !== false,
+      callerToken,
     });
   });
 
@@ -129,64 +339,30 @@ io.on('connection', (socket) => {
     const appCertificate = process.env.AGORA_APP_CERTIFICATE || 'dummy_app_certificate';
     const receiverToken = generateAgoraToken(appId, appCertificate, channelName, receiverId, 1, 3600);
 
-    console.log(`[Accept-Call] User ${receiverId} accepted call from ${callerId} on ${channelName}`);
+    console.log(`[Accept-Call] User ${receiverId} accepted call from ${callerId}`);
 
-    // Send confirmation back to receiver with their Agora token
     socket.emit('call-joined-receiver', {
       channelName,
-      receiverToken
+      receiverToken,
     });
 
-    // Notify caller that call was accepted
     io.to(`user-${callerId}`).emit('call-accepted', {
       channelName,
       receiverId,
-      receiverName
+      receiverName,
     });
   });
 
   socket.on('reject-call', (data: { callerId: number; reason?: string }) => {
     const { callerId, reason } = data;
-    console.log(`[Reject-Call] Call rejected for caller ${callerId}`);
     io.to(`user-${callerId}`).emit('call-rejected', {
-      reason: reason || 'User declined the call.'
+      reason: reason || 'User declined the call.',
     });
   });
 
   socket.on('end-call', (data: { targetUserId: number; channelName: string }) => {
     const { targetUserId, channelName } = data;
-    console.log(`[End-Call] Call ended in channel ${channelName} for target ${targetUserId}`);
     io.to(`user-${targetUserId}`).emit('call-ended', { channelName });
-  });
-
-  // Gift events
-  socket.on('send-gift', async (roomId: string, data: any) => {
-    const { token, amount, receiverUserId, giftType, idempotencyKey } = data;
-    try {
-      const authUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:5086';
-      const response = await axios.post(`${authUrl}/api/wallet/gift`, {
-        ReceiverUserId: receiverUserId,
-        Amount: amount,
-        RoomId: roomId,
-        GiftType: giftType,
-        IdempotencyKey: idempotencyKey
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      
-      if (response.status === 200) {
-        // Broadcast success to everyone in the room
-        io.to(roomId).emit('receive-gift', {
-          amount,
-          giftType
-        });
-      }
-    } catch (error: any) {
-      console.error('Gift error:', error.response?.data || error.message);
-      socket.emit('gift-error', { error: 'Failed to send gift. Insufficient balance or error.' });
-    }
   });
 
   socket.on('disconnect', () => {
@@ -195,12 +371,15 @@ io.on('connection', (socket) => {
       userSocketMap.delete(userId);
       socketUserMap.delete(socket.id);
     }
-    console.log(`user disconnected ${socket.id}`);
+    console.log(`[Socket.IO] Disconnected: ${socket.id}`);
   });
 });
 
 const PORT = process.env.PORT || 3001;
-httpServer.listen(PORT, () => {
-  console.log(`LUCY Realtime Server running on port ${PORT}`);
+httpServer.listen(PORT as number, '0.0.0.0', () => {
+  console.log(`=======================================================`);
+  console.log(`🚀 LUCY Consolidated Backend Service is LIVE!`);
+  console.log(`   - REST API & Webhooks : http://localhost:${PORT}`);
+  console.log(`   - Realtime WebSockets : ws://localhost:${PORT}`);
+  console.log(`=======================================================`);
 });
-

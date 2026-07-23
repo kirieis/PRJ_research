@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,7 +14,7 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      setError("Please fill in all fields.");
+      setError("Vui lòng điền đầy đủ email và mật khẩu.");
       return;
     }
 
@@ -25,175 +24,77 @@ export default function LoginPage() {
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "69420"
+        },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Login failed. Please check your credentials.");
+        setError(data.error || "Đăng nhập thất bại. Vui lòng kiểm tra lại tài khoản.");
       } else {
         router.push("/");
       }
     } catch (err) {
-      setError("Network error. Make sure the backend is running.");
+      setError("Lỗi kết nối mạng. Vui lòng kiểm tra lại server.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#FBFBFA",
-      fontFamily: "var(--font-body), sans-serif",
-      color: "#111111",
-      display: "flex",
-      flexDirection: "column",
-      position: "relative",
-    }}>
+    <div className="min-h-screen bg-[#FAFAFA] flex flex-col justify-between font-sans">
       {/* Top Nav */}
-      <nav style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "20px 48px",
-        borderBottom: "1px solid #EAEAEA",
-        background: "rgba(251, 251, 250, 0.85)",
-        backdropFilter: "blur(20px)",
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{
-            fontFamily: "var(--font-display), serif",
-            fontWeight: 900,
-            fontSize: "20px",
-            letterSpacing: "-0.03em",
-          }}>
-            LUCY
-          </span>
-          <span style={{
-            fontFamily: "var(--font-mono), monospace",
-            fontSize: "10px",
-            color: "#9F2F2D",
-            letterSpacing: "0.15em",
-            fontWeight: "bold",
-          }}>
+      <nav className="flex justify-between items-center px-8 py-6 border-b border-[#E5E5E5] bg-white z-10">
+        <div className="flex items-center gap-2">
+          <span className="font-extrabold text-2xl tracking-tighter text-[#111]">LUCY</span>
+          <span className="text-[10px] font-bold tracking-widest text-[#B33939] uppercase mt-1">
             ARCHIVE
           </span>
         </div>
+        <button
+          onClick={() => router.push("/")}
+          className="text-xs font-bold text-[#666] hover:text-[#111] transition-colors tracking-widest uppercase"
+        >
+          ← VỀ TRANG CHỦ
+        </button>
       </nav>
 
       {/* Main Container */}
-      <main style={{
-        flex: 1,
-        display: "grid",
-        gridTemplateColumns: "1.1fr 0.9fr",
-        maxWidth: "1200px",
-        width: "100%",
-        margin: "0 auto",
-        padding: "60px 48px",
-        gap: "80px",
-        alignItems: "center",
-      }} className="grid-cols-1 lg:grid-cols-2">
-        
-        {/* Left Side: Editorial Typography - Exact match to Lobby */}
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <h1 style={{
-              fontFamily: "var(--font-display), serif",
-              fontSize: "76px",
-              fontWeight: 900,
-              lineHeight: 0.9,
-              letterSpacing: "-0.04em",
-              marginBottom: "32px",
-            }}>
-              SPEAK<br />
-              <span style={{ color: "#9F2F2D", fontStyle: "italic" }}>WITHOUT</span><br />
-              FEAR.
+      <main className="flex-1 flex items-center justify-center p-6 z-10 my-8">
+        <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          
+          {/* Left Side: Branding */}
+          <div className="space-y-6">
+            <h1 className="text-7xl lg:text-[7rem] font-black tracking-tighter leading-[0.75] font-[var(--font-instrument)] uppercase">
+              <span className="text-[#111] block mb-2">SPEAK</span>
+              <span className="text-[#A63A2E] block">WITHOUT FEAR.</span>
             </h1>
-            <p style={{
-              fontSize: "15px",
-              color: "#787774",
-              lineHeight: 1.6,
-              maxWidth: "380px",
-            }}>
-              Anonymous, high-fidelity language practice rooms. Sign in to start practicing with active sessions.
+            <p className="text-[#666] text-lg max-w-md leading-relaxed mt-8">
+              Anonymous, high-fidelity language practice rooms.<br />
+              Join an active session below.
             </p>
-          </motion.div>
-        </div>
+          </div>
 
-        {/* Right Side: Clean Form Card */}
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-            style={{
-              width: "100%",
-              maxWidth: "400px",
-              background: "#ffffff",
-              border: "1px solid #EAEAEA",
-              borderRadius: "12px",
-              padding: "40px",
-              boxShadow: "0 4px 20px rgba(0,0,0,0.02)",
-            }}
-          >
-            <h2 style={{
-              fontFamily: "var(--font-display), serif",
-              fontSize: "24px",
-              fontWeight: 900,
-              letterSpacing: "-0.02em",
-              marginBottom: "6px",
-            }}>
-              Sign In
-            </h2>
-            <p style={{
-              fontFamily: "var(--font-mono), monospace",
-              fontSize: "10px",
-              color: "#787774",
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              marginBottom: "28px",
-            }}>
-              Enter your credentials
-            </p>
+          {/* Right Side: Light Login Card */}
+          <div className="bg-white border border-[#E5E5E5] rounded-xl p-8 lg:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative">
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold tracking-tight text-[#111] mb-2 font-[var(--font-instrument)]">Đăng Nhập</h2>
+              <p className="text-xs font-sans text-[#666] uppercase tracking-widest">Nhập tài khoản của bạn để tiếp tục</p>
+            </div>
 
             {error && (
-              <motion.div
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                style={{
-                  marginBottom: "20px",
-                  padding: "12px 14px",
-                  background: "rgba(159, 47, 45, 0.05)",
-                  border: "1px solid rgba(159, 47, 45, 0.2)",
-                  borderRadius: "6px",
-                  color: "#9F2F2D",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                }}
-              >
+              <div className="mb-6 p-4 rounded-xl bg-[#FFF0F0] border border-[#FFD6D6] text-[#D93025] text-sm font-medium">
                 {error}
-              </motion.div>
+              </div>
             )}
 
-            <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+            <form onSubmit={handleLogin} className="space-y-5">
               <div>
-                <label style={{
-                  display: "block",
-                  fontFamily: "var(--font-mono), monospace",
-                  fontSize: "10px",
-                  fontWeight: 700,
-                  color: "#787774",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  marginBottom: "8px",
-                }}>
+                <label className="block text-xs font-bold text-[#111] uppercase tracking-wider mb-2">
                   Email
                 </label>
                 <input
@@ -201,81 +102,30 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  style={{
-                    width: "100%",
-                    padding: "12px 14px",
-                    background: "#ffffff",
-                    border: "1px solid #EAEAEA",
-                    borderRadius: "6px",
-                    outline: "none",
-                    color: "#111111",
-                    fontSize: "14px",
-                    transition: "border-color 0.2s",
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = "#111111";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = "#EAEAEA";
-                  }}
+                  className="w-full px-4 py-3.5 bg-[#F9F9F9] border border-[#E5E5E5] rounded-md text-[#111] placeholder-[#999] focus:outline-none focus:border-[#111] focus:ring-1 focus:ring-[#111] transition-all text-sm"
+                  required
                 />
               </div>
 
               <div>
-                <label style={{
-                  display: "block",
-                  fontFamily: "var(--font-mono), monospace",
-                  fontSize: "10px",
-                  fontWeight: 700,
-                  color: "#787774",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  marginBottom: "8px",
-                }}>
-                  Password
+                <label className="block text-xs font-bold text-[#111] uppercase tracking-wider mb-2">
+                  Mật khẩu
                 </label>
-                <div style={{ position: "relative" }}>
+                <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    style={{
-                      width: "100%",
-                      padding: "12px 50px 12px 14px",
-                      background: "#ffffff",
-                      border: "1px solid #EAEAEA",
-                      borderRadius: "6px",
-                      outline: "none",
-                      color: "#111111",
-                      fontSize: "14px",
-                      transition: "border-color 0.2s",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "#111111";
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#EAEAEA";
-                    }}
+                    className="w-full px-4 py-3.5 bg-[#F9F9F9] border border-[#E5E5E5] rounded-md text-[#111] placeholder-[#999] focus:outline-none focus:border-[#111] focus:ring-1 focus:ring-[#111] transition-all text-sm pr-16"
+                    required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    style={{
-                      position: "absolute",
-                      right: "12px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      background: "none",
-                      border: "none",
-                      color: "#787774",
-                      cursor: "pointer",
-                      fontSize: "10px",
-                      fontWeight: 700,
-                      letterSpacing: "0.05em",
-                    }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-[#666] hover:text-[#111] transition-colors"
                   >
-                    {showPassword ? "HIDE" : "SHOW"}
+                    {showPassword ? "ẨN" : "HIỆN"}
                   </button>
                 </div>
               </div>
@@ -283,93 +133,31 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                style={{
-                  width: "100%",
-                  height: "46px",
-                  marginTop: "8px",
-                  background: "#111111",
-                  color: "#ffffff",
-                  border: "none",
-                  borderRadius: "6px",
-                  fontSize: "12px",
-                  fontWeight: 700,
-                  letterSpacing: "0.08em",
-                  cursor: loading ? "not-allowed" : "pointer",
-                  opacity: loading ? 0.7 : 1,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "background 0.2s, transform 0.1s",
-                }}
-                onMouseEnter={(e) => {
-                  if (!loading) e.currentTarget.style.background = "#222222";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "#111111";
-                }}
-                onMouseDown={(e) => {
-                  if (!loading) e.currentTarget.style.transform = "scale(0.98)";
-                }}
-                onMouseUp={(e) => {
-                  e.currentTarget.style.transform = "scale(1)";
-                }}
+                className="w-full py-4 bg-[#111] hover:bg-black text-white font-bold text-xs tracking-widest uppercase rounded-md transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
               >
                 {loading ? (
-                  <div style={{
-                    width: "18px",
-                    height: "18px",
-                    border: "2px solid rgba(255,255,255,0.3)",
-                    borderTopColor: "#fff",
-                    borderRadius: "50%",
-                    animation: "spin 0.6s linear infinite",
-                  }} />
-                ) : "SIGN IN"}
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  "ĐĂNG NHẬP"
+                )}
               </button>
             </form>
 
-            <div style={{
-              marginTop: "24px",
-              textAlign: "center",
-              fontSize: "12px",
-              color: "#787774",
-            }}>
-              No account yet?{" "}
-              <a
-                href="/register"
-                style={{
-                  color: "#9F2F2D",
-                  fontWeight: 700,
-                  textDecoration: "none",
-                }}
-              >
-                Sign Up
+            <div className="mt-8 text-center text-xs text-[#666]">
+              Chưa có tài khoản?{" "}
+              <a href="/register" className="text-[#A63A2E] font-bold hover:underline ml-1">
+                Đăng ký ngay
               </a>
             </div>
-          </motion.div>
-        </div>
+          </div>
 
+        </div>
       </main>
 
-      {/* Styled JSX for keyframe spin */}
-      <style jsx global>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-        @media (max-width: 1024px) {
-          main {
-            grid-template-columns: 1fr !important;
-            text-align: center;
-            gap: 40px !important;
-            padding: 40px 24px !important;
-          }
-          main > div:first-child h1 {
-            font-size: 56px !important;
-          }
-          main > div:first-child p {
-            margin: 0 auto !important;
-          }
-        }
-      `}</style>
+      {/* Footer */}
+      <footer className="px-8 py-6 border-t border-[#E5E5E5] bg-white text-center text-xs font-bold tracking-widest text-[#999] relative z-10">
+        LUCY ARCHIVE SYSTEM © 2026
+      </footer>
     </div>
   );
 }

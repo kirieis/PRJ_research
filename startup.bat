@@ -4,35 +4,35 @@ title LUCY Application - Startup
 color 0B
 
 echo ========================================================
-echo               STARTING LUCY MICROSERVICES
+echo            STARTING LUCY CONSOLIDATED SYSTEM
 echo ========================================================
 echo.
-echo [+] Starting Content Service (Spring Boot) on Port 8081...
-start "LUCY Content Service (8081)" cmd /k "cd /d "%~dp0lucy-content-service" && mvnw.cmd spring-boot:run"
+echo [+] Setting environment variables...
+set NEXT_PUBLIC_AGORA_APP_ID=ef8ac89bf2ac4e29ba2bc768bdeeca7c
+set AGORA_APP_ID=ef8ac89bf2ac4e29ba2bc768bdeeca7c
+set AGORA_APP_CERTIFICATE=9e9888e288ea4b689265b53fd1d59a32
 
-echo [+] Starting Auth Service (.NET) on Port 5086...
-start "LUCY Auth Service (5086)" cmd /k "cd /d "%~dp0lucy-auth-service" && dotnet run"
+echo [+] Starting LUCY Backend (Auth + Wallet + Realtime + Webhook + Content) on Port 3001...
+start "LUCY Backend (3001)" cmd /k "cd /d "%~dp0lucy-realtime-service" && npm run dev"
 
-echo [+] Starting Realtime Service (NodeJS) on Port 3001...
-start "LUCY Realtime Service (3001)" cmd /k "cd /d "%~dp0lucy-realtime-service" && npm run dev"
-
-echo [+] Starting Web Client (Next.js) on Port 3000...
+echo [+] Starting LUCY Web Client (Next.js) on Port 3000...
 start "LUCY Web Client (3000)" cmd /k "cd /d "%~dp0lucy-web-client" && npm run dev"
 
-echo [+] Starting Ngrok Tunnel for SEPAY Webhook (Auth Service 5086)...
-start "LUCY Ngrok Tunnel" cmd /k "cd /d "%~dp0" && .\ngrok.exe http 127.0.0.1:5086"
+echo [+] Starting Ngrok Tunnel for FULL Web (Port 3000)...
+start "LUCY Ngrok Tunnel" cmd /k "cd /d "%~dp0" && .\ngrok.exe http 3000"
 
 echo.
 echo ========================================================
-echo   Services are starting up in separate windows.
-echo   Please wait 10-15 seconds for all services to boot.
+echo   Services are booting up!
 echo ========================================================
 echo.
-echo   [1] Web Client      : http://localhost:3000
-echo   [2] Realtime Socket : ws://localhost:3001
-echo   [3] Auth API (.NET) : http://localhost:5086
-echo   [4] Content API     : http://localhost:8081
-echo   [5] SEPAY Webhook   : Check Ngrok window for HTTPS link
+echo   [1] Local Web Client      : http://localhost:3000
+echo   [2] Local Realtime ^& APIs : http://localhost:3001
+echo   [3] FULL NGROK PUBLIC URL  : Check Ngrok window!
+echo                                (e.g. https://xxx.ngrok-free.app)
+echo.
+echo   * Webhook SePay URL: https://^<NGROK_URL^>/api/wallet/sepay-webhook
+echo   * Share Room / Call: Copy link from browser or click "Moi Ban Be"!
 echo.
 echo   DO NOT CLOSE THIS WINDOW to keep this summary visible.
 echo ========================================================

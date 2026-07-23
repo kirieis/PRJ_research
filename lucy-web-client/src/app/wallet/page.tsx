@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable */
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -23,10 +24,15 @@ export default function WalletPage() {
   const [userId, setUserId] = useState<number>(2); // Mặc định ID 2, có thể lấy từ token
   const [selectedAmount, setSelectedAmount] = useState<number>(10000);
   const [copied, setCopied] = useState(false);
-  const [balance, setBalance] = useState<number | null>(null);
+  const [balance, setBalance] = useState<number>(0);
 
-  // Parse token từ cookie để lấy ID thật nếu có
+  // Load cached balance & parse token từ cookie để lấy ID thật nếu có
   useEffect(() => {
+    const cachedBalance = localStorage.getItem("lucy_user_balance");
+    if (cachedBalance !== null) {
+      setBalance(parseInt(cachedBalance, 10) || 0);
+    }
+
     const cookies = document.cookie.split("; ");
     const tokenCookie = cookies.find(c => c.startsWith("lucy_token="));
     if (tokenCookie) {
@@ -42,14 +48,25 @@ export default function WalletPage() {
 
   // Poll balance
   useEffect(() => {
-    if (!userId) return;
     const fetchBalance = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || "http://localhost:5086";
-        const res = await fetch(`${baseUrl}/api/auth/wallet/${userId}`);
+        const cookies = document.cookie.split("; ");
+        const tokenCookie = cookies.find(c => c.startsWith("lucy_token="));
+        if (!tokenCookie) return;
+        const token = tokenCookie.split("=")[1];
+
+        const baseUrl = process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || "";
+        const res = await fetch(`${baseUrl}/api/wallet/balance`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "ngrok-skip-browser-warning": "69420"
+          }
+        });
         if (res.ok) {
           const data = await res.json();
-          setBalance(data.balance);
+          const newBal = typeof data.balance === "number" ? data.balance : 0;
+          setBalance(newBal);
+          localStorage.setItem("lucy_user_balance", newBal.toString());
         }
       } catch (e) {
         // ignore
@@ -64,6 +81,7 @@ export default function WalletPage() {
       const detail = (e as CustomEvent).detail;
       if (detail && typeof detail.newBalance === "number") {
         setBalance(detail.newBalance);
+        localStorage.setItem("lucy_user_balance", detail.newBalance.toString());
       }
     };
     window.addEventListener("lucy_balance_updated", handleRealtimeBalance);
@@ -98,12 +116,12 @@ export default function WalletPage() {
           <ArrowLeft size={20} weight="bold" />
           <span className="font-semibold tracking-wide text-sm uppercase">Quay lại</span>
         </button>
-        <div className="flex items-center gap-3 bg-white/5 px-6 py-3 rounded-2xl border border-white/10 backdrop-blur-md">
-          <Wallet size={24} weight="duotone" className="text-[var(--cyan)]" />
+        <div className="flex items-center gap-3 bg-[#0f111a]/80 px-6 py-3 rounded-2xl border border-[var(--gold)]/30 backdrop-blur-xl shadow-[0_0_15px_rgba(251,191,36,0.15)]">
+          <Wallet size={24} weight="duotone" className="text-[var(--gold)] drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]" />
           <div>
-            <div className="text-[10px] text-white/50 uppercase font-bold tracking-widest">Số dư hiện tại</div>
-            <div className="font-mono text-xl font-bold text-white flex items-center gap-1">
-              {balance !== null ? balance.toLocaleString() : "..."} <span className="text-[var(--magenta)] text-sm">Xu</span>
+            <div className="text-[10px] text-white/60 uppercase font-bold tracking-widest">Số dư hiện tại</div>
+            <div className="font-mono text-xl font-extrabold text-white flex items-center gap-1.5">
+              {balance.toLocaleString()} <span className="text-[var(--gold)] text-sm font-bold bg-[var(--gold)]/10 px-2 py-0.5 rounded-full border border-[var(--gold)]/30">Xu</span>
             </div>
           </div>
         </div>
@@ -113,8 +131,8 @@ export default function WalletPage() {
         {/* Left Col: Packages */}
         <div className="flex flex-col gap-6">
           <div>
-            <h1 className="text-3xl font-extrabold text-white mb-2 tracking-tight">Nạp Xu</h1>
-            <p className="text-white/60 text-sm">Chọn mệnh giá bạn muốn nạp. Tỷ giá quy đổi: 100 VND = 1 Xu.</p>
+            <h1 className="text-3xl font-extrabold bg-gradient-to-r from-white via-white to-[var(--gold)] bg-clip-text text-transparent mb-2 tracking-tight">Nạp Xu</h1>
+            <p className="text-white/70 text-sm">Chọn mệnh giá bạn muốn nạp. Tỷ giá quy đổi: 100 VND = 1 Xu.</p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -124,28 +142,30 @@ export default function WalletPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setSelectedAmount(pkg.amount)}
-                className={`cursor-pointer p-5 rounded-2xl border transition-all duration-300 flex flex-col gap-3 relative overflow-hidden ${
+                className={`cursor-pointer p-5 rounded-2xl border transition-all duration-300 flex flex-col gap-3 relative overflow-hidden backdrop-blur-xl ${
                   selectedAmount === pkg.amount 
-                    ? "bg-[var(--cyan)]/20 border-[var(--cyan)] shadow-[0_0_30px_rgba(59, 130, 246, 0.3)]" 
-                    : "bg-white/5 border-white/10 hover:border-white/30 hover:bg-white/10"
+                    ? "bg-gradient-to-br from-[var(--cyan)]/25 via-[var(--magenta)]/20 to-[var(--gold)]/25 border-[var(--gold)] shadow-[0_0_25px_rgba(251,191,36,0.35)]" 
+                    : "bg-[#0f111a]/80 border-white/15 hover:border-[var(--gold)]/50 hover:bg-[#161929]"
                 }`}
               >
                 {selectedAmount === pkg.amount && (
-                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--cyan)]/20 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--cyan)]/20 via-transparent to-[var(--gold)]/20 pointer-events-none"></div>
                 )}
                 
                 <div className="flex justify-between items-start relative z-10">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 text-white shadow-inner">
-                    <Coin size={24} weight="duotone" className="text-yellow-400" />
+                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-[var(--gold)]/15 border border-[var(--gold)]/30 text-[var(--gold)] shadow-inner">
+                    <Coin size={24} weight="duotone" className="text-[var(--gold)] drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
                   </div>
                   {selectedAmount === pkg.amount && (
-                    <CheckCircle size={24} weight="fill" className="text-[var(--cyan)]" />
+                    <CheckCircle size={24} weight="fill" className="text-[var(--gold)] drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]" />
                   )}
                 </div>
 
                 <div className="relative z-10">
-                  <div className="text-2xl font-black text-white">{pkg.coins} Xu</div>
-                  <div className="text-white/50 text-sm font-mono mt-1">{pkg.amount.toLocaleString()} VND</div>
+                  <div className="text-2xl font-black text-white tracking-tight flex items-baseline gap-1">
+                    {pkg.coins} <span className="text-sm font-bold text-[var(--gold)]">Xu</span>
+                  </div>
+                  <div className="text-[var(--cyan)] text-sm font-mono font-bold mt-1">{pkg.amount.toLocaleString()} VND</div>
                 </div>
               </motion.div>
             ))}

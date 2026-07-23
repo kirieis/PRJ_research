@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable */
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -62,8 +63,12 @@ export default function RealtimeCallModal() {
 
   // Connect Socket & Listen for Realtime Call + Coin Deposit events
   useEffect(() => {
-    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001";
-    const socket = io(socketUrl);
+    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || (typeof window !== "undefined" ? window.location.origin : "http://localhost:3001");
+    const socket = io(socketUrl, {
+      extraHeaders: {
+        "ngrok-skip-browser-warning": "69420"
+      }
+    });
     socketRef.current = socket;
 
     socket.on("connect", () => {
@@ -153,6 +158,18 @@ export default function RealtimeCallModal() {
   }, [callState.status]);
 
   // Agora RTC Setup on Call Connected
+  async function cleanupAgora() {
+    try {
+      localAudioTrackRef.current?.close();
+      localVideoTrackRef.current?.close();
+      if (agoraClientRef.current) {
+        await agoraClientRef.current.leave();
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+
   useEffect(() => {
     let isMounted = true;
 
@@ -223,27 +240,15 @@ export default function RealtimeCallModal() {
     };
   }, [callState.status, callState.channelName]);
 
-  const cleanupAgora = async () => {
-    try {
-      localAudioTrackRef.current?.close();
-      localVideoTrackRef.current?.close();
-      if (agoraClientRef.current) {
-        await agoraClientRef.current.leave();
-      }
-    } catch (e) {
-      // ignore
-    }
-  };
-
-  const cleanupCall = () => {
+  function cleanupCall() {
     cleanupAgora();
     setCallState({ status: "idle", channelName: "", isVideo: true });
     setIsMicOn(true);
     setIsVideoOn(true);
-  };
+  }
 
   // Initiate Outgoing Call
-  const initiateCall = (targetUserId: number, targetName: string, isVideo: boolean = true) => {
+  function initiateCall(targetUserId: number, targetName: string, isVideo: boolean = true) {
     setCallState({
       status: "calling",
       channelName: "",
@@ -258,7 +263,7 @@ export default function RealtimeCallModal() {
       callerName: `User_${currentUserId}`,
       isVideo,
     });
-  };
+  }
 
   // Accept Incoming Call
   const handleAcceptCall = () => {

@@ -1,31 +1,31 @@
 services:
   - type: web
-    name: lucy-auth-service
-    env: docker
-    dockerfilePath: lucy-auth-service/Dockerfile
-    dockerContext: .
-    plan: free
-    healthCheckPath: /healthz
-    envVars:
-      - key: ASPNETCORE_ENVIRONMENT
-        value: Production
-      - key: ConnectionStrings__LucyDb
-        sync: false
-      - key: Jwt__RsaPrivateKeyPem
-        sync: false
-
-  - type: web
-    name: lucy-realtime-service
+    name: lucy-backend
     env: node
     buildCommand: cd lucy-realtime-service && npm install && npm run build
     startCommand: cd lucy-realtime-service && npm run start
     plan: free
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
-      - key: AUTH_SERVICE_URL
-        value: https://lucy-auth-service.onrender.com
+      - key: PORT
+        value: 3001
       - key: AGORA_APP_ID
         sync: false
       - key: AGORA_APP_CERTIFICATE
         sync: false
+
+  - type: web
+    name: lucy-web-client
+    env: node
+    buildCommand: cd lucy-web-client && npm install && npm run build
+    startCommand: cd lucy-web-client && npm run start
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_SOCKET_URL
+        value: https://lucy-backend.onrender.com
+      - key: NEXT_PUBLIC_AUTH_SERVICE_URL
+        value: https://lucy-backend.onrender.com

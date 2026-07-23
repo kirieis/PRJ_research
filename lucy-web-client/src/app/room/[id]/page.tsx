@@ -1,9 +1,10 @@
 "use client";
+/* eslint-disable */
 
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Microphone, MicrophoneSlash, HandWaving, Door, Record, Gift, Wallet } from "@phosphor-icons/react";
+import { Microphone, MicrophoneSlash, HandWaving, Door, Record, Gift, Wallet, ShareNetwork } from "@phosphor-icons/react";
 import io, { Socket } from "socket.io-client";
 import type { IAgoraRTCClient, IMicrophoneAudioTrack } from "agora-rtc-sdk-ng";
 
@@ -144,42 +145,33 @@ const CountryThemeBackground = ({ lang }: { lang: string }) => {
       ctx.save();
       ctx.translate(x, y);
       
-      const numPetals = 5;
+      // Simplified flower to prevent extreme canvas lag
+      // Instead of 5 complex bezier curves per flower, use simple arcs
       ctx.fillStyle = `rgba(255, 185, 200, ${opacity * 0.95})`; // Cute soft pink
       
-      for (let i = 0; i < numPetals; i++) {
-        ctx.save();
-        ctx.rotate((i * 2 * Math.PI) / numPetals);
-        
-        // Draw heart-shaped petal pointing upwards
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.bezierCurveTo(-radius * 0.5, -radius * 0.5, -radius * 0.2, -radius * 1.0, 0, -radius * 0.85);
-        ctx.bezierCurveTo(radius * 0.2, -radius * 1.0, radius * 0.5, -radius * 0.5, 0, 0);
-        ctx.fill();
-        
-        // Soft outline to separate overlapping petals
-        ctx.strokeStyle = `rgba(235, 120, 140, ${opacity * 0.4})`;
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
-        
-        ctx.restore();
-      }
+      // Draw 4 overlapping circles for petals
+      const r = radius * 0.7;
+      ctx.beginPath();
+      ctx.arc(-r*0.5, -r*0.5, r, 0, Math.PI * 2);
+      ctx.arc(r*0.5, -r*0.5, r, 0, Math.PI * 2);
+      ctx.arc(-r*0.5, r*0.5, r, 0, Math.PI * 2);
+      ctx.arc(r*0.5, r*0.5, r, 0, Math.PI * 2);
+      ctx.fill();
       
       // Draw a darker pink center
       ctx.fillStyle = `rgba(225, 112, 137, ${opacity})`;
       ctx.beginPath();
-      ctx.arc(0, 0, radius * 0.25, 0, Math.PI * 2);
+      ctx.arc(0, 0, radius * 0.4, 0, Math.PI * 2);
       ctx.fill();
       
-      // Tiny white/light yellow pistil tips
+      // 3 Tiny white/light yellow pistil tips instead of 5
       ctx.fillStyle = `rgba(255, 255, 235, ${opacity * 0.9})`;
-      for (let j = 0; j < 5; j++) {
-        const angle = (j * 2 * Math.PI) / 5 + Math.PI / 5;
+      for (let j = 0; j < 3; j++) {
+        const angle = (j * 2 * Math.PI) / 3 + Math.PI / 3;
         const px = Math.cos(angle) * (radius * 0.2);
         const py = Math.sin(angle) * (radius * 0.2);
         ctx.beginPath();
-        ctx.arc(px, py, radius * 0.06, 0, Math.PI * 2);
+        ctx.arc(px, py, radius * 0.1, 0, Math.PI * 2);
         ctx.fill();
       }
       
@@ -190,19 +182,19 @@ const CountryThemeBackground = ({ lang }: { lang: string }) => {
       ctx.save();
       ctx.translate(x, y);
       
-      // Sepals (green base)
+      // Sepals (green base) - simple triangle
       ctx.fillStyle = `rgba(76, 120, 76, ${opacity * 0.85})`;
       ctx.beginPath();
-      ctx.moveTo(-radius * 0.6, radius * 0.6);
-      ctx.lineTo(0, radius * 1.2);
-      ctx.lineTo(radius * 0.6, radius * 0.6);
+      ctx.moveTo(-radius * 0.8, radius * 0.5);
+      ctx.lineTo(0, radius * 1.5);
+      ctx.lineTo(radius * 0.8, radius * 0.5);
       ctx.closePath();
       ctx.fill();
       
-      // Bud body (deep pink teardrop)
+      // Bud body - simple circle
       ctx.fillStyle = `rgba(235, 95, 125, ${opacity})`;
       ctx.beginPath();
-      ctx.ellipse(0, 0, radius, radius * 1.4, 0, 0, Math.PI * 2);
+      ctx.arc(0, 0, radius * 1.1, 0, Math.PI * 2);
       ctx.fill();
       
       ctx.restore();
@@ -364,19 +356,16 @@ const CountryThemeBackground = ({ lang }: { lang: string }) => {
           ctx.rotate(p.rotation);
           ctx.fillStyle = `rgba(255, 185, 200, ${p.opacity})`; // Soft cherry blossom pink
           
-          // Draw heart-shaped petal
+          // Simplified falling petal to prevent lag
+          // Draw simple oval shape
           ctx.beginPath();
-          ctx.moveTo(0, 0);
-          ctx.bezierCurveTo(-p.size * 0.5, -p.size * 0.5, -p.size * 0.2, -p.size * 1.0, 0, -p.size * 0.85);
-          ctx.bezierCurveTo(p.size * 0.2, -p.size * 1.0, p.size * 0.5, -p.size * 0.5, 0, 0);
+          ctx.ellipse(0, 0, p.size * 0.4, p.size * 0.6, 0, 0, Math.PI * 2);
           ctx.fill();
           
           // Subtle highlight in the middle
           ctx.fillStyle = `rgba(255, 240, 245, ${p.opacity * 0.6})`;
           ctx.beginPath();
-          ctx.moveTo(0, -p.size * 0.1);
-          ctx.bezierCurveTo(-p.size * 0.25, -p.size * 0.3, -p.size * 0.1, -p.size * 0.6, 0, -p.size * 0.5);
-          ctx.bezierCurveTo(p.size * 0.1, -p.size * 0.6, p.size * 0.25, -p.size * 0.3, 0, -p.size * 0.1);
+          ctx.ellipse(0, 0, p.size * 0.15, p.size * 0.25, 0, 0, Math.PI * 2);
           ctx.fill();
           
           ctx.restore();
@@ -611,13 +600,7 @@ const VOCAB_BY_LANG: Record<string, { word: string; type: string; definition: st
   ]
 };
 
-const DEFAULT_USERS = [
-  { id: 1, name: "Alex", role: "moderator", mic: true, speaking: true, handRaised: false },
-  { id: 2, name: "Sarah", role: "pro", mic: true, speaking: false, handRaised: false },
-  { id: 3, name: "Guest_03", role: "anonymous", mic: false, speaking: false, handRaised: false },
-  { id: 4, name: "David", role: "pro", mic: false, speaking: false, handRaised: true },
-  { id: 5, name: "Emily", role: "pro", mic: true, speaking: false, handRaised: false }
-];
+const DEFAULT_USERS: any[] = [];
 
 const TRANSLATED_LABELS: Record<string, Record<string, any>> = {
   en: {
@@ -757,9 +740,12 @@ export default function VoiceRoomPage() {
       // Fetch Wallet Balance
       if (jwtTokenRef.current) {
         try {
-          const authUrl = process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || "http://localhost:5086";
+          const authUrl = process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || "";
           const balanceRes = await fetch(`${authUrl}/api/wallet/balance`, {
-            headers: { "Authorization": `Bearer ${jwtTokenRef.current}` }
+            headers: { 
+              "Authorization": `Bearer ${jwtTokenRef.current}`,
+              "ngrok-skip-browser-warning": "69420"
+            }
           }).catch(() => null);
           if (balanceRes && balanceRes.ok) {
             const data = await balanceRes.json();
@@ -773,7 +759,11 @@ export default function VoiceRoomPage() {
       // 2. Fetch Room Info
       let channelName = `Room_${roomId}`;
       try {
-        const res = await fetch(`http://localhost:8081/api/v1/rooms/${roomId}`).catch(() => null);
+        const res = await fetch(`/api/v1/rooms/${roomId}`, {
+          headers: {
+            "ngrok-skip-browser-warning": "69420"
+          }
+        }).catch(() => null);
         if (res && res.ok) {
           const data = await res.json();
           channelName = data.agoraChannelName || channelName;
@@ -789,7 +779,12 @@ export default function VoiceRoomPage() {
 
       // 3. Init Socket.io
       try {
-        socketRef.current = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001");
+        const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || (typeof window !== "undefined" ? window.location.origin : "http://localhost:3001");
+        socketRef.current = io(socketUrl, {
+          extraHeaders: {
+            "ngrok-skip-browser-warning": "69420"
+          }
+        });
         socketRef.current.on("connect", () => {
           socketRef.current?.emit("join-room", roomId, myUidRef.current);
         });
@@ -843,12 +838,38 @@ export default function VoiceRoomPage() {
           setUsers((prev) => prev.filter(u => u.id !== user.uid));
         });
 
+        // Enable volume indicator to drive speaking animations
+        client.enableAudioVolumeIndicator();
+        client.on("volume-indicator", (volumes) => {
+          setUsers((prev) => {
+            let changed = false;
+            const newUsers = prev.map(u => {
+              const vol = volumes.find(v => v.uid === u.id);
+              // Consider speaking if volume level is > 5
+              const speaking = vol ? vol.level > 5 : false;
+              if (u.speaking !== speaking) {
+                changed = true;
+                return { ...u, speaking };
+              }
+              return u;
+            });
+            return changed ? newUsers : prev;
+          });
+        });
+
         client.on("token-privilege-will-expire", async () => {
           try {
-            const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001";
+            const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "";
             const res = await fetch(`${baseUrl}/api/agora/token`, {
-              method: "POST", headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ channelName, uid: myUidRef.current })
+              method: "POST",
+              headers: { 
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "69420"
+              },
+              body: JSON.stringify({
+                channelName,
+                uid: myUidRef.current
+              })
             });
             const data = await res.json();
             await client.renewToken(data.token);
@@ -858,7 +879,7 @@ export default function VoiceRoomPage() {
         });
 
         // Join Channel Safely
-        const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001";
+        const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "";
         const tokenRes = await fetch(`${baseUrl}/api/agora/token`, {
           method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ channelName, uid: myUidRef.current })
@@ -868,9 +889,11 @@ export default function VoiceRoomPage() {
         if (tokenRes && tokenRes.ok) {
           const tokenData = await tokenRes.json();
           token = tokenData.token;
+          console.log("[Agora] Token from backend:", token, "AppID from backend:", tokenData.appIdUsed);
         }
 
         const appId = process.env.NEXT_PUBLIC_AGORA_APP_ID;
+        console.log("[Agora] Frontend AppID:", appId);
         if (appId && appId !== "ff0b01c1072940259b3112c3f15c7e18") {
           await client.join(appId, channelName, token, myUidRef.current);
           localAudioTrackRef.current = await AgoraRTC.createMicrophoneAudioTrack();
@@ -948,16 +971,24 @@ export default function VoiceRoomPage() {
     const nextState = !isMicOn;
     setIsMicOn(nextState);
     setUsers((prev) =>
-      prev.map((u) => (u.id === myUidRef.current ? { ...u, mic: nextState, speaking: nextState } : u))
+      prev.map((u) => (u.id === myUidRef.current ? { ...u, mic: nextState, speaking: false } : u))
     );
     if (localAudioTrackRef.current) {
       await localAudioTrackRef.current.setMuted(!nextState);
     }
-    socketRef.current?.emit("speaking", { roomId, speaking: nextState });
+    // Remove socket emit here, will be handled by volume indicator
   };
 
   const handleSendGift = (giftType: string, amount: number, icon: string) => {
+    if (balance < amount) {
+      showToast("Not enough coins! Please top up.");
+      return;
+    }
+
     setShowGiftDrawer(false);
+    
+    // Deduct locally for immediate UI response
+    setBalance(prev => prev - amount);
     
     // Play local animation immediately for perceived performance
     const animId = Date.now();
@@ -991,7 +1022,7 @@ export default function VoiceRoomPage() {
       showToast(`${labels.toast_advanced} ${subLevelsList[nextIndex]}`);
 
       try {
-        await fetch(`http://localhost:8081/api/v1/rooms/${roomId}/current-sub-level?subLevelId=${nextIndex + 1}`, {
+        await fetch(`/api/v1/rooms/${roomId}/current-sub-level?subLevelId=${nextIndex + 1}`, {
           method: "PATCH"
         });
       } catch (err) {
@@ -1043,13 +1074,27 @@ export default function VoiceRoomPage() {
           LUCY
           <span className="nav-brand-sub">LIVE</span>
         </div>
-        <button 
-          onClick={() => router.push('/wallet')}
-          className="flex items-center gap-2 px-5 py-2 rounded-full font-semibold transition-all duration-300 z-50 cursor-pointer bg-white/10 hover:bg-white/20 border border-white/20 text-white backdrop-blur-md hover:shadow-[0_0_20px_var(--cyan-glow)] hover:border-[var(--cyan)]/50"
-        >
-          <Wallet size={20} weight="duotone" className="text-white" />
-          <span>Nạp Xu</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => {
+              if (typeof window !== "undefined") {
+                navigator.clipboard.writeText(window.location.href);
+                showToast("Đã sao chép link phòng! Gửi link này cho bạn bè để tham gia.");
+              }
+            }}
+            className="btn-room-action flex items-center gap-2 px-4 py-2 z-50 cursor-pointer"
+          >
+            <ShareNetwork size={18} weight="duotone" />
+            <span className="text-xs">Mời Bạn Bè</span>
+          </button>
+          <button 
+            onClick={() => router.push('/wallet')}
+            className="btn-room-action flex items-center gap-2 px-5 py-2 z-50 cursor-pointer"
+          >
+            <Wallet size={20} weight="duotone" />
+            <span>Nạp Xu</span>
+          </button>
+        </div>
       </nav>
 
       {/* Room Grid Layout */}
@@ -1236,7 +1281,7 @@ export default function VoiceRoomPage() {
 
       {/* Bottom Control Bar */}
       <div className="bottom-control-bar relative z-20 h-[90px] flex justify-between items-center px-12 border-t border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md">
-        <div className="bar-left flex items-center gap-5 font-mono text-xs text-[var(--text-muted)]">
+        <div className="bar-left flex-1 flex items-center gap-5 font-mono text-xs text-[var(--text-muted)]">
           <span className="room-id font-bold text-[var(--text-main)]">{roomName}</span>
           <span className="room-status-dot w-2 h-2 rounded-full bg-[var(--magenta)] shadow-[0_0_10px_var(--magenta-glow)]" />
           <span className="users-mini">[{users.length}]</span>
@@ -1245,7 +1290,7 @@ export default function VoiceRoomPage() {
         <div className="bar-center flex items-center justify-center">
           <button
             onClick={handleToggleMic}
-            className={`btn-mic w-14 h-14 flex items-center justify-center text-2xl transition-all duration-300 ${
+            className={`btn-mic w-14 h-14 flex items-center justify-center text-2xl rounded-full transition-all duration-300 ${
               isMicOn
                 ? "bg-[var(--cyan)] text-white shadow-[0_0_20px_var(--cyan-glow)] hover:scale-105"
                 : "bg-[var(--danger)]/10 text-[var(--danger)] border border-[var(--danger)] shadow-[0_0_20px_var(--danger-glow)] hover:scale-105"
@@ -1300,7 +1345,7 @@ export default function VoiceRoomPage() {
           </div>
         </div>
 
-        <div className="bar-right">
+        <div className="bar-right flex-1 flex justify-end">
           <button
             onClick={() => setShowLeaveDialog(true)}
             className="btn-leave font-extrabold text-[12px] tracking-wider text-[var(--text-muted)] hover:text-[var(--danger)] transition-colors"

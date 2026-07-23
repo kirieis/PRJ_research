@@ -510,6 +510,25 @@ button:active { transform: scale(0.96); }
   background: #9F2F2D;
   box-shadow: none;
 }
+.theme-en .btn-nap-xu {
+  background: #111111 !important;
+  border: 1.5px solid #d97706 !important;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.25) !important;
+}
+.theme-en .btn-nap-xu:hover {
+  background: #1f1f1f !important;
+  border-color: #fbbf24 !important;
+  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4) !important;
+}
+.theme-en .btn-nap-xu-text {
+  color: #fbbf24 !important;
+  background: none !important;
+  -webkit-text-fill-color: #fbbf24 !important;
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.3) !important;
+}
+.theme-en .btn-nap-xu-icon {
+  color: #fbbf24 !important;
+}
 
 /* 2. JAPANESE THEME (JA-B Zen Wabi-Sabi - Soft Pink Light Mode) */
 .theme-ja {
@@ -964,3 +983,50 @@ button:active { transform: scale(0.96); }
   box-shadow: 0 0 10px rgba(255, 234, 0, 0.4);
 }
 
+
+
+/* Room Action Buttons */
+.btn-room-action {
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text-main);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.btn-room-action:hover {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: var(--cyan);
+  color: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan-glow);
+}
+
+.theme-en .btn-room-action {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.theme-en .btn-room-action:hover {
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(255,255,255,0.2);
+}
+
+.theme-ja .btn-room-action {
+  border-color: rgba(219, 138, 156, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+}
+.theme-ja .btn-room-action:hover {
+  border-color: #db8a9c;
+  color: #db8a9c;
+  box-shadow: 0 0 10px rgba(219,138,156,0.3);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.theme-zh .btn-room-action {
+  border-color: rgba(255, 234, 0, 0.3);
+}
+.theme-zh .btn-room-action:hover {
+  border-color: #FFEA00;
+  color: #FFEA00;
+  box-shadow: 0 0 10px rgba(255,234,0,0.3);
+}

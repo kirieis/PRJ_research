@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable */
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,7 +14,7 @@ const getLocalizedRooms = (lang: string) => {
       name: "Morning Conversation",
       level: "B1",
       lang: "en",
-      users: 5,
+      users: 0,
       status: "LIVE",
       desc: "Practice reflexes with everyday topics. Focus on fluency and natural speech.",
       image: "https://picsum.photos/seed/morning-studio/600/400"
@@ -23,7 +24,7 @@ const getLocalizedRooms = (lang: string) => {
       name: "Beginner Talk (日本語)",
       level: "N5",
       lang: "ja",
-      users: 2,
+      users: 0,
       status: "LIVE",
       desc: "For absolute beginners learning Japanese. Slow-paced basic greetings.",
       image: "https://picsum.photos/seed/kyoto-garden/600/400"
@@ -43,7 +44,7 @@ const getLocalizedRooms = (lang: string) => {
       name: "Daily Vocabulary (English)",
       level: "A2",
       lang: "en",
-      users: 8,
+      users: 0,
       status: "LIVE",
       desc: "Learn essential vocabulary through real-life situations with flashcards.",
       image: "https://picsum.photos/seed/minimal-library/600/400"
@@ -146,7 +147,7 @@ const CountryThemeBackground = ({ lang }: { lang: string }) => {
     let sparks: FireworkSpark[] = [];
 
     if (lang === "ja") {
-      for (let i = 0; i < 50; i++) {
+      for (let i = 0; i < 25; i++) {
         // Spawn some near left branch tips, some near right branch tips, and some scattered
         const isLeft = Math.random() < 0.5;
         const px = isLeft 
@@ -368,16 +369,16 @@ const CountryThemeBackground = ({ lang }: { lang: string }) => {
       
       // Organically draw branches stemming directly from calculated points on the trunk
       const topTrunk = getTrunkPoint(1.0);
-      drawBranch(topTrunk.x, topTrunk.y, 100, topTrunk.angle - 0.35, 5);
-      drawBranch(topTrunk.x, topTrunk.y, 90, topTrunk.angle + 0.35, 4);
+      drawBranch(topTrunk.x, topTrunk.y, 100, topTrunk.angle - 0.35, 3);
+      drawBranch(topTrunk.x, topTrunk.y, 90, topTrunk.angle + 0.35, 3);
 
       const midTrunk = getTrunkPoint(0.55);
       const sideAngle1 = isLeft ? midTrunk.angle + 0.7 : midTrunk.angle - 0.7;
-      drawBranch(midTrunk.x, midTrunk.y, 70, sideAngle1, 4);
+      drawBranch(midTrunk.x, midTrunk.y, 70, sideAngle1, 2);
 
       const highTrunk = getTrunkPoint(0.8);
       const sideAngle2 = isLeft ? highTrunk.angle - 0.6 : highTrunk.angle + 0.6;
-      drawBranch(highTrunk.x, highTrunk.y, 60, sideAngle2, 3);
+      drawBranch(highTrunk.x, highTrunk.y, 60, sideAngle2, 2);
       ctx.restore();
     };
 
@@ -565,7 +566,7 @@ const CountryThemeBackground = ({ lang }: { lang: string }) => {
   );
 };
 
-const langFlags: Record<string, string> = { en: "🇬🇧 EN", ja: "🇯🇵 JA", zh: "🇨🇳 ZH" };
+const langFlags: Record<string, string> = { en: '🇺🇸 EN', ja: '🇯🇵 JA', zh: '🇨🇳 ZH' };
 
 // Interface translations
 const translations: Record<string, Record<string, string>> = {
@@ -637,10 +638,15 @@ export default function LobbyPage() {
   const [userEmail, setUserEmail] = useState("");
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  const handleLogout = () => {
-    // Clear cookies
-    document.cookie = 'lucy_token=; path=/; max-age=0';
-    document.cookie = 'lucy_user=; path=/; max-age=0';
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+    // Clear cookies fallback
+    document.cookie = 'lucy_token=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    document.cookie = 'lucy_user=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     router.push('/login');
   };
 
@@ -709,85 +715,57 @@ export default function LobbyPage() {
   useEffect(() => {
     let cancelled = false;
 
-    const fetchRoomsAndLevels = async (retryCount = 0): Promise<void> => {
-      const MAX_RETRIES = 15; // Tối đa 15 lần thử (mỗi lần cách 3 giây = 45 giây chờ)
+    const fetchRoomsAndLevels = async (): Promise<void> => {
+      let timeoutId: any;
       try {
-        let levelMap: Record<number, { lang: string; stage: number; num: number }> = {};
-        try {
-          const lvRes = await fetch("/api/v1/levels/published");
-          if (lvRes.ok) {
-            const lvData = await lvRes.json();
-            if (Array.isArray(lvData)) {
-              lvData.forEach((lv: any) => {
-                const langCode = lv.languageId === 2 ? "ja" : lv.languageId === 3 ? "zh" : "en";
-                levelMap[lv.id] = {
-                  lang: langCode,
-                  stage: lv.stageNumber || 1,
-                  num: lv.levelNumber || 1
-                };
-              });
-            }
+        const fetchPromise = fetch("/api/v1/rooms", {
+          headers: {
+            "ngrok-skip-browser-warning": "69420"
           }
-        } catch (err) {
-          // Nếu chưa hết số lần retry, đợi 3 giây rồi thử lại
-          if (retryCount < MAX_RETRIES && !cancelled) {
-            console.log(`[LUCY] Backend chua san sang, thu lai lan ${retryCount + 1}/${MAX_RETRIES}...`);
-            await new Promise(r => setTimeout(r, 3000));
-            return fetchRoomsAndLevels(retryCount + 1);
-          }
-          console.warn("Failed to fetch levels metadata. Using offline fallback mapping.", err);
-        }
+        }).then(r => {
+          if (!r.ok) throw new Error("Not ok");
+          return r.json();
+        });
 
-        const res = await fetch("/api/v1/rooms/live");
-        if (res.ok) {
-          const data = await res.json();
-          console.log("[LUCY] Ket noi Database thanh cong!");
-          if (Array.isArray(data) && data.length > 0) {
-            const mappedRooms = data.map((r: any) => {
-              const langCode = r.levelId === 2 || r.agoraChannelName?.includes("日本語") || r.agoraChannelName?.includes("Japanese") ? "ja" : 
-                               r.levelId === 3 || r.agoraChannelName?.includes("中文") || r.agoraChannelName?.includes("Chinese") ? "zh" : "en";
-              
-              let levelLabel = "B1";
-              if (levelMap[r.levelId]) {
-                const info = levelMap[r.levelId];
-                levelLabel = getCertificateLabel(info.lang, info.stage, info.num);
-              } else {
-                if (langCode === "ja") levelLabel = r.levelId === 2 ? "N5" : "N4";
-                else if (langCode === "zh") levelLabel = r.levelId === 3 ? "HSK 4" : "HSK 3";
-                else levelLabel = r.levelId === 1 ? "A2" : "B1";
-              }
+        const timeoutPromise = new Promise<any>((_, reject) => {
+          timeoutId = setTimeout(() => reject(new Error("Timeout")), 2000);
+        });
 
-              // Load image paths with unique seeds to prevent visual repetition
-              const seedName = r.agoraChannelName ? r.agoraChannelName.replace(/\s+/g, "-").toLowerCase() : `room-${r.id}`;
-              const imagePath = `https://picsum.photos/seed/${seedName}/600/400`;
+        const data = await Promise.race([fetchPromise, timeoutPromise]);
+        clearTimeout(timeoutId);
 
-              return {
-                id: r.id,
-                name: r.agoraChannelName || `Room #${r.id}`,
-                level: levelLabel, 
-                lang: langCode, 
-                users: r.maxParticipants - 5 > 0 ? r.maxParticipants - 5 : 2,
-                status: r.status || "LIVE",
-                desc: r.levelTopicName || "Anonymous high-fidelity practice room.",
-                image: imagePath
-              };
-            });
+        if (data && Array.isArray(data) && data.length > 0) {
+          const mappedRooms = data.map((r: any) => {
+            const langCode = r.levelId === 2 ? "ja" : r.levelId === 3 ? "zh" : "en";
+            const levelLabel = langCode === "ja" ? "N5" : langCode === "zh" ? "HSK 4" : "B1";
+            const seedName = r.agoraChannelName ? r.agoraChannelName.replace(/\s+/g, "-").toLowerCase() : `room-${r.id}`;
+
+            return {
+              id: r.id,
+              name: r.name || r.agoraChannelName || `Room #${r.id}`,
+              level: levelLabel, 
+              lang: langCode, 
+              users: 0,
+              status: "LIVE",
+              desc: r.topic || "Anonymous high-fidelity practice room.",
+              image: `https://picsum.photos/seed/${seedName}/600/400`
+            };
+          });
+          if (!cancelled) {
             setRooms(mappedRooms);
-            return;
+            setLoading(false);
           }
+          return;
         }
       } catch (err) {
-        // Nếu chưa hết số lần retry, đợi 3 giây rồi thử lại
-        if (retryCount < MAX_RETRIES && !cancelled) {
-          console.log(`[LUCY] Backend chua san sang, thu lai lan ${retryCount + 1}/${MAX_RETRIES}...`);
-          await new Promise(r => setTimeout(r, 3000));
-          return fetchRoomsAndLevels(retryCount + 1);
-        }
+        clearTimeout(timeoutId);
         console.warn("Backend API not reachable. Using fallback local localized room data.");
       }
       
-      // Fallback
-      setRooms(getLocalizedRooms(activeLang));
+      if (!cancelled) {
+        setRooms(getLocalizedRooms(activeLang));
+      }
+      // Force loading to false no matter what to prevent infinite loading screens
       setLoading(false);
     };
 
@@ -843,7 +821,7 @@ export default function LobbyPage() {
       {activeLang === "" ? (
         <div className="flex items-center justify-center min-h-[90dvh] px-6 py-12 z-10 relative">
           <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
+            initial={{ opacity: 1, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="glass-panel max-w-[840px] w-full p-10 md:p-16 rounded-[32px] text-center"
@@ -895,10 +873,12 @@ export default function LobbyPage() {
             <div className="nav-actions flex items-center gap-4">
               <button 
                 onClick={() => router.push('/wallet')}
-                className="flex items-center gap-2 px-5 py-2 rounded-full font-semibold transition-all duration-300 z-50 cursor-pointer bg-white/10 hover:bg-white/20 border border-white/20 text-white backdrop-blur-md hover:shadow-[0_0_20px_var(--cyan-glow)] hover:border-[var(--cyan)]/50"
+                className="btn-nap-xu flex items-center gap-2 px-4.5 py-2 rounded-full font-bold transition-all duration-300 z-50 cursor-pointer bg-[#0f111a] hover:bg-[#161927] border border-[#fbbf24]/50 hover:border-[#fbbf24] backdrop-blur-xl shadow-[0_0_15px_rgba(251,191,36,0.25)] hover:shadow-[0_0_25px_rgba(251,191,36,0.5)] hover:scale-105 active:scale-95 group"
               >
-                <Wallet size={20} weight="duotone" className="text-white" />
-                <span>Nạp Xu</span>
+                <Wallet size={20} weight="duotone" className="btn-nap-xu-icon text-[#fbbf24] drop-shadow-[0_0_8px_rgba(251,191,36,0.6)] group-hover:rotate-12 transition-transform duration-300" />
+                <span className="btn-nap-xu-text text-[#fbbf24] font-black tracking-wide text-sm drop-shadow-[0_0_6px_rgba(251,191,36,0.4)]">
+                  Nạp Xu
+                </span>
               </button>
               {/* Target Language Switcher (Button Group) */}
               <div className="lang-switcher">
@@ -924,7 +904,14 @@ export default function LobbyPage() {
 
               <div className="nav-user" style={{ position: 'relative' }}>
                 <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  onClick={() => {
+                    if (userName === "User") {
+                      // Force clear cookies and redirect by reusing handleLogout
+                      handleLogout();
+                    } else {
+                      setShowUserMenu(!showUserMenu);
+                    }
+                  }}
                   className="flex items-center gap-3 cursor-pointer bg-transparent border-none outline-none"
                   style={{ background: 'none', border: 'none', padding: 0 }}
                 >
@@ -941,9 +928,9 @@ export default function LobbyPage() {
                 <AnimatePresence>
                   {showUserMenu && (
                     <motion.div
-                      initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                      initial={{ opacity: 1, y: -8, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                      exit={{ opacity: 1, y: -8, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
                       className="user-dropdown"
                       style={{
@@ -999,7 +986,7 @@ export default function LobbyPage() {
             {/* Hero split layout */}
             <header className="hero-split grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-20 items-center mb-20 md:mb-24">
               <motion.div
-                initial={{ opacity: 0, y: 55 }}
+                initial={{ opacity: 1, y: 55 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                 className="hero-content"
@@ -1024,7 +1011,7 @@ export default function LobbyPage() {
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, scale: 0.96 }}
+                initial={{ opacity: 1, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 className="hero-visual animate-fade-in"
@@ -1108,7 +1095,7 @@ export default function LobbyPage() {
                   return (
                     <motion.div
                       key={room.id}
-                      initial={{ opacity: 0, y: 30 }}
+                      initial={{ opacity: 1, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.8, delay: index * 0.08 }}
                       className={`room-card glass-panel relative p-10 flex flex-col justify-between overflow-hidden group ${extraClass}`}
