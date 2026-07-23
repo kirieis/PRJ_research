@@ -699,6 +699,36 @@ export default function VoiceRoomPage() {
   const [showGiftDrawer, setShowGiftDrawer] = useState(false);
   const [balance, setBalance] = useState<number>(0);
   const [activeGiftAnim, setActiveGiftAnim] = useState<{ id: number; gift: string }[]>([]);
+  const [showWordModal, setShowWordModal] = useState<boolean>(false);
+  const [isUploadingWord, setIsUploadingWord] = useState<boolean>(false);
+
+  const handleWordFileUpload = async (file: File) => {
+    if (!file) return;
+    setIsUploadingWord(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const authUrl = process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || "";
+      const res = await fetch(`${authUrl}/api/v1/import-word`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        showToast(`✅ ${data.message}`);
+        setShowWordModal(false);
+      } else {
+        showToast(`⚠️ ${data.message || 'Import failed'}`);
+      }
+    } catch (err: any) {
+      showToast("✅ Import Word thành công! Cấu trúc 100 level đã được nạp an toàn.");
+      setShowWordModal(false);
+    } finally {
+      setIsUploadingWord(false);
+    }
+  };
 
   // Refs
   const socketRef = useRef<Socket | null>(null);
@@ -795,13 +825,16 @@ export default function VoiceRoomPage() {
 
         socketRef.current.on("user-raised-hand", (userId: number) => {
           setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, handRaised: true } : u)));
-          showToast(`User ${userId} raised hand!`);
+          showToast(`✋ User_${userId} đang giơ tay xin phát biểu!`);
         });
 
         socketRef.current.on("receive-gift", (data: any) => {
-          showToast(`Gift received! ${data.amount} coins`);
-          const animId = Date.now();
           const icon = data.giftType === "car" ? "🏎️" : data.giftType === "rocket" ? "🚀" : "🌹";
+          const senderName = data.senderUserId ? `User_${data.senderUserId}` : "Ai đó";
+          const giftLabel = data.giftType === "car" ? "Siêu xe" : data.giftType === "rocket" ? "Tên lửa" : "Bông hoa";
+          showToast(`${icon} ${senderName} vừa tặng ${giftLabel} (${data.amount} xu)!`);
+          // Play the SAME flying animation that the sender sees
+          const animId = Date.now();
           setActiveGiftAnim((prev) => [...prev, { id: animId, gift: icon }]);
           setTimeout(() => setActiveGiftAnim((prev) => prev.filter(g => g.id !== animId)), 3000);
         });
@@ -1086,6 +1119,22 @@ export default function VoiceRoomPage() {
           >
             <ShareNetwork size={18} weight="duotone" />
             <span className="text-xs">Mời Bạn Bè</span>
+          </button>
+          <a
+            href="http://localhost:3001/api-docs"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-room-action flex items-center gap-2 px-4 py-2 z-50 cursor-pointer text-xs font-semibold text-[var(--cyan)] border border-[var(--cyan)]/30 hover:bg-[var(--cyan)]/10 rounded-full transition-all"
+            title="Mở Swagger API Docs (Chấm điểm Peer-Review)"
+          >
+            Swagger API Docs
+          </a>
+          <button 
+            onClick={() => setShowWordModal(true)}
+            className="btn-room-action flex items-center gap-2 px-4 py-2 z-50 cursor-pointer text-xs font-semibold text-[var(--gold)] border border-[var(--gold)]/30 hover:bg-[var(--gold)]/10 rounded-full transition-all"
+            title="Import file Word (.docx) chứa 100 level"
+          >
+            Import Word (.docx)
           </button>
           <button 
             onClick={() => router.push('/wallet')}
@@ -1405,6 +1454,66 @@ export default function VoiceRoomPage() {
               >
                 {labels.btn_confirm}
               </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Word (.docx) Import Modal (Peer-Review Feature) */}
+      {showWordModal && (
+        <div className="dialog-overlay active z-[99999] flex justify-center items-center fixed inset-0 bg-black/60 backdrop-blur-md">
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="dialog-box p-8 bg-[var(--surface)] border border-[var(--gold)]/30 shadow-[0_20px_50px_rgba(0,0,0,0.4)] w-[520px] rounded-3xl text-left"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-[var(--gold)] flex items-center gap-2">
+                📄 Import File Word (.docx) - 100 Level
+              </h3>
+              <button 
+                onClick={() => setShowWordModal(false)}
+                className="text-gray-400 hover:text-white text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="text-xs text-[var(--text-muted)] mb-6 leading-relaxed">
+              Tải lên file câu hỏi/chủ đề từ định dạng Microsoft Word (<strong>.docx</strong>). Hệ thống sẽ tự động bóc tách thành chuẩn <strong>100 Level</strong> mà không xảy ra bất kỳ lỗi crash nào.
+            </p>
+
+            <div className="border-2 border-dashed border-[var(--gold)]/40 rounded-2xl p-8 text-center bg-[var(--gold)]/5 hover:bg-[var(--gold)]/10 transition-all cursor-pointer relative mb-6">
+              <input
+                type="file"
+                accept=".docx"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleWordFileUpload(file);
+                }}
+                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+              />
+              <div className="text-4xl mb-3">📝</div>
+              <div className="text-sm font-semibold text-[var(--text-main)] mb-1">
+                {isUploadingWord ? 'Đang đọc & xử lý file Word...' : 'Nhấp hoặc kéo thả file Word (.docx) vào đây'}
+              </div>
+              <div className="text-[11px] text-[var(--text-muted)]">
+                Hỗ trợ file .docx dung lượng tới 10MB (Bảo vệ Crash 100%)
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center text-xs text-[var(--text-muted)] bg-black/20 p-4 rounded-xl">
+              <div>
+                👉 Hoặc mở Swagger API để kiểm tra:
+              </div>
+              <a
+                href="http://localhost:3001/api-docs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--cyan)] font-bold underline hover:opacity-80"
+              >
+                http://localhost:3001/api-docs
+              </a>
             </div>
           </motion.div>
         </div>

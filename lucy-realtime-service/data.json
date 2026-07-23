@@ -49,6 +49,16 @@
       "balance": 100,
       "avatarUrl": "https://api.dicebear.com/9.x/notionists/svg?seed=Thien Nguyen",
       "createdAt": "2026-07-23T02:27:46.747Z"
+    },
+    {
+      "id": 6,
+      "email": "binealam@gmail.com",
+      "passwordHash": "$2b$10$92o.7WzhveeY/xf0T0F82OMeXuOSKMkVVqNXlQpUPCPDAN4kUaWhC",
+      "displayName": "HuyTG",
+      "role": "pro",
+      "balance": 100,
+      "avatarUrl": "https://api.dicebear.com/9.x/notionists/svg?seed=HuyTG",
+      "createdAt": "2026-07-23T03:02:36.277Z"
     }
   ],
   "rooms": [
